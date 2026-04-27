@@ -1,0 +1,22 @@
+run:
+  kind: proof_dsl_bootstrap
+  description: >
+    Train a verifier-feedback proof-DSL repair classifier from failed proof
+    attempts and emit a typed mixed-modulus proof proposal.
+
+model:
+  type: proof_dsl_repair_classifier
+  implementation: DictVectorizer + LogisticRegression
+  target: verifier_repair_action
+
+inputs:
+  proof_attempts_log: proof_attempts.jsonl
+  high_parent_bypass: reports/debt_induction/high_parent_bypass_report.json
+  preflight: reports/run7_preflight.json
+  theorem_candidate: reports/collatz_descent_theorem_candidate.json
+
+outputs:
+  run_dir: reports/runs/RUN-008-proof-dsl-generator
+  model_report: proof_dsl_model_report.json
+  proof_proposal: model_proof_proposal.json
+  proof_verification: model_proof_verification.json

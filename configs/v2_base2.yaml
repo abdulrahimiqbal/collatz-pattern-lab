@@ -1,0 +1,26 @@
+task: v2
+base: 2
+lsb_first: true
+bits_train: 48
+bits_val: 48
+bits_test: 64
+batch_size: 512
+model:
+  type: encoder_classifier
+  d_model: 128
+  n_heads: 4
+  n_layers: 4
+  dropout: 0.1
+optimizer:
+  lr: 0.0005
+  weight_decay: 0.01
+training:
+  # Short default so the example command is a runnable local smoke test.
+  # Increase this for real experiments.
+  max_train_steps: 10
+  eval_every: 5
+  checkpoint_every: 10
+  precision: fp32
+modal:
+  gpu: A10G
+

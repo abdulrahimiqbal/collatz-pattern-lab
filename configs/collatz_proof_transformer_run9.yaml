@@ -1,0 +1,47 @@
+run:
+  id: RUN-009-proof-transformer
+  kind: proof_transformer
+  description: >
+    Serious RUN-009 target: train a shared proof Transformer on the scaled
+    proof-inventor corpus, then generate proof DSL candidates for exact
+    verifier evaluation.
+
+data:
+  corpus: data/proof_corpus/collatz_proof_inventor_v1_10m_shards
+  corpus_report: reports/proof_corpus/collatz_proof_inventor_v1_10m.json
+  minimum_examples: 10000000
+  minimum_streams:
+    general_formal_proof: 1000000
+    collatz_structural: 6000000
+    verifier_replay: 2000000
+
+model:
+  type: shared_transformer_proof_model
+  d_model: 512
+  n_heads: 8
+  n_layers: 16
+  max_input_len: 768
+  max_target_len: 512
+  max_vocab_chars: 768
+  target_min_parameters: 100000000
+
+training:
+  max_steps: 100000
+  batch_size: 4
+  lr: 0.0002
+  objective:
+    proof_dsl_generation: 1.0
+    proof_action_prediction: 1.0
+    verifier_outcome_prediction: 1.0
+    self_correction_after_failure: 1.0
+
+verification:
+  mixed_modulus_debt_verifier: reports/debt_induction/mixed_modulus_debt_verifier.json
+  high_parent_bypass: reports/debt_induction/high_parent_bypass_report.json
+  theorem_candidate: reports/collatz_descent_theorem_candidate.json
+  proof_confidence_rule: "100 iff strict theorem verifier PASS else 0"
+
+preflight:
+  min_model_parameters: 100000000
+  min_train_steps: 10000
+  allow_bootstrap_model: false

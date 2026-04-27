@@ -1,0 +1,40 @@
+run:
+  name: RUN-013-proof-action-v2-hard-trace-mining
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-011-proof-action-v2-ranker-small-a100/final_checkpoint.pt
+
+frontier:
+  input_dir: data/proof_action_v2_hard_frontier
+  gates: ["S3", "S4", "S6"]
+
+search:
+  max_depth: 60
+  verifier_call_budgets: [1000, 10000, 50000]
+  beam_width: 128
+  candidates_per_state: 100
+  max_mined_traces: 180
+  novelty_bonus: true
+  trap_penalty: true
+  duplicate_action_penalty: true
+  require_hard_positive: true
+
+baselines:
+  random_legal_action: true
+  heuristic: true
+  verifier_greedy: true
+
+hard_positive_filter:
+  min_depth: 8
+  require_no_one_step_close: true
+  require_baseline_separation: true
+  min_gate_progress_total: 0.1
+  reject_near_duplicates: true
+
+s6:
+  analyze_blockers: true
+  generate_s6_candidate_lemmas: true
+  verify_s6_candidate_lemmas: true
+
+output:
+  dir: data/proof_action_v2_hard_traces

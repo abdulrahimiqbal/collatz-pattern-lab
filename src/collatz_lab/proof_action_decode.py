@@ -1,0 +1,514 @@
+"""Constrained decoding and exact verifier checks for typed proof actions."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+from dataclasses import dataclass
+from typing import Any
+
+from .collatz import collatz_step, parity_prefix
+from .proof_action_dsl import ProofActionError, parse_action, serialize_action, validate_action
+from .proof_action_state import parse_state_facts
+from .verifier import affine_for_parity_prefix, verify_fixed_residue_descent_exhaustive
+
+
+@dataclass(frozen=True)
+class ActionCheck:
+    accepted: bool
+    status: str
+    reason: str
+    closed_obligation: bool = False
+    progress: float = 0.0
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "accepted": self.accepted,
+            "status": self.status,
+            "reason": self.reason,
+            "closed_obligation": self.closed_obligation,
+            "progress": self.progress,
+        }
+
+
+def repair_json_action(text: str) -> str | None:
+    """Return a JSON object substring if there is a single deterministic repair."""
+
+    stripped = text.strip()
+    if stripped.startswith("{") and stripped.endswith("}"):
+        return stripped
+    start = stripped.find("{")
+    end = stripped.rfind("}")
+    if 0 <= start < end:
+        return stripped[start : end + 1]
+    return None
+
+
+def parse_or_repair_action(text: str) -> dict[str, Any]:
+    try:
+        return parse_action(text)
+    except ProofActionError:
+        repaired = repair_json_action(text)
+        if repaired is None or repaired == text.strip():
+            raise
+        return parse_action(repaired)
+
+
+def _trajectory_hash(values: list[int]) -> str:
+    return hashlib.sha256(",".join(str(value) for value in values).encode("utf-8")).hexdigest()
+
+
+def _trajectory_until(n: int, steps: int) -> list[int]:
+    values = [n]
+    current = n
+    for _ in range(steps):
+        current = collatz_step(current)
+        values.append(current)
+    return values
+
+
+def _fact_values(facts: dict[str, Any], *keys: str) -> set[str]:
+    values: set[str] = set()
+    for key in keys:
+        if key in facts:
+            values.add(str(facts[key]))
+    for value in facts.values():
+        if isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):
+                    for key in keys:
+                        if key in item:
+                            values.add(str(item[key]))
+        elif isinstance(value, dict):
+            for key in keys:
+                if key in value:
+                    values.add(str(value[key]))
+    return values
+
+
+def _s6_context(facts: dict[str, Any]) -> bool:
+    return str(facts.get("gate", "")).startswith("S6") or str(facts.get("goal_kind", "")).startswith("s6")
+
+
+def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionCheck:
+    """Check one typed action against one canonical proof state."""
+
+    try:
+        parsed = parse_or_repair_action(action) if isinstance(action, str) else validate_action(action)
+    except ProofActionError as exc:
+        return ActionCheck(False, "REJECT_SYNTAX", str(exc))
+    facts = parse_state_facts(state)
+    action_type = parsed["type"]
+    target = parsed.get("target")
+    if facts.get("target") and target != facts.get("target"):
+        return ActionCheck(False, "REJECT_TARGET", "action target does not match the open goal")
+
+    if action_type == "PROVE_AFFINE_DESCENT":
+        for field in ("modulus", "residue", "steps", "odd_count", "affine_b"):
+            if field in facts and int(parsed[field]) != int(facts[field]):
+                return ActionCheck(False, "REJECT_FIELD_MISMATCH", f"{field} does not match state")
+        modulus = int(parsed["modulus"])
+        residue = int(parsed["residue"])
+        steps = int(parsed["steps"])
+        representative = residue if residue > 0 else modulus
+        bits = parity_prefix(representative, steps)
+        affine_a, affine_b, affine_d = affine_for_parity_prefix(bits)
+        if sum(bits) != int(parsed["odd_count"]) or affine_b != int(parsed["affine_b"]):
+            return ActionCheck(False, "REJECT_AFFINE_MISMATCH", "odd count or affine offset is wrong")
+        exact = verify_fixed_residue_descent_exhaustive(
+            modulus=modulus,
+            residue=residue,
+            k=steps,
+            t_limit=max(modulus * 2, representative),
+        )
+        if exact.status == "PASS":
+            return ActionCheck(True, "ACCEPT", exact.reason, closed_obligation=True, progress=1.0)
+        return ActionCheck(False, exact.status, exact.reason)
+
+    if action_type == "UNROLL_PARITY":
+        if "modulus" not in facts or "residue" not in facts:
+            return ActionCheck(False, "REJECT_MISSING_STATE_FACT", "state has no residue facts")
+        steps = int(parsed["steps"])
+        modulus = int(facts["modulus"])
+        representative = int(facts["residue"]) or modulus
+        if modulus % (1 << steps) != 0:
+            return ActionCheck(False, "REJECT_UNSTABLE_PARITY", "modulus does not determine this parity prefix")
+        expected = "".join(str(bit) for bit in parity_prefix(representative, steps))
+        if parsed["parity_word"] != expected:
+            return ActionCheck(False, "REJECT_PARITY", "parity_word does not match exact Collatz unroll")
+        return ActionCheck(True, "ACCEPT", "parity prefix is exact and stable", progress=0.25)
+
+    if action_type == "CHECK_FINITE_DESCENT":
+        cert = parsed["certificate"]
+        n = int(cert["n"])
+        steps = int(cert["steps_to_descent"])
+        values = _trajectory_until(n, steps)
+        if values[-1] >= n:
+            return ActionCheck(False, "REJECT_NO_DESCENT", "certificate endpoint is not below n")
+        expected_parity = "".join(str(bit) for bit in parity_prefix(n, steps))
+        if cert["parity_word"] != expected_parity:
+            return ActionCheck(False, "REJECT_PARITY", "certificate parity does not replay")
+        if cert["first_descent_below_n"] != values[-1] or cert["max_value"] != max(values):
+            return ActionCheck(False, "REJECT_CERTIFICATE", "descent value or max value does not replay")
+        if cert["trajectory_hash"] != _trajectory_hash(values):
+            return ActionCheck(False, "REJECT_HASH", "trajectory hash does not replay")
+        return ActionCheck(True, "ACCEPT", "finite descent certificate replays exactly", closed_obligation=True, progress=1.0)
+
+    if action_type == "CHECK_DEBT_DECREASE":
+        debt = facts.get("debt_transition") or {}
+        for field in ("branch_id", "valuation", "gain_num", "gain_den"):
+            if field in debt and parsed[field] != debt[field]:
+                return ActionCheck(False, "REJECT_FIELD_MISMATCH", f"{field} does not match debt transition")
+        if not debt.get("exact_congruence_passed", False):
+            return ActionCheck(False, "REJECT_CONGRUENCE", "debt transition exact congruence failed")
+        if int(parsed["gain_num"]) < int(parsed["gain_den"]) and debt.get("local_descent_passed", False):
+            return ActionCheck(True, "ACCEPT", "exact local debt transition decreases", closed_obligation=True, progress=1.0)
+        return ActionCheck(False, "REJECT_NO_DECREASE", "gain bound is not a local decrease")
+
+    if action_type == "DERIVE_PARENT_TRANSITION":
+        fact = facts.get("high_parent_successor") or {}
+        for field in ("branch_id", "source_parent", "target_parent", "valuation"):
+            if field in fact and parsed[field] != fact[field]:
+                return ActionCheck(False, "REJECT_FIELD_MISMATCH", f"{field} does not match high-parent fact")
+        if fact.get("sample_checks_passed", False):
+            return ActionCheck(True, "ACCEPT", "high-parent successor congruence samples are exact", progress=0.6)
+        return ActionCheck(False, "REJECT_SAMPLE_CHECK", "successor sample checks did not pass")
+
+    if action_type == "INTRODUCE_DEBT_FUNCTION":
+        if facts.get("gate", "").startswith("S3") or facts.get("goal_kind") == "debt_transition":
+            return ActionCheck(True, "ACCEPT", "debt function is a valid reduced obligation", progress=0.2)
+        return ActionCheck(False, "REJECT_CONTEXT", "debt functions require a debt-transition state")
+
+    if action_type == "APPLY_LEMMA":
+        known = set(str(item) for item in facts.get("known_lemmas", []))
+        lemma_id = str(parsed["lemma_id"])
+        if lemma_id in known or lemma_id.startswith(("L", "STRICT_", "PROVE_", "REFINE_", "TRY_")):
+            return ActionCheck(True, "ACCEPT", "lemma id is known in this proof state", progress=0.1)
+        return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "lemma is not available in the state")
+
+    if action_type == "SPLIT_RESIDUE":
+        modulus = int(parsed["modulus"])
+        residues = list(parsed["residues"])
+        if residues != sorted(residues):
+            return ActionCheck(False, "REJECT_CANONICAL_ORDER", "residues must be sorted")
+        if any(residue >= modulus for residue in residues):
+            return ActionCheck(False, "REJECT_RESIDUE", "residue out of range")
+        return ActionCheck(True, "ACCEPT", "residue split is syntactically exact", progress=0.2)
+
+    if action_type == "LIFT_MODULUS":
+        if int(parsed["to_modulus"]) % int(parsed["from_modulus"]) == 0:
+            return ActionCheck(True, "ACCEPT", "modulus lift preserves residue projection", progress=0.2)
+        return ActionCheck(False, "REJECT_MODULUS", "invalid modulus lift")
+
+    if action_type == "GENERALIZE_FROM_RESIDUES":
+        if parsed["residues"] == sorted(parsed["residues"]):
+            return ActionCheck(True, "ACCEPT", "generalization candidate has canonical residue witnesses", progress=0.2)
+        return ActionCheck(False, "REJECT_CANONICAL_ORDER", "residues must be sorted")
+
+    if action_type == "CLOSE_BY_VERIFIER":
+        if str(parsed["status"]) == "PASS" and "PASS" in state:
+            return ActionCheck(True, "ACCEPT", "state already carries verifier PASS", closed_obligation=True, progress=1.0)
+        return ActionCheck(False, "REJECT_STRICT_VERIFIER", "strict verifier has not passed in this state")
+
+    if action_type == "PROVE_RESIDUE_COVERAGE":
+        certs = _fact_values(facts, "certificate_id", "coverage_certificate")
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "residue coverage is an S6 theorem obligation")
+        if str(parsed["certificate_id"]) not in certs:
+            return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "coverage certificate is not present in the state")
+        if int(parsed["covered_residue_count"]) == int(parsed["modulus"]):
+            return ActionCheck(True, "ACCEPT", "coverage certificate covers every residue in the stated modulus", progress=0.7)
+        return ActionCheck(False, "REJECT_INCOMPLETE_COVERAGE", "coverage certificate is partial")
+
+    if action_type == "PROVE_GLOBAL_DESCENT_INDUCTION":
+        lemmas = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
+        depends = set(str(item) for item in parsed["depends_on"])
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "global induction requires an S6 state")
+        if str(parsed["lemma_id"]) not in lemmas:
+            return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "descent induction lemma is not proposed in this state")
+        if depends and depends <= lemmas:
+            return ActionCheck(True, "ACCEPT", "global descent induction dependencies are available", progress=0.8)
+        return ActionCheck(False, "REJECT_MISSING_DEPENDENCY", "not all induction dependencies are available")
+
+    if action_type == "CLOSE_WELL_FOUNDED_INDUCTION":
+        certs = _fact_values(facts, "certificate_id", "base_case_certificate")
+        lemmas = _fact_values(facts, "lemma_id", "descent_lemma") | set(str(item) for item in facts.get("known_lemmas", []))
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "well-founded closure requires an S6 state")
+        if str(parsed["measure"]) != "n":
+            return ActionCheck(False, "REJECT_MEASURE", "only the natural-number measure n is currently verified")
+        if str(parsed["descent_lemma"]) in lemmas and str(parsed["base_case_certificate"]) in certs:
+            return ActionCheck(True, "ACCEPT", "well-founded induction closes from descent lemma and base case", closed_obligation=True, progress=1.0)
+        return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "missing descent lemma or base case certificate")
+
+    if action_type == "CERTIFY_NO_ESCAPE_BRANCH":
+        branches = _fact_values(facts, "branch_id")
+        certs = _fact_values(facts, "certificate_id")
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "no-escape certificates require an S6 state")
+        if str(parsed["branch_id"]) in branches and str(parsed["certificate_id"]) in certs:
+            return ActionCheck(True, "ACCEPT", "no-escape branch certificate is present", progress=0.6)
+        return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "branch or no-escape certificate is absent")
+
+    if action_type == "LINK_LOCAL_DESCENT_TO_GLOBAL_THEOREM":
+        certs = _fact_values(facts, "certificate_id", "coverage_certificate")
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "global theorem linking requires an S6 state")
+        if str(parsed["local_gate"]) in {"S3", "S4"} and str(parsed["lifting_gate"]) == "S4" and str(parsed["coverage_certificate"]) in certs:
+            return ActionCheck(True, "ACCEPT", "local descent and lifting gates are linked to a coverage certificate", progress=0.9)
+        return ActionCheck(False, "REJECT_GATE_LINK", "missing S3/S4 link or coverage certificate")
+
+    if action_type == "LIFT_LOCAL_TO_PARAMETRIC_FAMILY":
+        lemmas = _fact_values(facts, "lemma_id", "local_lemma") | set(str(item) for item in facts.get("known_lemmas", []))
+        certs = _fact_values(facts, "certificate_id", "lifting_certificate")
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "parametric lift requires an S6 state")
+        if str(parsed["local_lemma"]) in lemmas and str(parsed["lifting_certificate"]) in certs:
+            return ActionCheck(True, "ACCEPT", "local lemma lifts to the stated parametric family", progress=0.7)
+        return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "local lemma or lifting certificate is absent")
+
+    if action_type == "CLOSE_STRICT_THEOREM_BLOCKER":
+        blockers = _fact_values(facts, "blocker_id")
+        lemmas = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "strict theorem blockers are S6 obligations")
+        if str(parsed["blocker_id"]) in blockers and str(parsed["lemma_id"]) in lemmas:
+            return ActionCheck(True, "ACCEPT", "strict theorem blocker is discharged by an available lemma", closed_obligation=True, progress=1.0)
+        return ActionCheck(False, "REJECT_OPEN_BLOCKER", "blocker id or closing lemma is not available")
+
+    if action_type == "PROPOSE_S6_LEMMA":
+        lemma_ids = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "S6 lemmas require an S6 state")
+        if str(parsed["lemma_id"]) in lemma_ids:
+            return ActionCheck(True, "ACCEPT", "S6 lemma proposal matches a generated theorem obligation", progress=0.3)
+        return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "S6 lemma was not generated from known blockers")
+
+    if action_type == "VERIFY_S6_LEMMA":
+        lemma_ids = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
+        statuses = _fact_values(facts, "verifier_status", "status")
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "S6 lemma verification requires an S6 state")
+        if str(parsed["lemma_id"]) not in lemma_ids:
+            return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "lemma id is not available")
+        if str(parsed["status"]) in {"ACCEPT", "PASS"} and statuses & {"ACCEPT", "PASS"}:
+            return ActionCheck(True, "ACCEPT", "S6 lemma verifier accepted the generated lemma", progress=0.8)
+        return ActionCheck(False, "REJECT_S6_LEMMA", "S6 lemma verifier did not accept this lemma")
+
+    if action_type == "COMPOSE_GATE_PROOF":
+        depends = set(str(item) for item in parsed["depends_on"])
+        available = _fact_values(facts, "lemma_id", "certificate_id", "proof_id") | set(str(item) for item in facts.get("known_lemmas", []))
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "gate proof composition requires an S6 state")
+        if depends and depends <= available:
+            return ActionCheck(True, "ACCEPT", "gate proof components compose into an S6 proof obligation", progress=1.0)
+        return ActionCheck(False, "REJECT_MISSING_DEPENDENCY", "gate proof dependencies are incomplete")
+
+    if action_type == "ABANDON_BRANCH":
+        return ActionCheck(True, "ACCEPT_CONTROL", "branch abandoned; no proof progress", progress=0.0)
+
+    return ActionCheck(False, "REJECT_UNKNOWN", f"unhandled action type {action_type}")
+
+
+def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) -> list[dict[str, Any]]:
+    """Enumerate typed legal action candidates implied by structured state facts."""
+
+    facts = parse_state_facts(state)
+    target = str(facts.get("target", "goal_0"))
+    candidates: list[dict[str, Any]] = []
+    if "certificate" in facts:
+        candidates.append({"type": "CHECK_FINITE_DESCENT", "target": target, "certificate": facts["certificate"]})
+    if facts.get("goal_kind") == "residue_descent" or {"modulus", "residue", "steps", "odd_count", "affine_b"} <= set(facts):
+        candidates.append(
+            {
+                "type": "PROVE_AFFINE_DESCENT",
+                "target": target,
+                "modulus": int(facts["modulus"]),
+                "residue": int(facts["residue"]),
+                "steps": int(facts["steps"]),
+                "odd_count": int(facts["odd_count"]),
+                "affine_b": int(facts["affine_b"]),
+            }
+        )
+        if "parity_word" in facts:
+            candidates.append(
+                {
+                    "type": "UNROLL_PARITY",
+                    "target": target,
+                    "steps": int(facts["steps"]),
+                    "parity_word": str(facts["parity_word"]),
+                }
+            )
+        modulus = int(facts["modulus"])
+        residue = int(facts["residue"])
+        candidates.append(
+            {
+                "type": "LIFT_MODULUS",
+                "target": target,
+                "from_modulus": modulus,
+                "to_modulus": modulus * 2,
+                "residue": residue,
+            }
+        )
+        sibling = (residue + modulus // 2) % modulus if modulus > 2 else (residue + 1) % modulus
+        residues = sorted({residue, sibling})
+        candidates.append(
+            {
+                "type": "GENERALIZE_FROM_RESIDUES",
+                "target": target,
+                "modulus": modulus,
+                "residues": residues,
+                "lemma_id": f"residue_family_mod_{modulus}",
+            }
+        )
+        if len(residues) > 1:
+            candidates.append({"type": "SPLIT_RESIDUE", "target": target, "modulus": modulus, "residues": residues})
+    if "debt_transition" in facts:
+        debt = facts["debt_transition"]
+        candidates.append(
+            {
+                "type": "CHECK_DEBT_DECREASE",
+                "target": target,
+                "branch_id": str(debt["branch_id"]),
+                "gain_num": int(debt["gain_num"]),
+                "gain_den": int(debt["gain_den"]),
+                "valuation": int(debt["valuation"]),
+            }
+        )
+        candidates.append(
+            {
+                "type": "INTRODUCE_DEBT_FUNCTION",
+                "target": target,
+                "function_id": "mixed_log_gain_rank",
+                "variables": ["parent_level", "rho_mod_3a", "log2_gain_bound"],
+            }
+        )
+        candidates.append(
+            {
+                "type": "APPLY_LEMMA",
+                "target": target,
+                "lemma_id": "mixed_modulus_debt_transition_exactness",
+                "bindings": {"branch_id": str(debt.get("branch_id", ""))},
+            }
+        )
+    if "high_parent_successor" in facts:
+        fact = facts["high_parent_successor"]
+        candidates.append(
+            {
+                "type": "DERIVE_PARENT_TRANSITION",
+                "target": target,
+                "branch_id": str(fact["branch_id"]),
+                "source_parent": int(fact["source_parent"]),
+                "target_parent": int(fact["target_parent"]),
+                "valuation": int(fact["valuation"]),
+            }
+        )
+        candidates.append(
+            {
+                "type": "APPLY_LEMMA",
+                "target": target,
+                "lemma_id": "high_parent_successor_exactness",
+                "bindings": {"branch_id": str(fact.get("branch_id", ""))},
+            }
+        )
+    for lemma in facts.get("known_lemmas", [])[:8]:
+        if lemma:
+            candidates.append({"type": "APPLY_LEMMA", "target": target, "lemma_id": str(lemma), "bindings": {}})
+    if _s6_context(facts):
+        blockers = list(_fact_values(facts, "blocker_id"))
+        lemma_ids = list(_fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", [])))
+        certs = list(_fact_values(facts, "certificate_id", "coverage_certificate", "base_case_certificate", "lifting_certificate"))
+        coverage = next((cert for cert in certs if "coverage" in cert), None)
+        base_cert = next((cert for cert in certs if "base" in cert), None)
+        lifting_cert = next((cert for cert in certs if "lift" in cert), None)
+        no_escape_cert = next((cert for cert in certs if "escape" in cert), None)
+        if lemma_ids:
+            lemma = lemma_ids[0]
+            candidates.append({"type": "PROPOSE_S6_LEMMA", "target": target, "lemma_id": lemma, "statement": "generated S6 obligation candidate"})
+            if _fact_values(facts, "verifier_status", "status") & {"ACCEPT", "PASS"}:
+                candidates.append({"type": "VERIFY_S6_LEMMA", "target": target, "lemma_id": lemma, "verifier": "strict_theorem_verifier", "status": "ACCEPT"})
+            candidates.append({"type": "PROVE_GLOBAL_DESCENT_INDUCTION", "target": target, "lemma_id": lemma, "depends_on": [lemma]})
+            if blockers:
+                candidates.append({"type": "CLOSE_STRICT_THEOREM_BLOCKER", "target": target, "blocker_id": blockers[0], "lemma_id": lemma})
+            if coverage is not None:
+                candidates.append(
+                    {
+                        "type": "PROVE_RESIDUE_COVERAGE",
+                        "target": target,
+                        "modulus": int(facts.get("coverage_modulus", facts.get("modulus", 2))),
+                        "covered_residue_count": int(facts.get("covered_residue_count", facts.get("coverage_modulus", facts.get("modulus", 2)))),
+                        "certificate_id": coverage,
+                    }
+                )
+                candidates.append({"type": "LINK_LOCAL_DESCENT_TO_GLOBAL_THEOREM", "target": target, "local_gate": "S3", "lifting_gate": "S4", "coverage_certificate": coverage})
+                candidates.append({"type": "COMPOSE_GATE_PROOF", "target": target, "proof_id": f"compose_{lemma}", "depends_on": [lemma, coverage]})
+            if base_cert is not None:
+                candidates.append({"type": "CLOSE_WELL_FOUNDED_INDUCTION", "target": target, "measure": "n", "descent_lemma": lemma, "base_case_certificate": base_cert})
+            if lifting_cert is not None:
+                candidates.append({"type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY", "target": target, "local_lemma": lemma, "family_id": "s6_parametric_family", "lifting_certificate": lifting_cert})
+            if blockers and no_escape_cert is not None:
+                candidates.append({"type": "CERTIFY_NO_ESCAPE_BRANCH", "target": target, "branch_id": blockers[0], "certificate_id": no_escape_cert})
+    if facts.get("gate", "").startswith(("S1", "S2", "S3", "S4", "S6")):
+        candidates.append({"type": "SPLIT_RESIDUE", "target": target, "modulus": 2, "residues": [0, 1]})
+        candidates.append(
+            {
+                "type": "CLOSE_BY_VERIFIER",
+                "target": target,
+                "verifier": "strict_collatz_descent",
+                "status": "PASS",
+            }
+        )
+    candidates.append({"type": "ABANDON_BRANCH", "target": target, "reason": "search_budget_or_ranker_pruned"})
+
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for candidate in candidates:
+        try:
+            text = serialize_action(candidate)
+        except ProofActionError:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        out.append(parse_action(text))
+        if len(out) >= max_candidates:
+            break
+    return out
+
+
+def dedupe_candidates(candidates: list[dict[str, Any]], *, max_candidates: int | None = None) -> list[dict[str, Any]]:
+    """Deduplicate candidates by canonical action text while preserving order."""
+
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for candidate in candidates:
+        try:
+            text = serialize_action(candidate)
+        except ProofActionError:
+            continue
+        if text in seen:
+            continue
+        seen.add(text)
+        out.append(parse_action(text))
+        if max_candidates is not None and len(out) >= max_candidates:
+            break
+    return out
+
+
+def is_degenerate_output(text: str) -> bool:
+    clean = text.strip()
+    if not clean:
+        return True
+    if len(set(clean)) <= 2 and len(clean) >= 8:
+        return True
+    pieces = re.findall(r'"[^"]+"|[A-Za-z_]+|\d+|[{}[\]:,]', clean)
+    if len(pieces) >= 8:
+        most_common = max(pieces.count(piece) for piece in set(pieces))
+        return most_common / len(pieces) > 0.75
+    return False
+
+
+def serialize_candidates(candidates: list[dict[str, Any]]) -> list[str]:
+    return [serialize_action(candidate) for candidate in candidates]

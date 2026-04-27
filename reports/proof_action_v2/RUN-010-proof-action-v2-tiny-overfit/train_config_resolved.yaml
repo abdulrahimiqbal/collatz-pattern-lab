@@ -1,0 +1,27 @@
+resolved:
+  rows_path: data/proof_action_v2_tiny/rows.jsonl
+  output_dir: reports/proof_action_v2/RUN-010-proof-action-v2-tiny-overfit
+  max_state_len: 768
+  max_action_len: 160
+  max_vocab_size: 4096
+  d_model: 64
+  encoder_layers: 2
+  decoder_layers: 2
+  heads: 4
+  ffn_dim: 128
+  dropout: 0.0
+  batch_size: 10
+  max_steps: 180
+  lr: 0.001
+  weight_decay: 0.01
+  warmup_steps: 20
+  value_loss_weight: 0.2
+  gradient_clip: 1.0
+  seed: 1337
+  checkpoint_every: 90
+  progress_every: 30
+  bf16: false
+  train_splits:
+  - train
+  val_splits:
+  - train

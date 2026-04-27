@@ -1,0 +1,7 @@
+name: base_ablation
+template: configs/syracuse_base24.yaml
+parameters:
+  base: [2, 8, 10, 16, 24, 32]
+  model.d_model: [128]
+  model.n_layers: [4]
+

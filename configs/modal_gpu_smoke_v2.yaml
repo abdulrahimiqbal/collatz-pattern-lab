@@ -1,0 +1,25 @@
+task: v2
+base: 2
+lsb_first: true
+bits_train: 24
+bits_val: 24
+bits_test: 32
+autogen_rows: 4096
+batch_size: 256
+model:
+  type: encoder_classifier
+  d_model: 64
+  n_heads: 4
+  n_layers: 2
+  dropout: 0.1
+optimizer:
+  lr: 0.0007
+  weight_decay: 0.01
+training:
+  max_train_steps: 20
+  eval_every: 10
+  checkpoint_every: 20
+  precision: bf16
+  grad_clip: 1.0
+modal:
+  gpu: A10G

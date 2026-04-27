@@ -1,0 +1,31 @@
+task: syracuse
+base: 24
+lsb_first: true
+bits_train: 40
+bits_val: 40
+bits_test: 48
+seed: 0
+batch_size: 512
+data:
+  paths:
+    - /mnt/collatz/data/syracuse/base24_bits40_train_1m.parquet
+model:
+  type: seq2seq
+  d_model: 256
+  n_heads: 8
+  n_layers: 6
+  dropout: 0.1
+optimizer:
+  lr: 0.0003
+  weight_decay: 0.01
+training:
+  max_train_steps: 20000
+  eval_every: 500
+  checkpoint_every: 1000
+  precision: bf16
+  grad_clip: 1.0
+  disable_progress: true
+modal:
+  gpu: A10G
+notes:
+  ood_eval_path: /mnt/collatz/data/syracuse/base24_bits48_ood_100k.parquet

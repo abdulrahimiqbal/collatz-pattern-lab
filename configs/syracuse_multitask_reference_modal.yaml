@@ -1,0 +1,76 @@
+task: multitask
+base: 24
+lsb_first: true
+bits_train: 48
+bits_val: 48
+bits_test: 56
+seed: 0
+batch_size: 512
+data:
+  sign_mode: mixed
+  sample_mode: mixed
+  positive_fraction: 0.5
+  paths:
+    - /mnt/collatz/data/multitask/base24_bits24_train_250k.parquet
+    - /mnt/collatz/data/multitask/base24_bits32_train_250k.parquet
+    - /mnt/collatz/data/multitask/base24_bits40_train_250k.parquet
+    - /mnt/collatz/data/multitask/base24_bits48_train_250k.parquet
+model:
+  type: seq2seq
+  signed: true
+  d_model: 256
+  n_heads: 8
+  n_layers: 6
+  dropout: 0.1
+  max_seq_len: 128
+  parity_prefix_len: 32
+  num_descent_buckets: 10
+  num_negative_cycles: 100
+optimizer:
+  lr: 0.0002
+  weight_decay: 0.01
+training:
+  max_train_steps: 30000
+  eval_every: 500
+  checkpoint_every: 1000
+  precision: bf16
+  grad_clip: 1.0
+  disable_progress: true
+  loss_weights:
+    sequence: 1.0
+    v2: 0.3
+    descent_bucket: 0.2
+    hard_case: 0.2
+    parity: 0.1
+    negative_cycle: 0.2
+modal:
+  gpu: A10G
+notes:
+  architecture: Collatz Multitask Transformer
+  purpose: Reference model for mixed-bit Syracuse dynamics and proof-useful representation learning.
+  train_curriculum:
+    - Generate exact signed multitask shards at 24, 32, 40, and 48 bits.
+    - Use 50/50 positive/negative rows in each training shard.
+    - Keep 56-bit and 64-bit shards eval-only.
+    - Add hard-case and residue-holdout shards before treating this as the final reference run.
+  ood_eval_paths:
+    - /mnt/collatz/data/multitask/base24_bits56_ood_100k.parquet
+    - /mnt/collatz/data/multitask/base24_bits64_ood_100k.parquet
+  holdout_eval_paths:
+    - /mnt/collatz/data/multitask/base24_bits48_residue_holdout_100k.parquet
+    - /mnt/collatz/data/multitask/base24_hard_cases_eval_100k.parquet
+  currently_supported_heads:
+    - syracuse_sequence
+    - v2_classification
+    - descent_bucket_classification
+    - hard_case_classification
+    - parity_prefix_prediction
+    - negative_cycle_classification
+  planned_heads:
+    - signed_rule_family_probe
+  scale_up_candidate:
+    gpu: A100
+    d_model: 384
+    n_heads: 8
+    n_layers: 8
+    max_train_steps: 50000

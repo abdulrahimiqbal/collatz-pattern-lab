@@ -1,0 +1,46 @@
+run:
+  id: RUN-009-collatz-proof-inventor-v1
+  kind: proof_inventor
+  description: >
+    Scale-ready proof-generation model that trains on formal proof patterns,
+    Collatz structural artifacts, verifier feedback, and failed proof repairs.
+
+model:
+  target_architecture: shared_transformer_multitask
+  local_bootstrap: Tfidf char n-gram retrieval + LogisticRegression heads
+  future_heads:
+    - proof_dsl_generation
+    - proof_action_policy
+    - verifier_outcome_value
+    - rank_failure_repair
+    - collatz_structure_prediction
+
+training_streams:
+  general_formal_proof:
+    enabled: true
+    source: optional_external_jsonl_adapter
+  collatz_structural:
+    enabled: true
+    sources:
+      - reports/debt_induction/high_parent_bypass_report.json
+      - reports/cycle_mining_parent_returns_q30.json
+  verifier_replay:
+    enabled: true
+    sources:
+      - proof_attempts.jsonl
+      - reports/run7_preflight.json
+      - reports/collatz_descent_theorem_candidate.json
+
+objectives:
+  proof_dsl_sequence: 1.0
+  repair_action: 1.0
+  verifier_outcome: 1.0
+  collatz_structure_to_lemma: 1.0
+
+metrics:
+  - proof_dsl_schema_validity
+  - accepted_claim_count
+  - useful_verifier_reduction_rate
+  - proof_confidence_percent
+  - proof_progress_percent
+  - new_blocker_precision

@@ -1,0 +1,101 @@
+run:
+  id: RUN-014B-proof-action-v2-gate-progress-fix-small-a100
+  name: RUN-014B-proof-action-v2-gate-progress-fix-small-a100
+  kind: proof_action_v2_gate_progress_fix
+  description: Small A100 warm-start focused on raw hard-frontier gate-progress proposal quality
+
+data:
+  dir: data/proof_action_v2_hard_mix_gate_progress
+  rows: data/proof_action_v2_hard_mix_gate_progress/train_value.jsonl
+  pairs: data/proof_action_v2_hard_mix_gate_progress/train_pairs.jsonl
+  train_splits: [train]
+  val_splits: [val, test, challenge]
+
+model:
+  name: CollatzProofAction-v2-gate-progress-fix-small
+  init_checkpoint: remote_reports/proof_action_v2/RUN-014-proof-action-v2-hard-retrain-small-a100/final_checkpoint.pt
+  architecture: same_as_RUN_014
+  d_model: 384
+  encoder_layers: 8
+  decoder_layers: 6
+  heads: 6
+  ffn_dim: 1536
+  dropout: 0.1
+  max_state_len: 2048
+  max_action_len: 128
+  max_vocab_size: 32768
+  use_value_head: true
+  use_ranker_head: true
+
+training:
+  dataset_dir: data/proof_action_v2_hard_mix_gate_progress
+  max_steps: 2000
+  eval_every_steps: 250
+  save_every_steps: 500
+  checkpoint_every: 500
+  progress_every: 50
+  batch_size: 16
+  pair_batch_size: 16
+  lr: 0.00003
+  scheduler: cosine
+  warmup_steps: 150
+  weight_decay: 0.01
+  gradient_clip: 1.0
+  grad_clip: 1.0
+  optimizer: AdamW
+  seed: 1337
+  bf16: true
+  early_stop_on_hard_eval: true
+
+loss:
+  policy_weight: 1.0
+  value_weight: 0.5
+  ranker_weight: 1.0
+  s6_policy_weight: 2.0
+  hard_trace_policy_weight: 2.0
+  accepted_good_vs_dead_end_pair_weight: 2.0
+
+regularization:
+  replay_original_data: true
+  prevent_forgetting_eval: true
+  max_original_eval_regression: 0.05
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-014B-proof-action-v2-gate-progress-fix-small-a100/final_checkpoint.pt
+  original_rows: data/proof_action_v2_ranker/rows.jsonl
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  hard_holdout: data/proof_action_v2_hard_mix_gate_progress/hard_challenge_holdout.jsonl
+  s6_holdout: data/proof_action_v2_hard_mix_gate_progress/s6_challenge_holdout.jsonl
+  train_pairs: data/proof_action_v2_hard_mix_gate_progress/train_pairs.jsonl
+  max_examples: 96
+  stratified: true
+  compare_random_baseline: true
+  compare_heuristic_baseline: true
+
+search:
+  verifier_call_budgets: [10, 100, 1000, 5000]
+  max_depth: 30
+  beam_width: 64
+  candidates_per_state: 50
+  unique_actions_required: 10
+  use_ranker: true
+  use_value: true
+  use_verifier: true
+  novelty_bonus: true
+  trap_penalty: true
+  duplicate_action_penalty: true
+
+ranking:
+  verifier_accept_bonus: 10.0
+  verifier_reject_penalty: -10.0
+  closure_bonus: 5.0
+  branch_close_bonus: 8.0
+  gate_progress_weight: 12.0
+  ranker_weight: 2.0
+  value_weight: 1.0
+  policy_weight: 0.3
+  goal_creation_penalty: 0.25
+  duplicate_action_penalty: 2.0
+
+output:
+  dir: reports/runs/RUN-014B-proof-action-v2-gate-progress-fix-small-a100-local-quick

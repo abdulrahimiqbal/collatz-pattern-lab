@@ -1,0 +1,83 @@
+run:
+  id: RUN-011-proof-action-v2-ranker-small-a100
+  kind: proof_action_v2_ranker
+  description: Proof-action v2 small A100 with closed-vs-reduced ranker
+
+data:
+  rows: data/proof_action_v2_ranker/rows.jsonl
+  pairs: data/proof_action_v2_ranker/train_pairs.jsonl
+  train_splits: [train]
+  val_splits: [val, test, challenge]
+
+model:
+  name: CollatzProofAction-v2-ranker-small
+  d_model: 384
+  encoder_layers: 8
+  decoder_layers: 6
+  heads: 6
+  ffn_dim: 1536
+  dropout: 0.1
+  max_state_len: 2048
+  max_action_len: 128
+  max_vocab_size: 32768
+  use_value_head: true
+  use_ranker_head: true
+  target_params: "40M-90M"
+
+loss:
+  policy_weight: 1.0
+  value_weight: 0.3
+  ranker_weight: 0.7
+
+training:
+  max_steps: 1200
+  batch_size: 16
+  pair_batch_size: 16
+  lr: 0.0002
+  scheduler: cosine_with_warmup
+  warmup_steps: 1000
+  label_smoothing: 0.0
+  gradient_clip: 1.0
+  optimizer: AdamW
+  seed: 1337
+  checkpoint_every: 400
+  progress_every: 50
+  bf16: true
+
+evaluation:
+  splits: [val, test, challenge]
+  max_examples: 512
+  beam_size: 64
+  candidates_per_state: 50
+  top_k: 5
+  use_action_memory: false
+  stratified: true
+  compute_topk_unique: true
+  compare_random_baseline: true
+  compare_heuristic_baseline: true
+
+search:
+  max_states: 128
+  beam_width: 64
+  candidates_per_state: 50
+  unique_actions_required: 10
+  use_ranker: true
+  use_value: true
+  use_verifier: true
+  diversity_penalty: 1.0
+  duplicate_action_penalty: 2.0
+
+ranking:
+  verifier_accept_bonus: 10.0
+  verifier_reject_penalty: -10.0
+  closure_bonus: 5.0
+  branch_close_bonus: 8.0
+  gate_progress_weight: 10.0
+  ranker_weight: 2.0
+  value_weight: 1.0
+  policy_weight: 0.2
+  goal_creation_penalty: 0.25
+  duplicate_action_penalty: 2.0
+
+output:
+  dir: remote_reports/proof_action_v2/RUN-011-proof-action-v2-ranker-small-a100

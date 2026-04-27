@@ -1,0 +1,7 @@
+name: model_size_ablation
+template: configs/syracuse_base24.yaml
+parameters:
+  model.d_model: [64, 128, 256]
+  model.n_heads: [2, 4, 8]
+  model.n_layers: [2, 4, 6]
+

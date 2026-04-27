@@ -1,0 +1,50 @@
+run:
+  name: RUN-012-proof-action-v2-frontier-search-small-a100
+  kind: proof_action_v2_frontier_search
+  description: Proof-action v2 frontier search diagnostics using RUN-011 checkpoint
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-011-proof-action-v2-ranker-small-a100/final_checkpoint.pt
+
+eval:
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  train_rows: data/proof_action_v2_ranker/train.jsonl
+  raw_proposal_eval: true
+  budgeted_search_eval: true
+  leakage_check: true
+  stratified: true
+  max_examples: 1000
+
+search:
+  verifier_call_budgets: [10, 100, 1000, 5000]
+  max_depth: 30
+  beam_width: 64
+  candidates_per_state: 50
+  unique_actions_required: 10
+  use_ranker: true
+  use_value: true
+  use_verifier: true
+  novelty_bonus: true
+  trap_penalty: true
+  duplicate_action_penalty: true
+
+ranking:
+  verifier_accept_bonus: 10.0
+  verifier_reject_penalty: -10.0
+  closure_bonus: 5.0
+  branch_close_bonus: 8.0
+  gate_progress_weight: 10.0
+  ranker_weight: 2.0
+  value_weight: 1.0
+  policy_weight: 0.2
+  goal_creation_penalty: 0.25
+  duplicate_action_penalty: 2.0
+
+baselines:
+  random_legal_action: true
+  heuristic: true
+  verifier_greedy: true
+  run011_baseline: true
+
+output:
+  dir: remote_reports/proof_action_v2/RUN-012-proof-action-v2-frontier-search-small-a100

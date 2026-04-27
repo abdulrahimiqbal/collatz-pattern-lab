@@ -1,0 +1,106 @@
+# Persistent Proof Graph
+
+- status: `INCOMPLETE_OPEN_OBLIGATIONS`
+- nodes: `429`
+- actions: `521`
+- closed: `10`
+- open: `419`
+- status counts: `{'NEEDS_SPLIT': 419, 'CLOSED_BY_ANCESTOR_DESCENT': 6, 'CLOSED_BY_HEIGHT_RANKING': 3, 'CLOSED_BY_EXACT_POTENTIAL': 1}`
+
+A `REDUCED` action is recorded as progress only when it creates child obligations; it never closes its parent by itself.
+
+## Open Nodes
+
+- `P10:h=1:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P1:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P2:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P3:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P4:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P5:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P5:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P5:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P8:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P8:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=1:to=P8:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P6:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=2:to=P6:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P10:h=3:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P1:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P2:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P3:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P4:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P5:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P5:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P5:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P6:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P6:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=1:to=P6:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P7:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P11:h=2:to=P7:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P1:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P1:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P1:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P2:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P2:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P2:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P3:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P3:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P3:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P4:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P4:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P4:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P5:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P5:rdepth=7#2`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P5:rdepth=7#3`: `NEEDS_SPLIT` - finite-depth parent-state split
+- `P12:h=1:to=P6:rdepth=7`: `NEEDS_SPLIT` - finite-depth parent-state split
+
+## Closed Nodes
+
+- `adic_basin:sharp_q23_R23`: `CLOSED_BY_HEIGHT_RANKING`
+- `cube_lift:k16:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cube_lift:k19:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cube_lift:k21:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cube_lift:k24:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cube_lift:k26:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cube_lift:residual_certified:PROVED_INFINITE_ANCESTOR_DESCENT`: `CLOSED_BY_ANCESTOR_DESCENT`
+- `cycle_mining:length_1:PROVED_HEIGHT_DECREASE_ON_REPEAT`: `CLOSED_BY_HEIGHT_RANKING`
+- `cycle_mining:length_2:PROVED_HEIGHT_DECREASE_ON_REPEAT`: `CLOSED_BY_HEIGHT_RANKING`
+- `sharp_q23_potential`: `CLOSED_BY_EXACT_POTENTIAL`

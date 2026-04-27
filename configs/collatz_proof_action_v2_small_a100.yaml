@@ -1,0 +1,52 @@
+run:
+  id: RUN-010-proof-action-v2-small-a100
+  kind: proof_action_v2
+  description: Proof-action v2 small A100 interface validation
+
+data:
+  rows: data/proof_action_v2/rows.jsonl
+  train_splits: [train]
+  val_splits: [val, test, challenge]
+
+model:
+  name: CollatzProofAction-v2-small
+  d_model: 384
+  encoder_layers: 8
+  decoder_layers: 6
+  heads: 6
+  ffn_dim: 1536
+  dropout: 0.1
+  max_state_len: 2048
+  max_action_len: 128
+  max_vocab_size: 32768
+  target_params: "40M-90M"
+
+training:
+  max_steps: 1200
+  batch_size: 16
+  lr: 0.0002
+  scheduler: cosine_with_warmup
+  warmup_steps: 1000
+  label_smoothing: 0.0
+  value_loss_weight: 0.2
+  ranker_loss_weight: 0.0
+  gradient_clip: 1.0
+  optimizer: AdamW
+  seed: 1337
+  checkpoint_every: 400
+  progress_every: 50
+  bf16: true
+
+evaluation:
+  splits: [val, test, challenge]
+  max_examples: 512
+  beam_size: 50
+  top_k: 5
+  use_action_memory: false
+
+search:
+  max_states: 96
+  beam_size: 80
+
+output:
+  dir: remote_reports/proof_action_v2/RUN-010-proof-action-v2-small-a100
