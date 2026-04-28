@@ -1,0 +1,9 @@
+run:
+  name: RUN-024-top-level-theorem-certificates
+
+top_level_certificates:
+  out_dir: reports/runs/RUN-024-top-level-theorem-certificates
+  run023_dir: reports/runs/RUN-023-exact-s6-lemma-payloads
+  proof_graph: reports/runs/RUN-023-exact-s6-lemma-payloads/proof_dependency_graph_s6_replayed.json
+  accepted_action_trace: reports/runs/RUN-023-exact-s6-lemma-payloads/accepted_action_trace_s6_replayed.jsonl
+  write_repo_replay_bundle: true

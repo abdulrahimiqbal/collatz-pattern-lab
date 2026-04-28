@@ -2,72 +2,71 @@
   "artifacts": [
     {
       "name": "proof_dependency_graph_frozen",
-      "path": "certificate_store/proof_dependency_graph_frozen.json",
-      "sha256": "70c4ce278e217b96ef43e1bb6a1eba4c87e7f7640f995504d6013b8ffad8ca22"
+      "path": "certificate_store/run024_proof_dependency_graph_frozen.json",
+      "sha256": "e0928a780494b5eab5e2ca8ba050ae051a9369d3c22769aacb927aca78d968c7"
     },
     {
       "name": "accepted_action_trace",
-      "path": "certificate_store/accepted_action_trace.jsonl",
-      "sha256": "e5aec35a0e0a9b26602a65f57ba96041b3a252897da5be57811ebd5e18edb345"
+      "path": "certificate_store/run024_accepted_action_trace.jsonl",
+      "sha256": "bda963a1a8e22bd18c6bcecfad3a50a8600057fbaa6187135bbae60503c99918"
     },
     {
-      "name": "run020_audit_summary",
-      "path": "certificate_store/run020_audit_summary.json",
-      "sha256": "3e40b1f523aad3b6c1c48b33b02d6a825e010f819019a1ace9d2434a90b6d848"
+      "name": "top_level_certificates",
+      "path": "certificate_store/run024_top_level_certificates.jsonl",
+      "sha256": "9e8dd378a07356046c1e762a34a5e8c3d1c6f5966ed0038273dbf7fb6d10bf9f"
     },
     {
-      "name": "run020_audit_failures",
-      "path": "certificate_store/run020_audit_failures.md",
-      "sha256": "bcd0136cc0bb235a075a69f7f23cd92881928ecf1d69fe5c45fa83849aec7d66"
+      "name": "top_level_replay_report",
+      "path": "certificate_store/run024_top_level_replay_report.json",
+      "sha256": "cd13b0541d64a2e018ec8b192d1f734487a615c5adcc283cfdab3839da1a064a"
     },
     {
-      "name": "run019_run_result",
-      "path": "certificate_store/run019_run_result.json",
-      "sha256": "a9c55d6263101e4c56534bcc59267dfd3419812eead54a6549ea23a6a1f02acc"
-    },
-    {
-      "name": "run019_parent_residual_certificate",
-      "path": "certificate_store/run019_parent_residual_certificate.json",
-      "sha256": "7ed314e0af8ec1e9dec8e070ea141b26dd9ea4bae0b3ff6473c2118d1975136f"
+      "name": "final_proof_object",
+      "path": "certificate_store/run024_final_proof_object.json",
+      "sha256": "b134029eac291a1028ea0f25ed0c4a9b5a7a2f95577008fab5aebb5a42781ef1"
     }
   ],
   "clean_clone_replay": {
     "command": "python -m collatz_lab.replay_strict_proof --manifest proof_manifest.json",
     "requires_committed_or_included_artifacts": true
   },
-  "run_id": "RUN-021-strict-verifier-replay-hardening",
+  "run_id": "RUN-024-top-level-theorem-certificates",
   "schema": "collatz_lab.strict_proof_manifest",
   "source_files": [
     {
-      "name": "src/collatz_lab/proof_action_decode.py",
-      "path": "src/collatz_lab/proof_action_decode.py",
-      "sha256": "559d3f2e78d7e29a4672e253e8cc6e1a2a2916b139d6c77b2077941499e8cfd1"
+      "name": "src/collatz_lab/proof_action_top_level_cert.py",
+      "path": "src/collatz_lab/proof_action_top_level_cert.py",
+      "sha256": "fed8195b7bcbb0a5b46bba3568c9f2e5112b63c196594da9c67834d3abb7d97e"
     },
     {
-      "name": "src/collatz_lab/proof_action_dsl.py",
-      "path": "src/collatz_lab/proof_action_dsl.py",
-      "sha256": "a9776480383992a85aff0b83ab061539a7a2b1cbeba0763180f8c411ee736f7a"
+      "name": "src/collatz_lab/proof_action_run024.py",
+      "path": "src/collatz_lab/proof_action_run024.py",
+      "sha256": "321ddffdf9c17758ac2f70a515073e8dcac4617234a3d994195720ed5dab218d"
     },
     {
       "name": "src/collatz_lab/proof_verifier.py",
       "path": "src/collatz_lab/proof_verifier.py",
-      "sha256": "4372b890547515509746f37586ae63801fe700e6963e6384ec919001347134ed"
+      "sha256": "cf717651830f98899d0a04fab20fcea12eee80d6a9e14faee38aec0a8f719e84"
     },
     {
       "name": "src/collatz_lab/replay_strict_proof.py",
       "path": "src/collatz_lab/replay_strict_proof.py",
-      "sha256": "a304526b03d212b66f456c7dd742f4e4fc0abc11c6aec2fcf7a2b8b4b55fc695"
+      "sha256": "181f626e096cc7fe698925b501a03bc5040ad9e9417e115caa8c35e98f44177c"
     },
     {
-      "name": "src/collatz_lab/proof_action_run021.py",
-      "path": "src/collatz_lab/proof_action_run021.py",
-      "sha256": "a755ad57d0c489978d680dc237761af5540bbb1de341636173fddf463d2bb681"
+      "name": "src/collatz_lab/proof_action_decode.py",
+      "path": "src/collatz_lab/proof_action_decode.py",
+      "sha256": "27b244e3c0df5fb1a9e50ccb218420c985ba9a9b4e8b63d7bd4641e9fc461c5b"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_dsl.py",
+      "path": "src/collatz_lab/proof_action_dsl.py",
+      "sha256": "2383f138c8924478a94ca9101d9c1ebc805e41730cd4bc7126f8b33af74f6648"
     }
   ],
   "source_run_accounting": {
-    "audit_status": "AUDIT_FAIL",
+    "audit_status": "PASS",
     "proof_confidence_percent": 100.0,
-    "run019_strict_verifier": "PASS",
     "strict_verifier": "PASS"
   },
   "version": 1

@@ -130,8 +130,7 @@ def test_s6_lemma_status_id_is_not_proof() -> None:
     check = verify_action_for_state(action, _s6_state())
 
     assert not check.accepted
-    assert check.status == "REJECT_SYNTAX"
-    assert "lemma" in check.reason
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_s6_lemma_payload_rejects_bare_dependency_names() -> None:
@@ -149,10 +148,10 @@ def test_s6_lemma_payload_rejects_bare_dependency_names() -> None:
     check = verify_action_for_state(action, _s6_state())
 
     assert not check.accepted
-    assert check.status == "REJECT_S6_LEMMA_PAYLOAD"
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
-def test_s6_lemma_accepts_replayable_payload() -> None:
+def test_s6_lemma_direct_payload_is_not_enough() -> None:
     action = {
         "type": "VERIFY_S6_LEMMA",
         "target": "s6_goal",
@@ -164,15 +163,33 @@ def test_s6_lemma_accepts_replayable_payload() -> None:
 
     check = verify_action_for_state(action, _s6_state())
 
-    assert check.accepted
-    assert check.reason == "S6 lemma proof payload and dependencies replay"
+    assert not check.accepted
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_manifest_replay_downgrades_unsound_pass(tmp_path) -> None:
     graph = {
         "schema": "collatz_lab.proof_action_theorem_dependency_graph",
         "version": 1,
-        "nodes": {"coverage:unit": {"node_id": "coverage:unit", "node_type": "COVERAGE_CERTIFICATE", "status": "ACCEPTED"}},
+        "nodes": {
+            "coverage:unit": {"node_id": "coverage:unit", "node_type": "COVERAGE_CERTIFICATE", "status": "ACCEPTED"},
+            "s6_lemma:unit": {
+                "node_id": "s6_lemma:unit",
+                "node_type": "S6_LEMMA",
+                "status": "ACCEPTED",
+                "accepted_actions": [
+                    {
+                        "action": {
+                            "type": "VERIFY_S6_LEMMA",
+                            "target": "s6_goal",
+                            "lemma_id": "s6_lemma",
+                            "verifier": "strict_theorem_verifier",
+                            "status": "ACCEPT",
+                        }
+                    }
+                ],
+            },
+        },
         "edges": [],
         "open": [],
     }

@@ -218,7 +218,7 @@ def test_parent_residual_verifier_and_candidate_generation() -> None:
     assert _parent_action() in legal_action_candidates_from_state(state)
 
 
-def test_verify_s6_lemma_accepts_partial_coverage_with_parent_residual_cert() -> None:
+def test_verify_s6_lemma_requires_s6_certificate_even_with_parent_residual_cert() -> None:
     action = {
         "type": "VERIFY_S6_LEMMA",
         "target": "s6_goal",
@@ -230,7 +230,8 @@ def test_verify_s6_lemma_accepts_partial_coverage_with_parent_residual_cert() ->
 
     check = verify_action_for_state(action, _state_with_parent_cert())
 
-    assert check.accepted
+    assert not check.accepted
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_verify_s6_lemma_rejects_status_only_even_with_parent_residual_cert() -> None:
@@ -245,7 +246,7 @@ def test_verify_s6_lemma_rejects_status_only_even_with_parent_residual_cert() ->
     check = verify_action_for_state(action, _state_with_parent_cert())
 
     assert not check.accepted
-    assert check.status == "REJECT_SYNTAX"
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_parent_residual_certificate_uses_accepted_graph_path() -> None:

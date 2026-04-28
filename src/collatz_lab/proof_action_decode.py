@@ -210,6 +210,56 @@ def _s6_lemma_payload_replays(
     return None
 
 
+def _s6_lemma_certificate_fact(facts: dict[str, Any], lemma_id: str, certificate_id: str | None = None) -> dict[str, Any] | None:
+    for row in _fact_rows(facts, "s6_lemma_certificate"):
+        if str(row.get("lemma_id", "")) != lemma_id:
+            continue
+        if certificate_id and str(row.get("certificate_id", "")) != certificate_id:
+            continue
+        return row
+    return None
+
+
+def _s6_lemma_certificate_payload(row: dict[str, Any]) -> dict[str, Any] | None:
+    return (
+        _decode_json_payload(row.get("certificate_payload"))
+        or _decode_json_payload(row.get("s6_lemma_certificate"))
+        or _decode_json_payload(row.get("proof_payload"))
+    )
+
+
+def _s6_lemma_certificate_replays(parsed: dict[str, Any], facts: dict[str, Any]) -> ActionCheck | None:
+    lemma_id = str(parsed["lemma_id"])
+    certificate_id = str(parsed.get("certificate_id", "") or "")
+    if not certificate_id:
+        return ActionCheck(False, "REJECT_MISSING_S6_LEMMA_CERTIFICATE", "VERIFY_S6_LEMMA requires a replayable S6 lemma certificate id")
+    row = _s6_lemma_certificate_fact(facts, lemma_id, certificate_id)
+    if row is None:
+        return ActionCheck(False, "REJECT_MISSING_S6_LEMMA_CERTIFICATE", "S6 lemma certificate is not present in the state")
+    if str(row.get("status", "")) in {"PASS", "ACCEPT"} and _s6_lemma_certificate_payload(row) is None:
+        return ActionCheck(False, "REJECT_S6_LEMMA_STATUS_ONLY", "S6 lemma certificate fact has status but no replay payload")
+    certificate = _s6_lemma_certificate_payload(row)
+    if certificate is None:
+        return ActionCheck(False, "REJECT_MISSING_S6_LEMMA_CERTIFICATE", "S6 lemma certificate payload is missing")
+    expected_hashes = {str(row.get("certificate_hash", "") or ""), str(certificate.get("certificate_hash", "") or "")}
+    action_hash = str(parsed.get("certificate_hash", "") or "")
+    if action_hash and action_hash not in expected_hashes:
+        return ActionCheck(False, "REJECT_S6_LEMMA_HASH_MISMATCH", "VERIFY_S6_LEMMA certificate hash does not match state fact")
+    if str(certificate.get("lemma_id", "")) != lemma_id:
+        return ActionCheck(False, "REJECT_S6_LEMMA_STATEMENT_MISMATCH", "S6 lemma certificate lemma_id does not match action")
+
+    from .proof_action_s6_lemma_cert import replay_s6_lemma_certificate
+
+    replay = replay_s6_lemma_certificate(certificate)
+    if not replay.accepted:
+        if replay.status == "REJECT_S6_LEMMA_HASH_MISMATCH":
+            return ActionCheck(False, "REJECT_S6_LEMMA_HASH_MISMATCH", replay.reason)
+        if replay.status == "REJECT_S6_LEMMA_STATEMENT_MISMATCH":
+            return ActionCheck(False, "REJECT_S6_LEMMA_STATEMENT_MISMATCH", replay.reason)
+        return ActionCheck(False, "REJECT_S6_LEMMA_DEPENDENCY_FAIL", replay.reason)
+    return None
+
+
 def _residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_end: int) -> bool:
     if residual_end <= residual_start:
         return False
@@ -524,36 +574,15 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
 
     if action_type == "VERIFY_S6_LEMMA":
         lemma_ids = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
-        statuses = _fact_values(facts, "verifier_status", "status")
-        certs = _fact_values(
-            facts,
-            "certificate_id",
-            "coverage_certificate",
-            "base_case_certificate",
-            "lifting_certificate",
-            "no_escape_certificate",
-            "parent_residual_certificate",
-        )
         if not _s6_context(facts):
             return ActionCheck(False, "REJECT_CONTEXT", "S6 lemma verification requires an S6 state")
         if str(parsed["lemma_id"]) not in lemma_ids:
             return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "lemma id is not available")
-        lemma = parsed["lemma"]
-        dependencies = set(str(item) for item in lemma.get("depends_on", []))
-        payload_failure = _s6_lemma_payload_replays(lemma, dependencies=dependencies, certs=certs | lemma_ids, statuses=statuses)
-        if payload_failure is not None:
-            return payload_failure
-        coverage_modulus = _int_fact(facts, "coverage_modulus", 0)
-        covered_count = _int_fact(facts, "covered_residue_count", 0)
-        if (
-            coverage_modulus > 0
-            and covered_count < coverage_modulus
-            and not _residual_covers_gap(facts, covered_count, coverage_modulus)
-            and not _parent_residual_covers_gap(facts, covered_count, coverage_modulus)
-        ):
-            return ActionCheck(False, "REJECT_INCOMPLETE_COVERAGE", "coverage certificate is partial")
-        if str(parsed["status"]) in {"ACCEPT", "PASS"}:
-            return ActionCheck(True, "ACCEPT", "S6 lemma proof payload and dependencies replay", progress=0.8)
+        certificate_failure = _s6_lemma_certificate_replays(parsed, facts)
+        if certificate_failure is not None:
+            return certificate_failure
+        if str(parsed.get("status", "PASS")) in {"ACCEPT", "PASS"}:
+            return ActionCheck(True, "ACCEPT", "S6 lemma certificate and dependencies replay", progress=0.8)
         return ActionCheck(False, "REJECT_S6_LEMMA", "S6 lemma verifier did not accept this lemma")
 
     if action_type == "COMPOSE_GATE_PROOF":
@@ -699,12 +728,26 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
         no_escape_cert = next((cert for cert in certs if "escape" in cert), None)
         residual_rows = _fact_rows(facts, "residual_coverage_certificate")
         parent_residual_rows = _fact_rows(facts, "parent_residual_certificate")
-        lemma_payload = _first_fact_payload(facts, "lemma_payload", "s6_blocker", "lemma")
+        s6_lemma_certificate_rows = _fact_rows(facts, "s6_lemma_certificate")
         if lemma_ids:
             lemma = lemma_ids[0]
             candidates.append({"type": "PROPOSE_S6_LEMMA", "target": target, "lemma_id": lemma, "statement": "generated S6 obligation candidate"})
-            if lemma_payload is not None and _fact_values(facts, "verifier_status", "status") & {"ACCEPT", "PASS"}:
-                candidates.append({"type": "VERIFY_S6_LEMMA", "target": target, "lemma_id": lemma, "verifier": "strict_theorem_verifier", "status": "ACCEPT", "lemma": lemma_payload})
+            for cert_row in s6_lemma_certificate_rows:
+                if str(cert_row.get("lemma_id", "")) != lemma:
+                    continue
+                if str(cert_row.get("status", "")) not in {"PASS", "ACCEPT"}:
+                    continue
+                candidates.append(
+                    {
+                        "type": "VERIFY_S6_LEMMA",
+                        "target": target,
+                        "lemma_id": lemma,
+                        "verifier": "s6_lemma_certificate_replay",
+                        "status": "PASS",
+                        "certificate_id": str(cert_row.get("certificate_id", "")),
+                        "certificate_hash": str(cert_row.get("certificate_hash", "")),
+                    }
+                )
             candidates.append({"type": "PROVE_GLOBAL_DESCENT_INDUCTION", "target": target, "lemma_id": lemma, "depends_on": [lemma]})
             if blockers:
                 candidates.append({"type": "CLOSE_STRICT_THEOREM_BLOCKER", "target": target, "blocker_id": blockers[0], "lemma_id": lemma})

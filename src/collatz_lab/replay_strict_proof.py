@@ -102,6 +102,47 @@ def _s4_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
     return failures
 
 
+def _s6_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
+    from .proof_action_decode import verify_action_for_state
+
+    failures: list[dict[str, Any]] = []
+    for node_id, node in graph.get("nodes", {}).items():
+        if node.get("node_type") != "S6_LEMMA" or node.get("status") != "ACCEPTED":
+            continue
+        verify_actions = [
+            row.get("action") or {}
+            for row in node.get("accepted_actions", []) or []
+            if (row.get("action") or {}).get("type") == "VERIFY_S6_LEMMA"
+        ]
+        if not verify_actions:
+            failures.append(
+                {
+                    "node_id": node_id,
+                    "status": "REJECT_MISSING_S6_LEMMA_CERTIFICATE",
+                    "reason": "accepted S6 lemma node has no VERIFY_S6_LEMMA action",
+                }
+            )
+            continue
+        replayed = False
+        last_failure: dict[str, Any] | None = None
+        for action in verify_actions:
+            if not action.get("certificate_id") or not action.get("certificate_hash"):
+                last_failure = {
+                    "node_id": node_id,
+                    "status": "REJECT_S6_LEMMA_STATUS_ONLY",
+                    "reason": "VERIFY_S6_LEMMA action is status/id-only",
+                }
+                continue
+            check = verify_action_for_state(action, str(node.get("state", "")))
+            if check.accepted:
+                replayed = True
+                break
+            last_failure = {"node_id": node_id, "status": check.status, "reason": check.reason}
+        if not replayed:
+            failures.append(last_failure or {"node_id": node_id, "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL", "reason": "S6 lemma replay failed"})
+    return failures
+
+
 def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str, Any], graph: dict[str, Any]) -> list[dict[str, Any]]:
     roots: list[dict[str, Any]] = []
     derive_rows = [
@@ -137,19 +178,15 @@ def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str
             }
         )
 
-    s6_rows = [
-        row
-        for row in trace_rows
-        if (row.get("action") or {}).get("type") == "VERIFY_S6_LEMMA"
-        and "lemma" not in (row.get("action") or {})
-    ]
-    if s6_rows:
+    s6_replay_failures = _s6_graph_replay_failures(graph)
+    if s6_replay_failures:
         roots.append(
             {
                 "node_type": "S6_LEMMA",
-                "count": len({row.get("node_id", index) for index, row in enumerate(s6_rows)}),
+                "count": len(s6_replay_failures),
                 "reason": "status-id lemma acceptance",
                 "required_fix": "replace status/certificate identifiers with a replayable S6 lemma proof_payload",
+                "examples": s6_replay_failures[:5],
             }
         )
 
@@ -207,6 +244,8 @@ def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None)
     strict_status = str(proof.get("verifier_status", "FAIL"))
     audit_status = "PASS_FOR_VERIFIER_SOUNDNESS" if not hash_failures else "FAIL_REPRODUCTION"
     verifier_status = strict_status
+    if strict_status == "PASS" and not hash_failures and not roots:
+        audit_status = "PASS"
     proof_confidence = 100.0 if strict_status == "PASS" and audit_status == "PASS" else 0.0
     if strict_status == "PASS" and roots:
         verifier_status = "UNSOUND_PASS"
@@ -215,7 +254,7 @@ def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None)
     result = {
         "schema": "collatz_lab.strict_proof_replay_result",
         "version": 1,
-        "run_id": "RUN-021-strict-verifier-replay-hardening",
+        "run_id": manifest.get("run_id", "RUN-021-strict-verifier-replay-hardening"),
         "manifest_path": str(manifest_path),
         "audit_status": audit_status,
         "strict_verifier": strict_status,

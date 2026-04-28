@@ -39,7 +39,7 @@ def _load_optional(path: Path) -> dict[str, Any] | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def verify_proof_object(proof: dict[str, Any]) -> dict[str, Any]:
+def verify_proof_object(proof: dict[str, Any], *, proof_graph: dict[str, Any] | None = None) -> dict[str, Any]:
     """Strictly verify whether a canonical proof object proves Collatz descent."""
 
     errors: list[str] = []
@@ -58,7 +58,7 @@ def verify_proof_object(proof: dict[str, Any]) -> dict[str, Any]:
         top_level = {}
     for cert_name in TOP_LEVEL_CERTIFICATES:
         cert = top_level.get(cert_name)
-        if not _top_level_certificate_replays(cert_name, cert):
+        if not _top_level_certificate_replays(cert_name, cert, proof_graph=proof_graph):
             errors.append(f"top-level certificate {cert_name} does not replay")
     for row in proof.get("transitions", []):
         status = row.get("status", "UNKNOWN")
@@ -79,7 +79,7 @@ def verify_proof_object(proof: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _top_level_certificate_replays(cert_name: str, cert: Any) -> bool:
+def _top_level_certificate_replays(cert_name: str, cert: Any, *, proof_graph: dict[str, Any] | None = None) -> bool:
     """Minimal replay contract for universal theorem certificates.
 
     RUN-021 deliberately does not synthesize these certificates from a closed
@@ -87,20 +87,15 @@ def _top_level_certificate_replays(cert_name: str, cert: Any) -> bool:
     a PASS replay status.
     """
 
+    try:
+        from .proof_action_top_level_cert import replay_top_level_certificate
+    except Exception:
+        return False
     if not isinstance(cert, dict):
         return False
     if str(cert.get("certificate_type", cert.get("type", ""))) != cert_name:
         return False
-    if str(cert.get("replay_status", cert.get("status", ""))) != "PASS":
-        return False
-    if not str(cert.get("certificate_hash", "")).strip():
-        return False
-    payload = cert.get("proof_payload")
-    if not isinstance(payload, dict) or not payload:
-        return False
-    if set(payload) <= {"status", "verifier_status", "certificate_id"}:
-        return False
-    return True
+    return replay_top_level_certificate(cert, graph=proof_graph).accepted
 
 
 def _graph_top_level_certificates(proof_graph: dict[str, Any] | None) -> dict[str, Any]:
@@ -137,7 +132,7 @@ def build_collatz_descent_theorem_candidate(
         )
     else:
         for cert_name in TOP_LEVEL_CERTIFICATES:
-            if not _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name)):
+            if not _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name), proof_graph=proof_graph):
                 unknowns.append(
                     {
                         "obligation_id": f"top_level:{cert_name}",
@@ -212,7 +207,7 @@ def build_collatz_descent_theorem_candidate(
         "odds": "Every odd n can be written as P_a, but current report covers only sampled finite a/r-depth.",
     }
     top_level_replays = proof_action_graph_loaded and not proof_graph.get("open", []) and all(
-        _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name))
+        _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name), proof_graph=proof_graph)
         for cert_name in TOP_LEVEL_CERTIFICATES
     )
     if top_level_replays:
@@ -232,9 +227,20 @@ def build_collatz_descent_theorem_candidate(
             }
         coverage = candidate_coverage
 
+    top_level_replay_report = None
+    if proof_action_graph_loaded:
+        try:
+            from .proof_action_top_level_cert import replay_top_level_certificates
+
+            top_level_replay_report = replay_top_level_certificates(top_level_certificates, graph=proof_graph)
+        except Exception as exc:
+            top_level_replay_report = {"all_pass": False, "error": str(exc)}
+
     proof = {
         "theorem": "forall n > 1 exists k >= 1 such that C^k(n) < n",
+        "descent_implication": "forall n > 1 exists t >= 0 such that C^t(n) = 1",
         "top_level_certificates": top_level_certificates,
+        "top_level_replay_report": top_level_replay_report,
         "coverage": coverage,
         "states": states,
         "transitions": transitions,
@@ -254,7 +260,7 @@ def build_collatz_descent_theorem_candidate(
         },
         "verifier_status": "PENDING",
     }
-    verification = verify_proof_object(proof)
+    verification = verify_proof_object(proof, proof_graph=proof_graph)
     proof["verifier_status"] = verification["verifier_status"]
     proof["verification"] = verification
     return proof

@@ -100,7 +100,21 @@ def _candidate_actions(blocker: dict[str, Any]) -> list[dict[str, Any]]:
         {"type": "CLOSE_STRICT_THEOREM_BLOCKER", "target": target, "blocker_id": blocker_id, "lemma_id": lemma_id},
         {"type": "COMPOSE_GATE_PROOF", "target": target, "proof_id": f"s6_composed_{lemma_id}", "depends_on": [lemma_id, coverage]},
     ]
-    if isinstance(blocker.get("lemma_payload"), dict):
+    s6_cert = blocker.get("s6_lemma_certificate")
+    if isinstance(s6_cert, dict):
+        actions.insert(
+            1,
+            {
+                "type": "VERIFY_S6_LEMMA",
+                "target": target,
+                "lemma_id": lemma_id,
+                "verifier": "s6_lemma_certificate_replay",
+                "status": "PASS",
+                "certificate_id": s6_cert["certificate_id"],
+                "certificate_hash": s6_cert["certificate_hash"],
+            },
+        )
+    elif isinstance(blocker.get("lemma_payload"), dict):
         actions.insert(
             1,
             {
@@ -175,6 +189,20 @@ def blocker_state(blocker: dict[str, Any]) -> str:
     if isinstance(blocker.get("lemma_payload"), dict):
         fact["lemma_payload"] = json.dumps(blocker["lemma_payload"], sort_keys=True, separators=(",", ":"))
     facts = [fact]
+    s6_cert = blocker.get("s6_lemma_certificate")
+    if isinstance(s6_cert, dict):
+        facts.append(
+            {
+                "kind": "s6_lemma_certificate",
+                "target": target,
+                "lemma_id": s6_cert["lemma_id"],
+                "blocker_id": s6_cert["blocker_id"],
+                "certificate_id": s6_cert["certificate_id"],
+                "certificate_hash": s6_cert["certificate_hash"],
+                "status": s6_cert.get("status", "PASS"),
+                "certificate_payload": json.dumps(s6_cert, sort_keys=True, separators=(",", ":")),
+            }
+        )
     residual = blocker.get("residual_coverage_certificate")
     if isinstance(residual, dict):
         facts.append(

@@ -1,0 +1,9 @@
+{
+  "failed_certificate_count": 0,
+  "failed_certificates": [],
+  "hash_failure_count": 0,
+  "run_id": "RUN-023-exact-s6-lemma-payloads",
+  "s6_lemma_certificate_count": 28,
+  "schema": "collatz_lab.run023_s6_lemma_replay_report",
+  "version": 1
+}

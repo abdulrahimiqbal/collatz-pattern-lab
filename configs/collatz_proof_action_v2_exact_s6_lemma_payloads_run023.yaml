@@ -1,0 +1,10 @@
+run:
+  name: RUN-023-exact-s6-lemma-payloads
+
+s6_lemma_payloads:
+  out_dir: reports/runs/RUN-023-exact-s6-lemma-payloads
+  run022_dir: reports/runs/RUN-022-exact-s4-parent-transition-certificates
+  proof_graph: reports/runs/RUN-022-exact-s4-parent-transition-certificates/proof_dependency_graph_s4_replayed.json
+  accepted_action_trace: reports/runs/RUN-022-exact-s4-parent-transition-certificates/accepted_action_trace_s4_replayed.jsonl
+  parent_transition_certificates: reports/runs/RUN-022-exact-s4-parent-transition-certificates/parent_transition_certificates.jsonl
+  write_repo_replay_bundle: true

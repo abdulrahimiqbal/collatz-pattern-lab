@@ -57,14 +57,14 @@ def _blocker(*, blocker_type: str = "induction", covered: int = 8, status: str =
     return row
 
 
-def test_verify_s6_lemma_uses_lemma_specific_certs_not_global_pass() -> None:
+def test_verify_s6_lemma_rejects_repaired_status_payload_without_run023_cert() -> None:
     blocker = _blocker(status="ACCEPT")
     verify_action = next(action for action in blocker["candidate_actions"] if action["type"] == "VERIFY_S6_LEMMA")
 
     check = verify_action_for_state(verify_action, blocker["state"])
 
-    assert check.accepted
-    assert "proof payload" in check.reason
+    assert not check.accepted
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_partial_coverage_classification_and_residual() -> None:

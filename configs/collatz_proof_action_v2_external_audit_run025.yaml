@@ -1,0 +1,4 @@
+external_audit:
+  run_id: RUN-025-proof-candidate-external-audit-package
+  out_dir: reports/runs/RUN-025-proof-candidate-external-audit-package
+  run024_dir: reports/runs/RUN-024-top-level-theorem-certificates

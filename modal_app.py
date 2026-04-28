@@ -32,6 +32,8 @@ image = (
     .add_local_dir("src", remote_path="/root/collatz-pattern-lab/src")
     .add_local_dir("configs", remote_path="/root/collatz-pattern-lab/configs")
     .add_local_dir("reports", remote_path="/root/collatz-pattern-lab/reports")
+    .add_local_dir("certificate_store", remote_path="/root/collatz-pattern-lab/certificate_store")
+    .add_local_file("proof_manifest.json", remote_path="/root/collatz-pattern-lab/proof_manifest.json")
     .add_local_file("proof_attempts.jsonl", remote_path="/root/collatz-pattern-lab/proof_attempts.jsonl")
 )
 
@@ -1182,6 +1184,81 @@ def run_proof_action_v2_exact_s4_parent_transition_cert(
         or "reports/runs/RUN-022-exact-s4-parent-transition-certificates"
     )
     result = run_parent_transition_certificates(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_exact_s6_lemma_payloads(
+    config_path: str = "configs/collatz_proof_action_v2_exact_s6_lemma_payloads_run023.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run023 import run_exact_s6_lemma_payloads
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("s6_lemma_payloads") or {}).get("out_dir")
+        or "reports/runs/RUN-023-exact-s6-lemma-payloads"
+    )
+    result = run_exact_s6_lemma_payloads(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_top_level_theorem_certificates(
+    config_path: str = "configs/collatz_proof_action_v2_top_level_theorem_certificates_run024.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run024 import run_top_level_theorem_certificates
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("top_level_certificates") or {}).get("out_dir")
+        or "reports/runs/RUN-024-top-level-theorem-certificates"
+    )
+    result = run_top_level_theorem_certificates(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_external_audit_package(
+    config_path: str = "configs/collatz_proof_action_v2_external_audit_run025.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run025 import run_external_audit_package
+    from collatz_lab.utils import load_yaml
+
+    os.chdir("/root/collatz-pattern-lab")
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("external_audit") or {}).get("out_dir")
+        or "reports/runs/RUN-025-proof-candidate-external-audit-package"
+    )
+    result = run_external_audit_package(config_path, out=output_dir)
     volume.commit()
     return result
 

@@ -98,7 +98,7 @@ def test_legal_candidates_emit_residual_coverage_action() -> None:
     assert _residual_action() in candidates
 
 
-def test_verify_s6_lemma_accepts_partial_parent_coverage_with_residual_cert() -> None:
+def test_verify_s6_lemma_requires_s6_certificate_even_with_residual_cert() -> None:
     action = {
         "type": "VERIFY_S6_LEMMA",
         "target": "s6_goal",
@@ -110,8 +110,8 @@ def test_verify_s6_lemma_accepts_partial_parent_coverage_with_residual_cert() ->
 
     check = verify_action_for_state(action, _s6_state_with_residual_cert())
 
-    assert check.accepted
-    assert "proof payload" in check.reason
+    assert not check.accepted
+    assert check.status == "REJECT_MISSING_S6_LEMMA_CERTIFICATE"
 
 
 def test_residual_certificate_builder_passes_tiny_exact_leaf() -> None:

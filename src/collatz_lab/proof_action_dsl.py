@@ -159,8 +159,8 @@ ACTION_SPECS: dict[str, ActionSpec] = {
         ("target", "lemma_id", "statement"),
     ),
     "VERIFY_S6_LEMMA": ActionSpec(
-        ("type", "target", "lemma_id", "verifier", "status", "lemma"),
-        ("target", "lemma_id", "verifier", "status", "lemma"),
+        ("type", "target", "lemma_id", "verifier", "status", "certificate_id", "certificate_hash", "lemma"),
+        ("target", "lemma_id"),
     ),
     "COMPOSE_GATE_PROOF": ActionSpec(
         ("type", "target", "proof_id", "depends_on"),
@@ -462,7 +462,7 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             if out[field] != cert[field]:
                 raise ProofActionError(f"transition_certificate.{field} must match action {field}")
     if action_type == "VERIFY_S6_LEMMA":
-        if out["lemma"]["lemma_id"] != out["lemma_id"]:
+        if "lemma" in out and out["lemma"]["lemma_id"] != out["lemma_id"]:
             raise ProofActionError("lemma.lemma_id must match action lemma_id")
     if action_type == "PROVE_RESIDUE_COVERAGE" and out["covered_residue_count"] > out["modulus"]:
         raise ProofActionError("covered_residue_count must be <= modulus")

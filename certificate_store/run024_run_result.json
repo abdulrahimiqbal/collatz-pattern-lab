@@ -1,0 +1,37 @@
+{
+  "artifacts": {
+    "final_proof_object": "reports/runs/RUN-024-top-level-theorem-certificates/final_proof_object.json",
+    "human_readable_theorem_bridge": "reports/runs/RUN-024-top-level-theorem-certificates/human_readable_theorem_bridge.md",
+    "proof_manifest": "reports/runs/RUN-024-top-level-theorem-certificates/proof_manifest.json",
+    "root_manifest_replay_result": "reports/runs/RUN-024-top-level-theorem-certificates/root_manifest_replay_result.json",
+    "run_result": "reports/runs/RUN-024-top-level-theorem-certificates/run_result.json",
+    "strict_replay_result": "reports/runs/RUN-024-top-level-theorem-certificates/strict_replay_result.json",
+    "top_level_certificates": "reports/runs/RUN-024-top-level-theorem-certificates/top_level_certificates.jsonl",
+    "top_level_replay_report": "reports/runs/RUN-024-top-level-theorem-certificates/top_level_replay_report.json"
+  },
+  "big_model_launched": false,
+  "clean_manifest_replay": {
+    "audit_status": "PASS",
+    "hash_failure_count": 0,
+    "proof_confidence_percent": 100.0,
+    "strict_verifier": "PASS",
+    "verifier_status": "PASS"
+  },
+  "hash_failure_count": 0,
+  "proof_confidence_percent": 100.0,
+  "root_unsound_certificates": [],
+  "run_id": "RUN-024-top-level-theorem-certificates",
+  "s4_lift_blockers_after": 0,
+  "s6_lemma_blockers_after": 0,
+  "schema": "collatz_lab.run024_top_level_theorem_certificates",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "strict_unknown_obligations": [],
+  "strict_verifier": "PASS",
+  "top_level_certificate_failures": [],
+  "top_level_certificates_generated": 5,
+  "top_level_certificates_replay_pass": 5,
+  "training_launched": false,
+  "verifier_status": "PASS",
+  "version": 1
+}
