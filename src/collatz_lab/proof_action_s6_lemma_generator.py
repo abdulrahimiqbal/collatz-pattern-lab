@@ -46,15 +46,18 @@ def generate_s6_candidate_lemmas(
             "lemma_id": str(blocker["lemma_id"]),
             "statement": str(blocker["statement"]),
         }
-        verify = {
-            "type": "VERIFY_S6_LEMMA",
-            "target": str(blocker["target"]),
-            "lemma_id": str(blocker["lemma_id"]),
-            "verifier": "strict_theorem_verifier",
-            "status": str(blocker.get("verifier_status", "PENDING")),
-        }
+        verify = None
+        if isinstance(blocker.get("lemma_payload"), dict):
+            verify = {
+                "type": "VERIFY_S6_LEMMA",
+                "target": str(blocker["target"]),
+                "lemma_id": str(blocker["lemma_id"]),
+                "verifier": "strict_theorem_verifier",
+                "status": str(blocker.get("verifier_status", "PENDING")),
+                "lemma": blocker["lemma_payload"],
+            }
         propose_check = verify_action_for_state(propose, state)
-        verify_check = verify_action_for_state(verify, state)
+        verify_check = verify_action_for_state(verify, state) if verify is not None else None
         rows.append(
             {
                 "schema": "collatz_lab.proof_action_s6_candidate_lemma",
@@ -69,10 +72,10 @@ def generate_s6_candidate_lemmas(
                 "candidate_action": propose,
                 "candidate_action_text": serialize_action(propose),
                 "verify_action": verify,
-                "verify_action_text": serialize_action(verify),
+                "verify_action_text": serialize_action(verify) if verify is not None else None,
                 "propose_verifier_status": "ACCEPT" if propose_check.accepted else "REJECT",
-                "verifier_status": "ACCEPT" if verify_check.accepted else "REJECT",
-                "verifier_reason": verify_check.reason,
+                "verifier_status": "ACCEPT" if verify_check and verify_check.accepted else "REJECT",
+                "verifier_reason": verify_check.reason if verify_check is not None else "missing replayable S6 lemma proof payload",
                 "blocker_id": blocker["blocker_id"],
                 "blocker_type": blocker["blocker_type"],
                 "gate": "S6",

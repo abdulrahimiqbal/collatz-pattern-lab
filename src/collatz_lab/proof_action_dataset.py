@@ -338,6 +338,13 @@ def high_parent_rows(path: str | Path, *, seed: int, limit: int | None = None) -
         families = families[:limit]
     for family in families:
         for valuation_family in list(family.get("valuation_family_samples") or [])[:2]:
+            transition_certificate = (
+                valuation_family.get("transition_certificate")
+                or valuation_family.get("symbolic_transition_certificate")
+                or valuation_family.get("high_parent_successor_exact_certificate")
+            )
+            if not isinstance(transition_certificate, dict):
+                continue
             state = state_from_high_parent_successor(family, valuation_family)
             action = {
                 "type": "DERIVE_PARENT_TRANSITION",
@@ -346,6 +353,7 @@ def high_parent_rows(path: str | Path, *, seed: int, limit: int | None = None) -
                 "source_parent": int(family.get("a", 0)),
                 "target_parent": int(valuation_family.get("target_parent_level", 0)),
                 "valuation": int(valuation_family.get("valuation", 0)),
+                "transition_certificate": transition_certificate,
             }
             rows.append(
                 _row(

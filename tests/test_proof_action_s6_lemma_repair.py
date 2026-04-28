@@ -10,6 +10,26 @@ from collatz_lab.proof_action_s6_lemma_repair import (
 )
 
 
+def _lemma_payload(row: dict) -> dict:
+    return {
+        "lemma_id": row["lemma_id"],
+        "statement": row["statement"],
+        "depends_on": [
+            row["coverage_certificate"],
+            row["base_case_certificate"],
+            row["lifting_certificate"],
+            row["no_escape_certificate"],
+        ],
+        "proof_payload": {
+            "coverage": {"certificate_hash": "coverage_hash", "proof": "exact coverage replay"},
+            "transition_chain": {"certificate_hash": "transition_hash", "proof": "exact transition replay"},
+            "ranking_decrease": {"certificate_hash": "rank_hash", "proof": "ranking replay"},
+            "no_escape": {"certificate_hash": "escape_hash", "proof": "no escape replay"},
+            "induction_link": {"certificate_hash": "induction_hash", "proof": "induction replay"},
+        },
+    }
+
+
 def _blocker(*, blocker_type: str = "induction", covered: int = 8, status: str = "REJECT") -> dict:
     row = {
         "blocker_id": f"s6_{blocker_type}_unit_0000",
@@ -30,6 +50,8 @@ def _blocker(*, blocker_type: str = "induction", covered: int = 8, status: str =
         "verifier_status": status,
         "status": "OPEN",
     }
+    if status == "ACCEPT":
+        row["lemma_payload"] = _lemma_payload(row)
     row["candidate_actions"] = _candidate_actions(row)
     row["state"] = blocker_state(row)
     return row
@@ -42,7 +64,7 @@ def test_verify_s6_lemma_uses_lemma_specific_certs_not_global_pass() -> None:
     check = verify_action_for_state(verify_action, blocker["state"])
 
     assert check.accepted
-    assert "lemma-specific certificates" in check.reason
+    assert "proof payload" in check.reason
 
 
 def test_partial_coverage_classification_and_residual() -> None:

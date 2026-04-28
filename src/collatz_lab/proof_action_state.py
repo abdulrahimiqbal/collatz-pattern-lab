@@ -109,6 +109,14 @@ def parse_state_facts(state: str) -> dict[str, Any]:
                     "residual_start",
                     "residual_end",
                     "leaf_certificate_count",
+                    "parent_level",
+                    "path_node_count",
+                    "s3_dependency_count",
+                    "s4_dependency_count",
+                    "s6_dependency_count",
+                    "no_escape_dependency_count",
+                    "ranking_delta_num",
+                    "ranking_delta_den",
                 }:
                     attrs[key] = int(value)
                 elif key in {"reaches_terminal_cycle", "local_descent_passed", "sample_checks_passed", "exact_congruence_passed"}:
@@ -245,6 +253,22 @@ def state_from_high_parent_successor(row: dict[str, Any], valuation_family: dict
     branch_id = str(row.get("branch_id", "unknown_branch"))
     valuation = int(valuation_family.get("valuation", 0))
     target_parent = int(valuation_family.get("target_parent_level", row.get("known_target_parent_floor", 0)))
+    transition_certificate = (
+        valuation_family.get("transition_certificate")
+        or valuation_family.get("symbolic_transition_certificate")
+        or valuation_family.get("high_parent_successor_exact_certificate")
+    )
+    fact = {
+        "kind": "high_parent_successor",
+        "target": target,
+        "branch_id": branch_id,
+        "source_parent": int(row.get("a", 0)),
+        "target_parent": target_parent,
+        "valuation": valuation,
+        "sample_checks_passed": bool(valuation_family.get("sample_checks_passed", row.get("sample_checks_passed"))),
+    }
+    if isinstance(transition_certificate, dict):
+        fact["transition_certificate"] = json.dumps(transition_certificate, sort_keys=True, separators=(",", ":"))
     return canonical_state(
         gate="S4_HIGH_PARENT_SUCCESSOR_FACT",
         goal=f"derive parent transition for {branch_id} at valuation {valuation}",
@@ -256,17 +280,7 @@ def state_from_high_parent_successor(row: dict[str, Any], valuation_family: dict
             "actual trajectory samples are compressed into successor congruence facts",
         ],
         known_lemmas=["high_parent_successor_exactness", "odd_modular_inverse_lift"],
-        facts=[
-            {
-                "kind": "high_parent_successor",
-                "target": target,
-                "branch_id": branch_id,
-                "source_parent": int(row.get("a", 0)),
-                "target_parent": target_parent,
-                "valuation": valuation,
-                "sample_checks_passed": bool(valuation_family.get("sample_checks_passed", row.get("sample_checks_passed"))),
-            }
-        ],
+        facts=[fact],
     )
 
 

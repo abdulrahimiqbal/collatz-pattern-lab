@@ -1,0 +1,11 @@
+run021:
+  run_id: RUN-021-strict-verifier-replay-hardening
+  out_dir: reports/runs/RUN-021-strict-verifier-replay-hardening
+  run019_dir: reports/runs/RUN-019-proof-action-v2-parent-residual-cert
+  run020_dir: reports/runs/RUN-020-proof-audit-package
+  source_files:
+    - src/collatz_lab/proof_action_decode.py
+    - src/collatz_lab/proof_action_dsl.py
+    - src/collatz_lab/proof_verifier.py
+    - src/collatz_lab/replay_strict_proof.py
+    - src/collatz_lab/proof_action_run021.py

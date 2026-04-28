@@ -63,7 +63,41 @@ def test_model_pre_verifier_order_does_not_verify_before_ordering(monkeypatch) -
 
 def test_heuristic_order_is_independent_of_dataset_order(monkeypatch) -> None:
     low = {"type": "SPLIT_RESIDUE", "target": "goal_0", "modulus": 2, "residues": [0, 1]}
-    high = {"type": "DERIVE_PARENT_TRANSITION", "target": "goal_0", "branch_id": "b", "source_parent": 1, "target_parent": 2, "valuation": 1}
+    high = {
+        "type": "DERIVE_PARENT_TRANSITION",
+        "target": "goal_0",
+        "branch_id": "b",
+        "source_parent": 1,
+        "target_parent": 2,
+        "valuation": 1,
+        "transition_certificate": {
+            "type": "HIGH_PARENT_SUCCESSOR_EXACT",
+            "transition_id": "unit",
+            "branch_id": "b",
+            "source_parent": 1,
+            "target_parent": 2,
+            "valuation": 1,
+            "statement": "unit transition",
+            "symbolic_map": {"z_family": "z(k) = 1 + 3*k"},
+            "divisibility_certificate": {
+                "c": 1,
+                "coefficient": 3,
+                "valuation": 1,
+                "k_divisibility_modulus": 2,
+                "k_divisibility_residue": 1,
+                "excluded_next_power_modulus": 4,
+                "excluded_next_power_residue": 1,
+            },
+            "congruence_certificate": {
+                "odd_modulus": 3,
+                "inverse_power_two_mod_3a": 2,
+                "target_odd_residue_mod_3a": 2,
+                "identity": "unit",
+            },
+            "target_membership_certificate": {"parent_floor": 1, "target_parent": 2, "target_family": "unit"},
+            "status": "PASS",
+        },
+    }
     monkeypatch.setattr("collatz_lab.proof_action_frontier_search._actions_from_row", lambda row, *, beam_width: [low, high])
 
     row = {"state": "state"}

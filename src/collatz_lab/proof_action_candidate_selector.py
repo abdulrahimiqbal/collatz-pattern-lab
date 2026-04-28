@@ -108,6 +108,8 @@ def selector_outcome_from_candidate(candidate: dict[str, Any], *, gate: str | No
         if gate_name.startswith("S6") or action_type in {
             "CLOSE_STRICT_THEOREM_BLOCKER",
             "PROVE_RESIDUE_COVERAGE",
+            "PROVE_RESIDUAL_COVERAGE",
+            "PROVE_PARENT_RESIDUAL_COVERAGE",
             "CLOSE_WELL_FOUNDED_INDUCTION",
             "CERTIFY_NO_ESCAPE_BRANCH",
             "LINK_LOCAL_DESCENT_TO_GLOBAL_THEOREM",

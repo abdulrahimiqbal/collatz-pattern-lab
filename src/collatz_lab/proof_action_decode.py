@@ -101,6 +101,18 @@ def _s6_blocker_fact(facts: dict[str, Any]) -> dict[str, Any]:
     return rows[0] if rows else {}
 
 
+def _first_fact_payload(facts: dict[str, Any], key: str, *kinds: str) -> dict[str, Any] | None:
+    payload = _decode_json_payload(facts.get(key))
+    if payload is not None:
+        return payload
+    for kind in kinds:
+        for row in _fact_rows(facts, kind):
+            payload = _decode_json_payload(row.get(key))
+            if payload is not None:
+                return payload
+    return None
+
+
 def _int_fact(facts: dict[str, Any], key: str, default: int = 0) -> int:
     if key in facts:
         return int(facts.get(key) or default)
@@ -108,6 +120,94 @@ def _int_fact(facts: dict[str, Any], key: str, default: int = 0) -> int:
     if key in blocker:
         return int(blocker.get(key) or default)
     return default
+
+
+def _decode_json_payload(value: Any) -> dict[str, Any] | None:
+    if isinstance(value, dict):
+        return value
+    if isinstance(value, str) and value.strip().startswith("{"):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return None
+        return parsed if isinstance(parsed, dict) else None
+    return None
+
+
+def _payload_hash(value: dict[str, Any]) -> str:
+    text = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def _transition_certificate_replays(parsed: dict[str, Any], fact: dict[str, Any], state: str) -> ActionCheck | None:
+    cert = parsed["transition_certificate"]
+    state_cert = _decode_json_payload(fact.get("transition_certificate"))
+    if state_cert is not None and state_cert != cert:
+        return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "transition certificate does not match state artifact payload")
+    expected_hash = str(fact.get("transition_certificate_hash", "") or "")
+    if expected_hash and expected_hash not in {_payload_hash(cert), str(cert.get("certificate_hash", "") or "")}:
+        return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "transition certificate hash does not match state artifact")
+    from .proof_action_parent_transition_cert import replay_parent_transition_certificate
+
+    replay = replay_parent_transition_certificate(action=parsed, state=state, certificate=cert)
+    if not replay.accepted:
+        return replay
+    return None
+
+
+def _section_is_replayable(value: Any, *, dependencies: set[str], certs: set[str], statuses: set[str]) -> bool:
+    if isinstance(value, str):
+        stripped = value.strip()
+        if not stripped or stripped in dependencies or stripped in certs or stripped in statuses:
+            return False
+        return stripped not in {"ACCEPT", "PASS", "REJECT", "UNKNOWN"}
+    if not isinstance(value, dict) or not value:
+        return False
+    keys = set(value)
+    if keys <= {"certificate_id", "lemma_id", "status", "verifier_status"}:
+        return False
+    if str(value.get("status", "")).upper() in {"ACCEPT", "PASS"} and len(keys) <= 2:
+        return False
+    if str(value.get("replay_status", "PASS")).upper() not in {"PASS", "ACCEPT"}:
+        return False
+    payloadish_keys = {
+        "certificate_hash",
+        "payload_hash",
+        "proof",
+        "proof_terms",
+        "symbolic_payload",
+        "replay_steps",
+        "congruence_identity",
+        "integer_divisibility",
+        "target_membership",
+        "coverage_identity",
+        "transition_chain",
+        "ranking_decrease",
+        "no_escape",
+        "induction_link",
+    }
+    if keys & payloadish_keys:
+        return True
+    return any(_section_is_replayable(item, dependencies=dependencies, certs=certs, statuses=statuses) for item in value.values())
+
+
+def _s6_lemma_payload_replays(
+    lemma: dict[str, Any],
+    *,
+    dependencies: set[str],
+    certs: set[str],
+    statuses: set[str],
+) -> ActionCheck | None:
+    if set(lemma.get("depends_on", [])) != dependencies:
+        return ActionCheck(False, "REJECT_S6_LEMMA_PAYLOAD", "lemma dependency list changed during normalization")
+    missing = dependencies - (certs | {str(lemma.get("lemma_id", ""))})
+    if missing:
+        return ActionCheck(False, "REJECT_MISSING_DEPENDENCY", f"S6 lemma payload references unavailable dependencies: {sorted(missing)}")
+    proof_payload = lemma.get("proof_payload", {})
+    for key in ("coverage", "transition_chain", "ranking_decrease", "no_escape", "induction_link"):
+        if not _section_is_replayable(proof_payload.get(key), dependencies=dependencies, certs=certs, statuses=statuses):
+            return ActionCheck(False, "REJECT_S6_LEMMA_PAYLOAD", f"S6 lemma proof_payload.{key} is only a name/status or is missing replay data")
+    return None
 
 
 def _residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_end: int) -> bool:
@@ -123,6 +223,25 @@ def _residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_en
         except (KeyError, TypeError, ValueError):
             continue
         if start <= residual_start and end >= residual_end and count >= residual_end - residual_start:
+            return True
+    return False
+
+
+def _parent_residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_end: int) -> bool:
+    if residual_end <= residual_start:
+        return False
+    for row in _fact_rows(facts, "parent_residual_certificate"):
+        if str(row.get("status", "")) not in {"PASS", "ACCEPT"}:
+            continue
+        try:
+            start = int(row["residual_start"])
+            end = int(row["residual_end"])
+            path_count = int(row["path_node_count"])
+            ranking_num = int(row["ranking_delta_num"])
+            ranking_den = int(row["ranking_delta_den"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if start <= residual_start and end >= residual_end and path_count > 0 and 0 < ranking_num < ranking_den:
             return True
     return False
 
@@ -207,9 +326,10 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
         for field in ("branch_id", "source_parent", "target_parent", "valuation"):
             if field in fact and parsed[field] != fact[field]:
                 return ActionCheck(False, "REJECT_FIELD_MISMATCH", f"{field} does not match high-parent fact")
-        if fact.get("sample_checks_passed", False):
-            return ActionCheck(True, "ACCEPT", "high-parent successor congruence samples are exact", progress=0.6)
-        return ActionCheck(False, "REJECT_SAMPLE_CHECK", "successor sample checks did not pass")
+        certificate_failure = _transition_certificate_replays(parsed, fact, state)
+        if certificate_failure is not None:
+            return certificate_failure
+        return ActionCheck(True, "ACCEPT", "exact symbolic parent-transition certificate replays", progress=0.6)
 
     if action_type == "INTRODUCE_DEBT_FUNCTION":
         if facts.get("gate", "").startswith("S3") or facts.get("goal_kind") == "debt_transition":
@@ -299,6 +419,44 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
             progress=1.0,
         )
 
+    if action_type == "PROVE_PARENT_RESIDUAL_COVERAGE":
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "parent residual coverage is an S6 theorem obligation")
+
+        certs = _fact_values(
+            facts,
+            "certificate_id",
+            "coverage_certificate",
+            "parent_residual_certificate",
+        )
+        certificate_id = str(parsed["certificate_id"])
+        parent_certificate_id = str(parsed["parent_certificate_id"])
+        if certificate_id not in certs:
+            return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "parent residual certificate is not present in the state")
+        if parent_certificate_id not in certs:
+            return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "parent coverage certificate is not present in the state")
+
+        modulus = int(parsed["modulus"])
+        parent_level = int(parsed["parent_level"])
+        residual_start = int(parsed["residual_start"])
+        residual_end = int(parsed["residual_end"])
+        if modulus != 1 << parent_level or residual_start != modulus - 1 or residual_end != modulus:
+            return ActionCheck(False, "REJECT_PARENT_RESIDUAL_DOMAIN", "residual range is not the exact P_a class 2^a*q - 1")
+        if int(parsed["path_node_count"]) <= 0:
+            return ActionCheck(False, "REJECT_PARENT_PATH", "parent residual certificate has no closed dependency path")
+        if int(parsed["s3_dependency_count"]) <= 0 or int(parsed["s4_dependency_count"]) <= 0 or int(parsed["s6_dependency_count"]) <= 0 or int(parsed["no_escape_dependency_count"]) <= 0:
+            return ActionCheck(False, "REJECT_PARENT_DEPENDENCIES", "parent residual certificate is missing accepted S3/S4/S6/no-escape dependencies")
+        if int(parsed["ranking_delta_num"]) >= int(parsed["ranking_delta_den"]):
+            return ActionCheck(False, "REJECT_PARENT_RANKING", "parent residual ranking does not strictly decrease")
+
+        return ActionCheck(
+            True,
+            "ACCEPT",
+            "parent-state transition/ranking certificate closes the residual P_a class",
+            closed_obligation=True,
+            progress=1.0,
+        )
+
     if action_type == "PROVE_GLOBAL_DESCENT_INDUCTION":
         lemmas = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
         depends = set(str(item) for item in parsed["depends_on"])
@@ -374,23 +532,28 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
             "base_case_certificate",
             "lifting_certificate",
             "no_escape_certificate",
+            "parent_residual_certificate",
         )
         if not _s6_context(facts):
             return ActionCheck(False, "REJECT_CONTEXT", "S6 lemma verification requires an S6 state")
         if str(parsed["lemma_id"]) not in lemma_ids:
             return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "lemma id is not available")
+        lemma = parsed["lemma"]
+        dependencies = set(str(item) for item in lemma.get("depends_on", []))
+        payload_failure = _s6_lemma_payload_replays(lemma, dependencies=dependencies, certs=certs | lemma_ids, statuses=statuses)
+        if payload_failure is not None:
+            return payload_failure
         coverage_modulus = _int_fact(facts, "coverage_modulus", 0)
         covered_count = _int_fact(facts, "covered_residue_count", 0)
-        if coverage_modulus > 0 and covered_count < coverage_modulus and not _residual_covers_gap(facts, covered_count, coverage_modulus):
+        if (
+            coverage_modulus > 0
+            and covered_count < coverage_modulus
+            and not _residual_covers_gap(facts, covered_count, coverage_modulus)
+            and not _parent_residual_covers_gap(facts, covered_count, coverage_modulus)
+        ):
             return ActionCheck(False, "REJECT_INCOMPLETE_COVERAGE", "coverage certificate is partial")
-        has_lemma_specific_certs = (
-            any("coverage" in cert for cert in certs)
-            and any("base" in cert for cert in certs)
-            and any("lift" in cert for cert in certs)
-            and any("escape" in cert for cert in certs)
-        )
-        if str(parsed["status"]) in {"ACCEPT", "PASS"} and (has_lemma_specific_certs or statuses & {"ACCEPT", "PASS"}):
-            return ActionCheck(True, "ACCEPT", "S6 lemma verifier accepted lemma-specific certificates", progress=0.8)
+        if str(parsed["status"]) in {"ACCEPT", "PASS"}:
+            return ActionCheck(True, "ACCEPT", "S6 lemma proof payload and dependencies replay", progress=0.8)
         return ActionCheck(False, "REJECT_S6_LEMMA", "S6 lemma verifier did not accept this lemma")
 
     if action_type == "COMPOSE_GATE_PROOF":
@@ -491,16 +654,19 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
         )
     if "high_parent_successor" in facts:
         fact = facts["high_parent_successor"]
-        candidates.append(
-            {
-                "type": "DERIVE_PARENT_TRANSITION",
-                "target": target,
-                "branch_id": str(fact["branch_id"]),
-                "source_parent": int(fact["source_parent"]),
-                "target_parent": int(fact["target_parent"]),
-                "valuation": int(fact["valuation"]),
-            }
-        )
+        transition_certificate = _decode_json_payload(fact.get("transition_certificate"))
+        if transition_certificate is not None:
+            candidates.append(
+                {
+                    "type": "DERIVE_PARENT_TRANSITION",
+                    "target": target,
+                    "branch_id": str(fact["branch_id"]),
+                    "source_parent": int(fact["source_parent"]),
+                    "target_parent": int(fact["target_parent"]),
+                    "valuation": int(fact["valuation"]),
+                    "transition_certificate": transition_certificate,
+                }
+            )
         candidates.append(
             {
                 "type": "APPLY_LEMMA",
@@ -524,6 +690,7 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
                 "lifting_certificate",
                 "no_escape_certificate",
                 "residual_coverage_certificate",
+                "parent_residual_certificate",
             )
         )
         coverage = next((cert for cert in certs if "coverage" in cert), None)
@@ -531,11 +698,13 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
         lifting_cert = next((cert for cert in certs if "lift" in cert), None)
         no_escape_cert = next((cert for cert in certs if "escape" in cert), None)
         residual_rows = _fact_rows(facts, "residual_coverage_certificate")
+        parent_residual_rows = _fact_rows(facts, "parent_residual_certificate")
+        lemma_payload = _first_fact_payload(facts, "lemma_payload", "s6_blocker", "lemma")
         if lemma_ids:
             lemma = lemma_ids[0]
             candidates.append({"type": "PROPOSE_S6_LEMMA", "target": target, "lemma_id": lemma, "statement": "generated S6 obligation candidate"})
-            if _fact_values(facts, "verifier_status", "status") & {"ACCEPT", "PASS"}:
-                candidates.append({"type": "VERIFY_S6_LEMMA", "target": target, "lemma_id": lemma, "verifier": "strict_theorem_verifier", "status": "ACCEPT"})
+            if lemma_payload is not None and _fact_values(facts, "verifier_status", "status") & {"ACCEPT", "PASS"}:
+                candidates.append({"type": "VERIFY_S6_LEMMA", "target": target, "lemma_id": lemma, "verifier": "strict_theorem_verifier", "status": "ACCEPT", "lemma": lemma_payload})
             candidates.append({"type": "PROVE_GLOBAL_DESCENT_INDUCTION", "target": target, "lemma_id": lemma, "depends_on": [lemma]})
             if blockers:
                 candidates.append({"type": "CLOSE_STRICT_THEOREM_BLOCKER", "target": target, "blocker_id": blockers[0], "lemma_id": lemma})
@@ -574,6 +743,33 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
                         "residual_end": residual_end,
                         "covered_residue_count": int(residual.get("covered_residue_count", residual_end - residual_start)),
                         "leaf_certificate_count": int(residual.get("leaf_certificate_count", 1)),
+                        "certificate_hash": str(residual.get("certificate_hash", "")),
+                    }
+                )
+            for residual in parent_residual_rows:
+                try:
+                    residual_start = int(residual["residual_start"])
+                    residual_end = int(residual["residual_end"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                candidates.append(
+                    {
+                        "type": "PROVE_PARENT_RESIDUAL_COVERAGE",
+                        "target": target,
+                        "certificate_id": str(residual["certificate_id"]),
+                        "parent_certificate_id": str(residual["parent_certificate_id"]),
+                        "residual_certificate_id": str(residual["residual_certificate_id"]),
+                        "parent_level": int(residual["parent_level"]),
+                        "modulus": int(residual["modulus"]),
+                        "residual_start": residual_start,
+                        "residual_end": residual_end,
+                        "path_node_count": int(residual["path_node_count"]),
+                        "s3_dependency_count": int(residual["s3_dependency_count"]),
+                        "s4_dependency_count": int(residual["s4_dependency_count"]),
+                        "s6_dependency_count": int(residual["s6_dependency_count"]),
+                        "no_escape_dependency_count": int(residual["no_escape_dependency_count"]),
+                        "ranking_delta_num": int(residual["ranking_delta_num"]),
+                        "ranking_delta_den": int(residual["ranking_delta_den"]),
                         "certificate_hash": str(residual.get("certificate_hash", "")),
                     }
                 )

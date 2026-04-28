@@ -1,12 +1,40 @@
 import json
 
 from collatz_lab.proof_action_dsl import serialize_action
+from collatz_lab.proof_action_parent_transition_cert import build_parent_transition_certificate
 from collatz_lab.proof_action_state import canonical_state, state_from_debt_transition
 from collatz_lab.proof_action_theorem_composer import (
     build_theorem_dependency_graph,
     compose_theorem_graph,
     minimal_blocker_report,
 )
+
+
+def _transition_certificate() -> dict:
+    action = {
+        "type": "DERIVE_PARENT_TRANSITION",
+        "target": "goal_0",
+        "branch_id": "P7:r1:d2",
+        "source_parent": 7,
+        "target_parent": 9,
+        "valuation": 1,
+    }
+    return build_parent_transition_certificate(action=action, state=_s4_state(include_certificate=False), node_id="s4:unit")
+
+
+def _s6_lemma_payload() -> dict:
+    return {
+        "lemma_id": "s6_lemma",
+        "statement": "unit S6 lemma",
+        "depends_on": ["coverage_cert", "base_case_cert", "lifting_cert", "no_escape_cert"],
+        "proof_payload": {
+            "coverage": {"certificate_hash": "coverage_hash", "proof": "exact coverage replay"},
+            "transition_chain": {"certificate_hash": "transition_hash", "proof": "exact transition replay"},
+            "ranking_decrease": {"certificate_hash": "rank_hash", "proof": "strict ranking decrease"},
+            "no_escape": {"certificate_hash": "escape_hash", "proof": "no escape replay"},
+            "induction_link": {"certificate_hash": "induction_hash", "proof": "well-founded induction replay"},
+        },
+    }
 
 
 def _debt_state() -> str:
@@ -22,23 +50,25 @@ def _debt_state() -> str:
     )
 
 
-def _s4_state() -> str:
+def _s4_state(*, include_certificate: bool = True) -> str:
+    fact = {
+        "kind": "high_parent_successor",
+        "target": "goal_0",
+        "branch_id": "P7:r1:d2",
+        "source_parent": 7,
+        "target_parent": 9,
+        "valuation": 1,
+        "sample_checks_passed": True,
+    }
+    if include_certificate:
+        fact["transition_certificate"] = json.dumps(_transition_certificate(), sort_keys=True, separators=(",", ":"))
     return canonical_state(
         gate="S4_HIGH_PARENT_SUCCESSOR_FACT",
         goal="derive parent transition",
         goal_attrs={"kind": "high_parent_successor", "branch_id": "P7:r1:d2", "valuation": 1},
+        assumptions=["z_family=z(k) = 5 + 2187*k"],
         known_lemmas=["high_parent_successor_exactness"],
-        facts=[
-            {
-                "kind": "high_parent_successor",
-                "target": "goal_0",
-                "branch_id": "P7:r1:d2",
-                "source_parent": 7,
-                "target_parent": 9,
-                "valuation": 1,
-                "sample_checks_passed": True,
-            }
-        ],
+        facts=[fact],
     )
 
 
@@ -64,6 +94,7 @@ def _s6_state() -> str:
                 "coverage_modulus": 8,
                 "covered_residue_count": 8,
                 "verifier_status": "ACCEPT",
+                "lemma_payload": json.dumps(_s6_lemma_payload(), sort_keys=True, separators=(",", ":")),
             }
         ],
         open_obligations=["s6_goal"],
@@ -90,6 +121,7 @@ def test_dependency_graph_contains_theorem_node_types(tmp_path) -> None:
         "source_parent": 7,
         "target_parent": 9,
         "valuation": 1,
+        "transition_certificate": _transition_certificate(),
     }
     (frontier / "s3_frontier.jsonl").write_text(
         "\n".join(
@@ -135,7 +167,7 @@ def test_dependency_graph_contains_theorem_node_types(tmp_path) -> None:
         "no_escape_certificate": "no_escape_cert",
         "state": _s6_state(),
         "candidate_actions": [
-            {"type": "VERIFY_S6_LEMMA", "target": "s6_goal", "lemma_id": "s6_lemma", "verifier": "strict_theorem_verifier", "status": "ACCEPT"},
+            {"type": "VERIFY_S6_LEMMA", "target": "s6_goal", "lemma_id": "s6_lemma", "verifier": "strict_theorem_verifier", "status": "ACCEPT", "lemma": _s6_lemma_payload()},
             {"type": "PROVE_RESIDUE_COVERAGE", "target": "s6_goal", "modulus": 8, "covered_residue_count": 8, "certificate_id": "coverage_cert"},
             {"type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY", "target": "s6_goal", "local_lemma": "s6_lemma", "family_id": "s6_parametric_family", "lifting_certificate": "lifting_cert"},
             {"type": "CLOSE_WELL_FOUNDED_INDUCTION", "target": "s6_goal", "measure": "n", "descent_lemma": "s6_lemma", "base_case_certificate": "base_case_cert"},

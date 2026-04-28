@@ -13,5 +13,7 @@ def test_s6_eval_holdout_actions_have_verifier_outcomes(tmp_path):
     actions = legal_action_candidates_from_state(row["state"], max_candidates=32)
     checks = [verify_action_for_state(action, row["state"]) for action in actions]
 
-    assert any(action["type"] == "VERIFY_S6_LEMMA" for action in actions)
+    assert not any(action["type"] == "VERIFY_S6_LEMMA" for action in actions)
     assert any(check.accepted for check in checks)
+    assert row["verify_action"] is None
+    assert row["verifier_reason"] == "missing replayable S6 lemma proof payload"

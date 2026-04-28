@@ -92,7 +92,6 @@ def _candidate_actions(blocker: dict[str, Any]) -> list[dict[str, Any]]:
     covered = int(blocker["covered_residue_count"])
     actions = [
         {"type": "PROPOSE_S6_LEMMA", "target": target, "lemma_id": lemma_id, "statement": blocker["statement"]},
-        {"type": "VERIFY_S6_LEMMA", "target": target, "lemma_id": lemma_id, "verifier": "strict_theorem_verifier", "status": blocker["verifier_status"]},
         {"type": "PROVE_RESIDUE_COVERAGE", "target": target, "modulus": modulus, "covered_residue_count": covered, "certificate_id": coverage},
         {"type": "LINK_LOCAL_DESCENT_TO_GLOBAL_THEOREM", "target": target, "local_gate": "S3", "lifting_gate": "S4", "coverage_certificate": coverage},
         {"type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY", "target": target, "local_lemma": lemma_id, "family_id": "s6_parametric_family", "lifting_certificate": lifting},
@@ -101,6 +100,18 @@ def _candidate_actions(blocker: dict[str, Any]) -> list[dict[str, Any]]:
         {"type": "CLOSE_STRICT_THEOREM_BLOCKER", "target": target, "blocker_id": blocker_id, "lemma_id": lemma_id},
         {"type": "COMPOSE_GATE_PROOF", "target": target, "proof_id": f"s6_composed_{lemma_id}", "depends_on": [lemma_id, coverage]},
     ]
+    if isinstance(blocker.get("lemma_payload"), dict):
+        actions.insert(
+            1,
+            {
+                "type": "VERIFY_S6_LEMMA",
+                "target": target,
+                "lemma_id": lemma_id,
+                "verifier": "strict_theorem_verifier",
+                "status": blocker["verifier_status"],
+                "lemma": blocker["lemma_payload"],
+            },
+        )
     residual = blocker.get("residual_coverage_certificate")
     if isinstance(residual, dict):
         actions.append(
@@ -115,6 +126,29 @@ def _candidate_actions(blocker: dict[str, Any]) -> list[dict[str, Any]]:
                 "covered_residue_count": int(residual["covered_residue_count"]),
                 "leaf_certificate_count": int(residual["leaf_certificate_count"]),
                 "certificate_hash": str(residual["certificate_hash"]),
+            }
+        )
+    parent_residual = blocker.get("parent_residual_certificate")
+    if isinstance(parent_residual, dict):
+        actions.append(
+            {
+                "type": "PROVE_PARENT_RESIDUAL_COVERAGE",
+                "target": target,
+                "certificate_id": str(parent_residual["certificate_id"]),
+                "parent_certificate_id": str(parent_residual["parent_certificate_id"]),
+                "residual_certificate_id": str(parent_residual["residual_certificate_id"]),
+                "parent_level": int(parent_residual["parent_level"]),
+                "modulus": int(parent_residual["modulus"]),
+                "residual_start": int(parent_residual["residual_start"]),
+                "residual_end": int(parent_residual["residual_end"]),
+                "path_node_count": int(parent_residual["path_node_count"]),
+                "s3_dependency_count": int(parent_residual["s3_dependency_count"]),
+                "s4_dependency_count": int(parent_residual["s4_dependency_count"]),
+                "s6_dependency_count": int(parent_residual["s6_dependency_count"]),
+                "no_escape_dependency_count": int(parent_residual["no_escape_dependency_count"]),
+                "ranking_delta_num": int(parent_residual["ranking_delta_num"]),
+                "ranking_delta_den": int(parent_residual["ranking_delta_den"]),
+                "certificate_hash": str(parent_residual["certificate_hash"]),
             }
         )
     return actions
@@ -138,6 +172,8 @@ def blocker_state(blocker: dict[str, Any]) -> str:
         "covered_residue_count": blocker["covered_residue_count"],
         "verifier_status": blocker["verifier_status"],
     }
+    if isinstance(blocker.get("lemma_payload"), dict):
+        fact["lemma_payload"] = json.dumps(blocker["lemma_payload"], sort_keys=True, separators=(",", ":"))
     facts = [fact]
     residual = blocker.get("residual_coverage_certificate")
     if isinstance(residual, dict):
@@ -154,6 +190,30 @@ def blocker_state(blocker: dict[str, Any]) -> str:
                 "leaf_certificate_count": residual["leaf_certificate_count"],
                 "certificate_hash": residual["certificate_hash"],
                 "status": residual.get("status", "PASS"),
+            }
+        )
+    parent_residual = blocker.get("parent_residual_certificate")
+    if isinstance(parent_residual, dict):
+        facts.append(
+            {
+                "kind": "parent_residual_certificate",
+                "target": target,
+                "certificate_id": parent_residual["certificate_id"],
+                "parent_certificate_id": parent_residual["parent_certificate_id"],
+                "residual_certificate_id": parent_residual["residual_certificate_id"],
+                "parent_level": parent_residual["parent_level"],
+                "modulus": parent_residual["modulus"],
+                "residual_start": parent_residual["residual_start"],
+                "residual_end": parent_residual["residual_end"],
+                "path_node_count": parent_residual["path_node_count"],
+                "s3_dependency_count": parent_residual["s3_dependency_count"],
+                "s4_dependency_count": parent_residual["s4_dependency_count"],
+                "s6_dependency_count": parent_residual["s6_dependency_count"],
+                "no_escape_dependency_count": parent_residual["no_escape_dependency_count"],
+                "ranking_delta_num": parent_residual["ranking_delta_num"],
+                "ranking_delta_den": parent_residual["ranking_delta_den"],
+                "certificate_hash": parent_residual["certificate_hash"],
+                "status": parent_residual.get("status", "PASS"),
             }
         )
     return canonical_state(
@@ -239,9 +299,11 @@ def analyze_s6_blockers(
             "statement": blocker["statement"],
             "depends_on": [blocker["coverage_certificate"], blocker["lifting_certificate"], blocker["base_case_certificate"]],
             "candidate_action": blocker["candidate_actions"][0],
-            "verify_action": blocker["candidate_actions"][1],
-            "verifier_status": blocker["verifier_status"],
-            "verifier_reason": "synthetic strict-theorem blocker projection from RUN-012 diagnostics",
+            "verify_action": next((action for action in blocker["candidate_actions"] if action["type"] == "VERIFY_S6_LEMMA"), None),
+            "verifier_status": blocker["verifier_status"] if blocker.get("lemma_payload") else "REJECT",
+            "verifier_reason": "missing replayable S6 lemma proof payload"
+            if not blocker.get("lemma_payload")
+            else "synthetic strict-theorem blocker projection from RUN-012 diagnostics",
             "blocker_id": blocker["blocker_id"],
             "gate": "S6",
         }

@@ -1,0 +1,6 @@
+parent_transition_certificates:
+  run_id: RUN-022-exact-s4-parent-transition-certificates
+  out_dir: reports/runs/RUN-022-exact-s4-parent-transition-certificates
+  proof_graph: certificate_store/proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/accepted_action_trace.jsonl
+  run020_audit_summary: certificate_store/run020_audit_summary.json

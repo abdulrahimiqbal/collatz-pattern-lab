@@ -1,0 +1,58 @@
+{
+  "artifacts": [
+    {
+      "name": "proof_dependency_graph_frozen",
+      "path": "proof_dependency_graph_s4_replayed.json",
+      "sha256": "2a9b0db2ecb03004d358da0053c1dfd56e9f3152895ea5d86df0f40347c89d35"
+    },
+    {
+      "name": "accepted_action_trace",
+      "path": "accepted_action_trace_s4_replayed.jsonl",
+      "sha256": "7060c7343c33d0267c8b77d8ec77ccde031d9b804cb929f64cb863dc78daa2f9"
+    },
+    {
+      "name": "parent_transition_certificates",
+      "path": "parent_transition_certificates.jsonl",
+      "sha256": "39be4ad75eb75e88855326d316f01c521f05addf37e724099c9a13c1454aff71"
+    }
+  ],
+  "clean_clone_replay": {
+    "command": "python -m collatz_lab.replay_strict_proof --manifest reports/runs/RUN-022-exact-s4-parent-transition-certificates/proof_manifest.json",
+    "requires_committed_or_included_artifacts": true
+  },
+  "run_id": "RUN-022-exact-s4-parent-transition-certificates",
+  "schema": "collatz_lab.strict_proof_manifest",
+  "source_files": [
+    {
+      "name": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "path": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "sha256": "a5d7c945cd46dd88ffeb456bb7f41669555c7c42f8392b325a1c1ad7d460ba3a"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_decode.py",
+      "path": "src/collatz_lab/proof_action_decode.py",
+      "sha256": "8f5bff6646466320a10cd89ece57879053c386a9c38f97efa72217f28e915be5"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_dsl.py",
+      "path": "src/collatz_lab/proof_action_dsl.py",
+      "sha256": "7094587a951d0459d41a03c5dcf5d8f5009ac23b5ed6f410583e94c9cd60393d"
+    },
+    {
+      "name": "src/collatz_lab/replay_strict_proof.py",
+      "path": "src/collatz_lab/replay_strict_proof.py",
+      "sha256": "dbe5a1b881284edd3844a467f4a2cea78764fc03f18425ae926b0cc0268d8f12"
+    },
+    {
+      "name": "src/collatz_lab/proof_verifier.py",
+      "path": "src/collatz_lab/proof_verifier.py",
+      "sha256": "4372b890547515509746f37586ae63801fe700e6963e6384ec919001347134ed"
+    }
+  ],
+  "source_run_accounting": {
+    "audit_status": "AUDIT_FAIL",
+    "proof_confidence_percent": 100.0,
+    "strict_verifier": "PASS"
+  },
+  "version": 1
+}

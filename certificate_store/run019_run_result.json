@@ -1,0 +1,68 @@
+{
+  "artifacts": {
+    "parent_residual_certificate": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/parent_residual_certificate.json",
+    "root_missing_certificates": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/root_missing_certificates.jsonl",
+    "theorem_composition_report": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/theorem_composition_report.json"
+  },
+  "big_model_launched": false,
+  "composer_summary": {
+    "accepted_action_count": 1877,
+    "accepted_node_count": 485,
+    "accepted_node_type_counts": {
+      "COVERAGE_CERTIFICATE": 28,
+      "INDUCTION_CLOSURE": 28,
+      "NO_ESCAPE_CERTIFICATE": 28,
+      "S3_TRANSITION": 182,
+      "S4_LIFT": 163,
+      "S6_LEMMA": 28,
+      "STRICT_THEOREM_BLOCKER": 28
+    },
+    "artifacts": {
+      "composition_proposal_trace": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/composition_proposal_trace.jsonl",
+      "rejected_composition_actions": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/rejected_composition_actions.jsonl",
+      "strict_theorem_verifier_history": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/strict_theorem_verifier_history.jsonl",
+      "theorem_composition_report": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/theorem_composition_report.json",
+      "theorem_dependency_graph": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/theorem_dependency_graph.json",
+      "verified_composition_actions": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/theorem_composer/verified_composition_actions.jsonl"
+    },
+    "big_model_launched": false,
+    "config_path": "configs/collatz_proof_action_v2_theorem_composer_run016.yaml",
+    "fixed_point": false,
+    "graph_node_count": 485,
+    "iterations": 2,
+    "minimal_blocker_report": [],
+    "node_type_counts": {
+      "COVERAGE_CERTIFICATE": 28,
+      "INDUCTION_CLOSURE": 28,
+      "NO_ESCAPE_CERTIFICATE": 28,
+      "S3_TRANSITION": 182,
+      "S4_LIFT": 163,
+      "S6_LEMMA": 28,
+      "STRICT_THEOREM_BLOCKER": 28
+    },
+    "open_blocker_count": 0,
+    "policy_checkpoint": "remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt",
+    "policy_run": "RUN-015A-proof-action-v2-listwise-selector-small-a100",
+    "proof_confidence_percent": 100.0,
+    "rejected_action_count": 82,
+    "run_id": "RUN-016-proof-action-v2-theorem-composer",
+    "schema": "collatz_lab.proof_action_theorem_composer_summary",
+    "status": "STRICT_VERIFIER_PASS",
+    "strict_theorem_verifier_result": "PASS",
+    "training_launched": false,
+    "version": 1
+  },
+  "parent_residual_certificate_path": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/parent_residual_certificate.json",
+  "parent_residual_certificate_status": "PASS",
+  "proof_confidence_percent": 100.0,
+  "repaired_s6_dir": "/mnt/collatz/reports/runs/RUN-019-proof-action-v2-parent-residual-cert/repaired_s6",
+  "root_missing_certificate_count": 0,
+  "root_missing_certificates": [],
+  "run_id": "RUN-019-proof-action-v2-parent-residual-cert",
+  "schema": "collatz_lab.run_result.parent_residual_cert",
+  "selector_work": false,
+  "status": "STRICT_VERIFIER_PASS",
+  "strict_theorem_verifier_result": "PASS",
+  "training_launched": false,
+  "version": 1
+}

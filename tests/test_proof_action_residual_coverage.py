@@ -6,6 +6,21 @@ from collatz_lab.proof_action_residual_coverage import build_residual_coverage_c
 from collatz_lab.proof_action_state import canonical_state
 
 
+def _lemma_payload() -> dict:
+    return {
+        "lemma_id": "s6_lemma",
+        "statement": "residual S6 lemma",
+        "depends_on": ["coverage_cert", "base_case_cert", "lifting_cert", "no_escape_cert", "coverage_cert_residual_7_8"],
+        "proof_payload": {
+            "coverage": {"certificate_hash": "coverage_hash", "proof": "exact residual coverage replay"},
+            "transition_chain": {"certificate_hash": "transition_hash", "proof": "exact transition replay"},
+            "ranking_decrease": {"certificate_hash": "rank_hash", "proof": "ranking replay"},
+            "no_escape": {"certificate_hash": "escape_hash", "proof": "no escape replay"},
+            "induction_link": {"certificate_hash": "induction_hash", "proof": "induction replay"},
+        },
+    }
+
+
 def _s6_state_with_residual_cert() -> str:
     return canonical_state(
         gate="S6_STRICT_THEOREM_BLOCKER",
@@ -28,6 +43,7 @@ def _s6_state_with_residual_cert() -> str:
                 "coverage_modulus": 8,
                 "covered_residue_count": 7,
                 "verifier_status": "ACCEPT",
+                "lemma_payload": json.dumps(_lemma_payload(), sort_keys=True, separators=(",", ":")),
             },
             {
                 "kind": "residual_coverage_certificate",
@@ -89,12 +105,13 @@ def test_verify_s6_lemma_accepts_partial_parent_coverage_with_residual_cert() ->
         "lemma_id": "s6_lemma",
         "verifier": "strict_theorem_verifier",
         "status": "ACCEPT",
+        "lemma": _lemma_payload(),
     }
 
     check = verify_action_for_state(action, _s6_state_with_residual_cert())
 
     assert check.accepted
-    assert "lemma-specific certificates" in check.reason
+    assert "proof payload" in check.reason
 
 
 def test_residual_certificate_builder_passes_tiny_exact_leaf() -> None:

@@ -1141,6 +1141,52 @@ def run_proof_action_v2_residual_coverage_cert(
 
 
 @app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_parent_residual_cert(
+    config_path: str = "configs/collatz_proof_action_v2_parent_residual_run019.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_parent_residual import run_parent_residual_cert
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(output_dir or (cfg.get("parent_residual") or {}).get("out_dir") or "reports/runs/RUN-019-proof-action-v2-parent-residual-cert")
+    result = run_parent_residual_cert(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_exact_s4_parent_transition_cert(
+    config_path: str = "configs/collatz_proof_action_v2_parent_transition_run022.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_parent_transition_cert import run_parent_transition_certificates
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("parent_transition_certificates") or {}).get("out_dir")
+        or "reports/runs/RUN-022-exact-s4-parent-transition-certificates"
+    )
+    result = run_parent_transition_certificates(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
 def run_proof_action_v2_theorem_composer(
     config_path: str = "configs/collatz_proof_action_v2_theorem_composer_run016.yaml",
     checkpoint: str | None = None,

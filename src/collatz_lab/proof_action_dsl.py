@@ -44,8 +44,8 @@ ACTION_SPECS: dict[str, ActionSpec] = {
         ("target", "from_modulus", "to_modulus", "residue"),
     ),
     "DERIVE_PARENT_TRANSITION": ActionSpec(
-        ("type", "target", "branch_id", "source_parent", "target_parent", "valuation"),
-        ("target", "branch_id", "source_parent", "target_parent", "valuation"),
+        ("type", "target", "branch_id", "source_parent", "target_parent", "valuation", "transition_certificate"),
+        ("target", "branch_id", "source_parent", "target_parent", "valuation", "transition_certificate"),
     ),
     "CHECK_FINITE_DESCENT": ActionSpec(("type", "target", "certificate"), ("target", "certificate")),
     "CHECK_DEBT_DECREASE": ActionSpec(
@@ -91,6 +91,45 @@ ACTION_SPECS: dict[str, ActionSpec] = {
             "certificate_hash",
         ),
     ),
+    "PROVE_PARENT_RESIDUAL_COVERAGE": ActionSpec(
+        (
+            "type",
+            "target",
+            "certificate_id",
+            "parent_certificate_id",
+            "residual_certificate_id",
+            "parent_level",
+            "modulus",
+            "residual_start",
+            "residual_end",
+            "path_node_count",
+            "s3_dependency_count",
+            "s4_dependency_count",
+            "s6_dependency_count",
+            "no_escape_dependency_count",
+            "ranking_delta_num",
+            "ranking_delta_den",
+            "certificate_hash",
+        ),
+        (
+            "target",
+            "certificate_id",
+            "parent_certificate_id",
+            "residual_certificate_id",
+            "parent_level",
+            "modulus",
+            "residual_start",
+            "residual_end",
+            "path_node_count",
+            "s3_dependency_count",
+            "s4_dependency_count",
+            "s6_dependency_count",
+            "no_escape_dependency_count",
+            "ranking_delta_num",
+            "ranking_delta_den",
+            "certificate_hash",
+        ),
+    ),
     "PROVE_GLOBAL_DESCENT_INDUCTION": ActionSpec(
         ("type", "target", "lemma_id", "depends_on"),
         ("target", "lemma_id", "depends_on"),
@@ -120,8 +159,8 @@ ACTION_SPECS: dict[str, ActionSpec] = {
         ("target", "lemma_id", "statement"),
     ),
     "VERIFY_S6_LEMMA": ActionSpec(
-        ("type", "target", "lemma_id", "verifier", "status"),
-        ("target", "lemma_id", "verifier", "status"),
+        ("type", "target", "lemma_id", "verifier", "status", "lemma"),
+        ("target", "lemma_id", "verifier", "status", "lemma"),
     ),
     "COMPOSE_GATE_PROOF": ActionSpec(
         ("type", "target", "proof_id", "depends_on"),
@@ -205,6 +244,123 @@ def _validate_certificate(value: Any) -> dict[str, Any]:
     return cert
 
 
+def _require_string_map(value: Any, field: str, required: set[str]) -> dict[str, str]:
+    if not isinstance(value, dict):
+        raise ProofActionError(f"{field} must be an object")
+    unknown = sorted(set(value) - required)
+    missing = sorted(required - set(value))
+    if unknown:
+        raise ProofActionError(f"unknown {field} fields: {unknown}")
+    if missing:
+        raise ProofActionError(f"missing {field} fields: {missing}")
+    return {key: _require_str(value[key], f"{field}.{key}") for key in sorted(required)}
+
+
+def _validate_transition_certificate(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ProofActionError("transition_certificate must be an object")
+    required = {
+        "type",
+        "transition_id",
+        "branch_id",
+        "source_parent",
+        "target_parent",
+        "valuation",
+        "statement",
+        "symbolic_map",
+        "divisibility_certificate",
+        "congruence_certificate",
+        "target_membership_certificate",
+        "status",
+    }
+    allowed = required | {"certificate_hash"}
+    unknown = sorted(set(value) - allowed)
+    missing = sorted(required - set(value))
+    if unknown:
+        raise ProofActionError(f"unknown transition_certificate fields: {unknown}")
+    if missing:
+        raise ProofActionError(f"missing transition_certificate fields: {missing}")
+    cert = {
+        "type": _require_str(value["type"], "transition_certificate.type"),
+        "transition_id": _require_str(value["transition_id"], "transition_certificate.transition_id"),
+        "branch_id": _require_str(value["branch_id"], "transition_certificate.branch_id"),
+        "source_parent": _require_int(value["source_parent"], "transition_certificate.source_parent", minimum=1),
+        "target_parent": _require_int(value["target_parent"], "transition_certificate.target_parent", minimum=1),
+        "valuation": _require_int(value["valuation"], "transition_certificate.valuation", minimum=0),
+        "statement": _require_str(value["statement"], "transition_certificate.statement"),
+        "symbolic_map": _validate_replay_section(value["symbolic_map"], "transition_certificate.symbolic_map"),
+        "divisibility_certificate": _validate_replay_section(value["divisibility_certificate"], "transition_certificate.divisibility_certificate"),
+        "congruence_certificate": _validate_replay_section(value["congruence_certificate"], "transition_certificate.congruence_certificate"),
+        "target_membership_certificate": _validate_replay_section(value["target_membership_certificate"], "transition_certificate.target_membership_certificate"),
+        "status": _require_str(value["status"], "transition_certificate.status"),
+    }
+    if cert["type"] != "HIGH_PARENT_SUCCESSOR_EXACT":
+        raise ProofActionError("transition_certificate.type must be HIGH_PARENT_SUCCESSOR_EXACT")
+    if cert["status"] != "PASS":
+        raise ProofActionError("transition_certificate.status must be PASS")
+    if "certificate_hash" in value:
+        cert["certificate_hash"] = _require_str(value["certificate_hash"], "transition_certificate.certificate_hash")
+    return cert
+
+
+def _validate_replay_section(value: Any, field: str) -> Any:
+    if isinstance(value, str):
+        return _require_str(value, field)
+    if not isinstance(value, dict):
+        raise ProofActionError(f"{field} must be a string or object")
+    if not value:
+        raise ProofActionError(f"{field} must be non-empty")
+    normalized: dict[str, Any] = {}
+    for key, item in sorted(value.items()):
+        key_str = _require_str(key, f"{field}.key")
+        if isinstance(item, str):
+            normalized[key_str] = _require_str(item, f"{field}.{key_str}")
+        elif isinstance(item, int) and not isinstance(item, bool):
+            normalized[key_str] = item
+        elif isinstance(item, bool):
+            normalized[key_str] = item
+        elif isinstance(item, list):
+            if not item:
+                raise ProofActionError(f"{field}.{key_str} must be non-empty")
+            normalized[key_str] = [_require_str(entry, f"{field}.{key_str}[]") for entry in item]
+        elif isinstance(item, dict):
+            normalized[key_str] = _validate_replay_section(item, f"{field}.{key_str}")
+        else:
+            raise ProofActionError(f"{field}.{key_str} has unsupported JSON value")
+    return normalized
+
+
+def _validate_s6_lemma_payload(value: Any) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ProofActionError("lemma must be an object")
+    required = {"lemma_id", "statement", "depends_on", "proof_payload"}
+    unknown = sorted(set(value) - required)
+    missing = sorted(required - set(value))
+    if unknown:
+        raise ProofActionError(f"unknown lemma fields: {unknown}")
+    if missing:
+        raise ProofActionError(f"missing lemma fields: {missing}")
+    depends_on = value["depends_on"]
+    if not isinstance(depends_on, list) or not depends_on:
+        raise ProofActionError("lemma.depends_on must be a non-empty list")
+    proof_payload = value["proof_payload"]
+    required_payload = {"coverage", "transition_chain", "ranking_decrease", "no_escape", "induction_link"}
+    if not isinstance(proof_payload, dict):
+        raise ProofActionError("lemma.proof_payload must be an object")
+    unknown_payload = sorted(set(proof_payload) - required_payload)
+    missing_payload = sorted(required_payload - set(proof_payload))
+    if unknown_payload:
+        raise ProofActionError(f"unknown lemma.proof_payload fields: {unknown_payload}")
+    if missing_payload:
+        raise ProofActionError(f"missing lemma.proof_payload fields: {missing_payload}")
+    return {
+        "lemma_id": _require_str(value["lemma_id"], "lemma.lemma_id"),
+        "statement": _require_str(value["statement"], "lemma.statement"),
+        "depends_on": [_require_str(item, "lemma.depends_on[]") for item in depends_on],
+        "proof_payload": {key: _validate_replay_section(proof_payload[key], f"lemma.proof_payload.{key}") for key in sorted(required_payload)},
+    }
+
+
 def validate_action(action: dict[str, Any]) -> dict[str, Any]:
     """Return a normalized action after exact schema validation."""
 
@@ -238,6 +394,14 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             "gain_den",
             "covered_residue_count",
             "leaf_certificate_count",
+            "parent_level",
+            "path_node_count",
+            "s3_dependency_count",
+            "s4_dependency_count",
+            "s6_dependency_count",
+            "no_escape_dependency_count",
+            "ranking_delta_num",
+            "ranking_delta_den",
         }:
             out[field] = _require_int(value, field, minimum=1)
         elif field in {"residue", "odd_count", "affine_b", "valuation", "gain_num", "residual_start", "residual_end"}:
@@ -255,6 +419,10 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             out[field] = dict(value)
         elif field == "certificate":
             out[field] = _validate_certificate(value)
+        elif field == "transition_certificate":
+            out[field] = _validate_transition_certificate(value)
+        elif field == "lemma":
+            out[field] = _validate_s6_lemma_payload(value)
         elif field == "variables":
             if not isinstance(value, list) or not value:
                 raise ProofActionError("variables must be a non-empty list")
@@ -288,6 +456,14 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             raise ProofActionError("all residues must be less than modulus")
     if action_type == "CHECK_DEBT_DECREASE" and out["gain_den"] <= 0:
         raise ProofActionError("gain_den must be positive")
+    if action_type == "DERIVE_PARENT_TRANSITION":
+        cert = out["transition_certificate"]
+        for field in ("branch_id", "source_parent", "target_parent", "valuation"):
+            if out[field] != cert[field]:
+                raise ProofActionError(f"transition_certificate.{field} must match action {field}")
+    if action_type == "VERIFY_S6_LEMMA":
+        if out["lemma"]["lemma_id"] != out["lemma_id"]:
+            raise ProofActionError("lemma.lemma_id must match action lemma_id")
     if action_type == "PROVE_RESIDUE_COVERAGE" and out["covered_residue_count"] > out["modulus"]:
         raise ProofActionError("covered_residue_count must be <= modulus")
     if action_type == "PROVE_RESIDUAL_COVERAGE":
@@ -295,6 +471,13 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             raise ProofActionError("residual_end must be larger than residual_start")
         if out["residual_end"] > out["modulus"]:
             raise ProofActionError("residual_end must be <= modulus")
+    if action_type == "PROVE_PARENT_RESIDUAL_COVERAGE":
+        if out["residual_end"] <= out["residual_start"]:
+            raise ProofActionError("residual_end must be larger than residual_start")
+        if out["residual_end"] > out["modulus"]:
+            raise ProofActionError("residual_end must be <= modulus")
+        if out["ranking_delta_num"] >= out["ranking_delta_den"]:
+            raise ProofActionError("ranking delta must be a strict decrease")
     return canonical_action(out)
 
 

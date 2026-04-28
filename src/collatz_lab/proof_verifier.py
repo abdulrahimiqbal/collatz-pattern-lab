@@ -24,6 +24,14 @@ REQUIRED_KEYS = {
     "verifier_status",
 }
 
+TOP_LEVEL_CERTIFICATES = (
+    "universal_entry_certificate",
+    "parent_state_coverage_certificate",
+    "transition_soundness_certificate",
+    "well_founded_ranking_certificate",
+    "descent_implication_certificate",
+)
+
 
 def _load_optional(path: Path) -> dict[str, Any] | None:
     if not path.exists():
@@ -44,6 +52,14 @@ def verify_proof_object(proof: dict[str, Any]) -> dict[str, Any]:
     coverage = proof.get("coverage", {})
     if coverage.get("status") != "UNIVERSAL_PARENT_STATES":
         errors.append("coverage is not universal over all parent states P_a")
+    top_level = proof.get("top_level_certificates", {})
+    if not isinstance(top_level, dict):
+        errors.append("top_level_certificates is not an object")
+        top_level = {}
+    for cert_name in TOP_LEVEL_CERTIFICATES:
+        cert = top_level.get(cert_name)
+        if not _top_level_certificate_replays(cert_name, cert):
+            errors.append(f"top-level certificate {cert_name} does not replay")
     for row in proof.get("transitions", []):
         status = row.get("status", "UNKNOWN")
         if status not in CLOSED_STATUSES and status != "PROVED_TRANSITION_ONLY":
@@ -63,6 +79,37 @@ def verify_proof_object(proof: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _top_level_certificate_replays(cert_name: str, cert: Any) -> bool:
+    """Minimal replay contract for universal theorem certificates.
+
+    RUN-021 deliberately does not synthesize these certificates from a closed
+    proof-action graph.  They must be explicit payloads with a stable hash and
+    a PASS replay status.
+    """
+
+    if not isinstance(cert, dict):
+        return False
+    if str(cert.get("certificate_type", cert.get("type", ""))) != cert_name:
+        return False
+    if str(cert.get("replay_status", cert.get("status", ""))) != "PASS":
+        return False
+    if not str(cert.get("certificate_hash", "")).strip():
+        return False
+    payload = cert.get("proof_payload")
+    if not isinstance(payload, dict) or not payload:
+        return False
+    if set(payload) <= {"status", "verifier_status", "certificate_id"}:
+        return False
+    return True
+
+
+def _graph_top_level_certificates(proof_graph: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(proof_graph, dict):
+        return {}
+    certs = proof_graph.get("top_level_certificates", {})
+    return certs if isinstance(certs, dict) else {}
+
+
 def build_collatz_descent_theorem_candidate(
     proof_obligations: dict[str, Any] | None = None,
     proof_graph: dict[str, Any] | None = None,
@@ -74,13 +121,31 @@ def build_collatz_descent_theorem_candidate(
 ) -> dict[str, Any]:
     """Assemble the canonical theorem candidate from current reports."""
 
-    unknowns: list[dict[str, Any]] = [
-        {
-            "obligation_id": "universal_parent_state_coverage",
-            "status": "UNKNOWN",
-            "reason": "current parent-state report is finite-depth and finite-a only",
-        }
-    ]
+    proof_action_graph_loaded = bool(
+        proof_graph
+        and str(proof_graph.get("schema", "")).startswith("collatz_lab.proof_action_theorem_dependency_graph")
+    )
+    top_level_certificates = _graph_top_level_certificates(proof_graph)
+    unknowns: list[dict[str, Any]] = []
+    if not proof_action_graph_loaded:
+        unknowns.append(
+            {
+                "obligation_id": "universal_parent_state_coverage",
+                "status": "UNKNOWN",
+                "reason": "current parent-state report is finite-depth and finite-a only",
+            }
+        )
+    else:
+        for cert_name in TOP_LEVEL_CERTIFICATES:
+            if not _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name)):
+                unknowns.append(
+                    {
+                        "obligation_id": f"top_level:{cert_name}",
+                        "status": "UNKNOWN",
+                        "scope": "strict theorem replay",
+                        "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+                    }
+                )
     certs: list[dict[str, Any]] = [
         {
             "certificate_id": "P6_q9_mod16",
@@ -146,11 +211,30 @@ def build_collatz_descent_theorem_candidate(
         "evens": "C(n)=n/2 gives immediate descent for even n>2",
         "odds": "Every odd n can be written as P_a, but current report covers only sampled finite a/r-depth.",
     }
+    top_level_replays = proof_action_graph_loaded and not proof_graph.get("open", []) and all(
+        _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name))
+        for cert_name in TOP_LEVEL_CERTIFICATES
+    )
+    if top_level_replays:
+        coverage = {
+            "status": "UNIVERSAL_PARENT_STATES",
+            "evens": "C(n)=n/2 gives immediate descent for even n>2",
+            "odds": "explicit entry, coverage, transition, ranking, and descent certificates replay against the closed proof-action graph",
+            "proof_graph_node_count": len(proof_graph.get("nodes", {})),
+        }
     if global_obligations is not None:
-        coverage = dict(global_obligations.get("coverage", coverage))
+        candidate_coverage = dict(global_obligations.get("coverage", coverage))
+        if candidate_coverage.get("status") == "UNIVERSAL_PARENT_STATES" and not top_level_replays:
+            candidate_coverage = {
+                **candidate_coverage,
+                "status": "FINITE_PARENT_STATE_DIAGNOSTIC",
+                "run021_downgrade_reason": "universal coverage requires explicit replayable top-level theorem certificates",
+            }
+        coverage = candidate_coverage
 
     proof = {
         "theorem": "forall n > 1 exists k >= 1 such that C^k(n) < n",
+        "top_level_certificates": top_level_certificates,
         "coverage": coverage,
         "states": states,
         "transitions": transitions,

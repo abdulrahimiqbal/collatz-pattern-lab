@@ -40,7 +40,7 @@ REQUIRED_ACTION_TYPES = {
     "S3_TRANSITION": {"CHECK_DEBT_DECREASE"},
     "S4_LIFT": {"DERIVE_PARENT_TRANSITION", "LIFT_LOCAL_TO_PARAMETRIC_FAMILY"},
     "S6_LEMMA": {"VERIFY_S6_LEMMA"},
-    "COVERAGE_CERTIFICATE": {"PROVE_RESIDUE_COVERAGE", "PROVE_RESIDUAL_COVERAGE"},
+    "COVERAGE_CERTIFICATE": {"PROVE_RESIDUE_COVERAGE", "PROVE_RESIDUAL_COVERAGE", "PROVE_PARENT_RESIDUAL_COVERAGE"},
     "INDUCTION_CLOSURE": {"CLOSE_WELL_FOUNDED_INDUCTION", "PROVE_GLOBAL_DESCENT_INDUCTION"},
     "NO_ESCAPE_CERTIFICATE": {"CERTIFY_NO_ESCAPE_BRANCH"},
     "STRICT_THEOREM_BLOCKER": {"CLOSE_STRICT_THEOREM_BLOCKER", "COMPOSE_GATE_PROOF"},
@@ -351,7 +351,7 @@ def _action_solves_node(node: dict[str, Any], action: dict[str, Any], check: Any
     if node["node_type"] == "NO_ESCAPE_CERTIFICATE":
         return action_type == "CERTIFY_NO_ESCAPE_BRANCH" and float(check.progress or 0.0) >= 0.6
     if node["node_type"] == "COVERAGE_CERTIFICATE":
-        return action_type in {"PROVE_RESIDUE_COVERAGE", "PROVE_RESIDUAL_COVERAGE"} and float(check.progress or 0.0) >= 0.7
+        return action_type in {"PROVE_RESIDUE_COVERAGE", "PROVE_RESIDUAL_COVERAGE", "PROVE_PARENT_RESIDUAL_COVERAGE"} and float(check.progress or 0.0) >= 0.7
     return float(check.progress or 0.0) > 0.0
 
 

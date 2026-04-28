@@ -1,0 +1,23 @@
+run:
+  id: RUN-019-proof-action-v2-parent-residual-cert
+  name: RUN-019-proof-action-v2-parent-residual-cert
+  kind: proof_action_v2_parent_residual_cert
+  description: Parent-state transition/ranking certificate for the final residual S6 coverage class
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+composer:
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+parent_residual:
+  run018_dir: reports/runs/RUN-018-proof-action-v2-residual-coverage-cert
+  theorem_graph: reports/runs/RUN-018-proof-action-v2-residual-coverage-cert/theorem_composer/theorem_dependency_graph.json
+  source_s6_dir: reports/runs/RUN-018-proof-action-v2-residual-coverage-cert/repaired_s6
+  out_dir: reports/runs/RUN-019-proof-action-v2-parent-residual-cert
+  composer_config: configs/collatz_proof_action_v2_theorem_composer_run016.yaml
+  certificate_id: parent_residual_cert_P26_67108863_67108864

@@ -1,0 +1,33 @@
+{
+  "accepted_node_count": 485,
+  "failure_summary": [
+    "strict verifier promotes closed proof-action graph to universal coverage",
+    "sample_checks_passed can discharge parent-transition actions",
+    "S6 lemma verification trusts status/certificate identifiers rather than replaying proof payloads",
+    "clean clone reproduction requires ignored/generated artifacts"
+  ],
+  "graph_node_count": 485,
+  "open_blocker_count": 0,
+  "out_dir": "reports/runs/RUN-020-proof-audit-package",
+  "required_outputs": [
+    "accepted_action_trace.jsonl",
+    "audit_failures_or_assumptions.md",
+    "certificate_hash_manifest.json",
+    "human_readable_proof_outline.md",
+    "proof_dependency_graph_frozen.json",
+    "reproduction_script.sh",
+    "residual_parent_certificate_audit.md",
+    "strict_verifier_soundness_report.md",
+    "theorem_statement.md",
+    "verifier_diff_since_RUN018.patch"
+  ],
+  "run019_proof_confidence_percent": 100.0,
+  "run019_strict_verifier_result": "PASS",
+  "run_id": "RUN-020-proof-audit-package",
+  "s6_status_accept_count": 28,
+  "sample_based_accept_count": 135,
+  "schema": "collatz_lab.proof_audit_package_summary",
+  "source_run": "reports/runs/RUN-019-proof-action-v2-parent-residual-cert",
+  "verdict": "AUDIT_FAIL",
+  "version": 1
+}

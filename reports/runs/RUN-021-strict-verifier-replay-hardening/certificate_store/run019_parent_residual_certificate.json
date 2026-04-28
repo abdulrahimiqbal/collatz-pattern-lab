@@ -1,0 +1,440 @@
+{
+  "certificate_hash": "86f1c8f60d016f1c2df69f25ac8937d1f0f2d55c170d761d2f32e63cb20c6945",
+  "certificate_id": "parent_residual_cert_P26_67108863_67108864",
+  "failure_count": 0,
+  "failures": [],
+  "modulus": 67108864,
+  "no_escape_dependency_count": 1,
+  "parent_certificate_id": "coverage_cert_0000",
+  "parent_interpretation": "n = 2^26*q - 1",
+  "parent_level": 26,
+  "parent_transition_path": {
+    "coverage_certificate": "coverage_cert_0004",
+    "coverage_modulus": 67108864,
+    "dependency_node_ids": [
+      "s6_lemma:s6_parent_transition_lemma_0004",
+      "coverage:coverage_cert_0004",
+      "s6_lift:lifting_cert_0004",
+      "induction:base_case_cert_0004",
+      "no_escape:no_escape_cert_0004"
+    ],
+    "lemma_id": "s6_parent_transition_lemma_0004",
+    "strict_node_id": "strict_blocker:s6_parent_transition_0a616b76_0004"
+  },
+  "path_node_count": 26,
+  "path_node_ids": [
+    "strict_blocker:s6_parent_transition_0a616b76_0004",
+    "s6_lemma:s6_parent_transition_lemma_0004",
+    "coverage:coverage_cert_0004",
+    "s6_lift:lifting_cert_0004",
+    "induction:base_case_cert_0004",
+    "no_escape:no_escape_cert_0004",
+    "s3:s3_frontier:4f946cb203fa8420",
+    "s3:s3_frontier:31f350059efde954",
+    "s3:s3_frontier:fae9971652cadf80",
+    "s3:s3_frontier:d910ba7a1f6ceb8d",
+    "s3:s3_frontier:1c1f457759608fa7",
+    "s3:s3_frontier:29d2a6e898a575a6",
+    "s3:s3_frontier:c94cd47e76c5fb6f",
+    "s3:s3_frontier:c8fd669f166dd85a",
+    "s3:s3_frontier:1d4489a9493396a2",
+    "s3:s3_frontier:1d504f4a2b2c1fc3",
+    "s3:s3_frontier:52db3088f06b4ea2",
+    "s3:s3_frontier:bfa223193c4e0b2f",
+    "s3:s3_frontier:ef911da747d666f0",
+    "s3:s3_frontier:bdaf1ed0d75f3cbc",
+    "s3:s3_frontier:74466811a0f40e7e",
+    "s3:s3_frontier:a8109ab5742a0696",
+    "s4:s4_lifting_frontier:6d568ebabaff4f7b",
+    "s6_lift:lifting_cert_0011",
+    "s6_lift:lifting_cert_0018",
+    "s6_lift:lifting_cert_0025"
+  ],
+  "ranking_delta_den": 16225432007,
+  "ranking_delta_num": 17,
+  "ranking_reason": "accepted S3 debt transition has gain_num < gain_den",
+  "residual_certificate_id": "coverage_cert_0000_residual_67108863_67108864",
+  "residual_end": 67108864,
+  "residual_start": 67108863,
+  "s3_dependency_count": 103,
+  "s3_ranking_nodes": [
+    {
+      "branch_id": "P2:r52195783:d26",
+      "depth": 26,
+      "gain_den": 16225432007,
+      "gain_num": 17,
+      "node_id": "s3:s3_frontier:4f946cb203fa8420",
+      "residue": 52195783,
+      "source_parent": 2,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P2:r52195783:d26",
+      "depth": 26,
+      "gain_den": 1193046471,
+      "gain_num": 5,
+      "node_id": "s3:s3_frontier:31f350059efde954",
+      "residue": 52195783,
+      "source_parent": 2,
+      "valuation": 5
+    },
+    {
+      "branch_id": "P3:r62137837:d26",
+      "depth": 26,
+      "gain_den": 1471423981,
+      "gain_num": 37,
+      "node_id": "s3:s3_frontier:fae9971652cadf80",
+      "residue": 62137837,
+      "source_parent": 3,
+      "valuation": 4
+    },
+    {
+      "branch_id": "P3:r62137837:d26",
+      "depth": 26,
+      "gain_den": 934553069,
+      "gain_num": 47,
+      "node_id": "s3:s3_frontier:d910ba7a1f6ceb8d",
+      "residue": 62137837,
+      "source_parent": 3,
+      "valuation": 3
+    },
+    {
+      "branch_id": "P4:r62137837:d26",
+      "depth": 26,
+      "gain_den": 1471423981,
+      "gain_num": 111,
+      "node_id": "s3:s3_frontier:1c1f457759608fa7",
+      "residue": 62137837,
+      "source_parent": 4,
+      "valuation": 4
+    },
+    {
+      "branch_id": "P6:r52011671:d26",
+      "depth": 26,
+      "gain_den": 13138240151,
+      "gain_num": 1115,
+      "node_id": "s3:s3_frontier:29d2a6e898a575a6",
+      "residue": 52011671,
+      "source_parent": 6,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P4:r62137837:d26",
+      "depth": 26,
+      "gain_den": 934553069,
+      "gain_num": 141,
+      "node_id": "s3:s3_frontier:c94cd47e76c5fb6f",
+      "residue": 62137837,
+      "source_parent": 4,
+      "valuation": 3
+    },
+    {
+      "branch_id": "P6:r52011671:d26",
+      "depth": 26,
+      "gain_den": 253338263,
+      "gain_num": 43,
+      "node_id": "s3:s3_frontier:c8fd669f166dd85a",
+      "residue": 52011671,
+      "source_parent": 6,
+      "valuation": 6
+    },
+    {
+      "branch_id": "P7:r52011671:d26",
+      "depth": 26,
+      "gain_den": 13138240151,
+      "gain_num": 3345,
+      "node_id": "s3:s3_frontier:1d4489a9493396a2",
+      "residue": 52011671,
+      "source_parent": 7,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P4:r62137837:d26",
+      "depth": 26,
+      "gain_den": 129246701,
+      "gain_num": 39,
+      "node_id": "s3:s3_frontier:1d504f4a2b2c1fc3",
+      "residue": 62137837,
+      "source_parent": 4,
+      "valuation": 2
+    },
+    {
+      "branch_id": "P7:r39706845:d26",
+      "depth": 26,
+      "gain_den": 5811069149,
+      "gain_num": 2959,
+      "node_id": "s3:s3_frontier:52db3088f06b4ea2",
+      "residue": 39706845,
+      "source_parent": 7,
+      "valuation": 6
+    },
+    {
+      "branch_id": "P8:r64316497:d26",
+      "depth": 26,
+      "gain_den": 16170443857,
+      "gain_num": 12351,
+      "node_id": "s3:s3_frontier:bfa223193c4e0b2f",
+      "residue": 64316497,
+      "source_parent": 8,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P7:r39706845:d26",
+      "depth": 26,
+      "gain_den": 3663585501,
+      "gain_num": 3731,
+      "node_id": "s3:s3_frontier:ef911da747d666f0",
+      "residue": 39706845,
+      "source_parent": 7,
+      "valuation": 5
+    },
+    {
+      "branch_id": "P8:r39706845:d26",
+      "depth": 26,
+      "gain_den": 5811069149,
+      "gain_num": 8877,
+      "node_id": "s3:s3_frontier:bdaf1ed0d75f3cbc",
+      "residue": 39706845,
+      "source_parent": 8,
+      "valuation": 6
+    },
+    {
+      "branch_id": "P8:r64316497:d26",
+      "depth": 26,
+      "gain_den": 3285541969,
+      "gain_num": 5019,
+      "node_id": "s3:s3_frontier:74466811a0f40e7e",
+      "residue": 64316497,
+      "source_parent": 8,
+      "valuation": 6
+    },
+    {
+      "branch_id": "P9:r66178075:d26",
+      "depth": 26,
+      "gain_den": 3368678815,
+      "gain_num": 7719,
+      "node_id": "s3:s3_frontier:a8109ab5742a0696",
+      "residue": 66178075,
+      "source_parent": 9,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P8:r39706845:d26",
+      "depth": 26,
+      "gain_den": 1221195167,
+      "gain_num": 3731,
+      "node_id": "s3:s3_frontier:7200b983f7d15441",
+      "residue": 39706845,
+      "source_parent": 8,
+      "valuation": 5
+    },
+    {
+      "branch_id": "P7:r39706845:d26",
+      "depth": 26,
+      "gain_den": 979230941,
+      "gain_num": 3989,
+      "node_id": "s3:s3_frontier:c9eedf174e0ba3e7",
+      "residue": 39706845,
+      "source_parent": 7,
+      "valuation": 3
+    },
+    {
+      "branch_id": "P7:r52011671:d26",
+      "depth": 26,
+      "gain_den": 790209175,
+      "gain_num": 3219,
+      "node_id": "s3:s3_frontier:a7c4405b9c8fddcb",
+      "residue": 52011671,
+      "source_parent": 7,
+      "valuation": 3
+    },
+    {
+      "branch_id": "P7:r58731763:d26",
+      "depth": 26,
+      "gain_den": 729820403,
+      "gain_num": 2973,
+      "node_id": "s3:s3_frontier:ba61befb6a02c8b5",
+      "residue": 58731763,
+      "source_parent": 7,
+      "valuation": 3
+    },
+    {
+      "branch_id": "P8:r39706845:d26",
+      "depth": 26,
+      "gain_den": 147453343,
+      "gain_num": 901,
+      "node_id": "s3:s3_frontier:eacc24c5110ae668",
+      "residue": 39706845,
+      "source_parent": 8,
+      "valuation": 4
+    },
+    {
+      "branch_id": "P8:r64316497:d26",
+      "depth": 26,
+      "gain_den": 64316497,
+      "gain_num": 393,
+      "node_id": "s3:s3_frontier:1284fda134ff1eef",
+      "residue": 64316497,
+      "source_parent": 8,
+      "valuation": 4
+    },
+    {
+      "branch_id": "P10:r40120529:d26",
+      "depth": 26,
+      "gain_den": 711209169,
+      "gain_num": 4889,
+      "node_id": "s3:s3_frontier:db7bb270cb03c0f0",
+      "residue": 40120529,
+      "source_parent": 10,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P7:r39706845:d26",
+      "depth": 26,
+      "gain_den": 173924573,
+      "gain_num": 1417,
+      "node_id": "s3:s3_frontier:adda704373553f90",
+      "residue": 39706845,
+      "source_parent": 7,
+      "valuation": 2
+    },
+    {
+      "branch_id": "P9:r53252723:d26",
+      "depth": 26,
+      "gain_den": 4281111155,
+      "gain_num": 39239,
+      "node_id": "s3:s3_frontier:6c78a40e991c2af6",
+      "residue": 53252723,
+      "source_parent": 9,
+      "valuation": 5
+    },
+    {
+      "branch_id": "P9:r66178075:d26",
+      "depth": 26,
+      "gain_den": 603669513,
+      "gain_num": 5533,
+      "node_id": "s3:s3_frontier:0266ffc831aef802",
+      "residue": 66178075,
+      "source_parent": 9,
+      "valuation": 5
+    },
+    {
+      "branch_id": "P6:r52011671:d26",
+      "depth": 26,
+      "gain_den": 52011671,
+      "gain_num": 565,
+      "node_id": "s3:s3_frontier:8531ab50b2be6800",
+      "residue": 52011671,
+      "source_parent": 6,
+      "valuation": 0
+    },
+    {
+      "branch_id": "P7:r52011671:d26",
+      "depth": 26,
+      "gain_den": 39706845,
+      "gain_num": 647,
+      "node_id": "s3:s3_frontier:2cc34fe497bd8d1a",
+      "residue": 52011671,
+      "source_parent": 7,
+      "valuation": 1
+    },
+    {
+      "branch_id": "P7:r39706845:d26",
+      "depth": 26,
+      "gain_den": 39706845,
+      "gain_num": 647,
+      "node_id": "s3:s3_frontier:b35596b5e92309a7",
+      "residue": 39706845,
+      "source_parent": 7,
+      "valuation": 1
+    },
+    {
+      "branch_id": "P9:r53252723:d26",
+      "depth": 26,
+      "gain_den": 1059885683,
+      "gain_num": 19429,
+      "node_id": "s3:s3_frontier:5d62900f6d374b0f",
+      "residue": 53252723,
+      "source_parent": 9,
+      "valuation": 4
+    },
+    {
+      "branch_id": "P11:r53666407:d26",
+      "depth": 26,
+      "gain_den": 9918669415,
+      "gain_num": 204549,
+      "node_id": "s3:s3_frontier:e8db101b60e3a713",
+      "residue": 53666407,
+      "source_parent": 11,
+      "valuation": 7
+    },
+    {
+      "branch_id": "P11:r53252723:d26",
+      "depth": 26,
+      "gain_den": 237069723,
+      "gain_num": 4889,
+      "node_id": "s3:s3_frontier:6e6013ac60d59ea9",
+      "residue": 53252723,
+      "source_parent": 11,
+      "valuation": 7
+    }
+  ],
+  "s4_dependency_count": 5,
+  "s4_lift_nodes": [
+    {
+      "action": {
+        "branch_id": "P11:r62628045:d26",
+        "source_parent": 11,
+        "target": "goal_0",
+        "target_parent": 26,
+        "type": "DERIVE_PARENT_TRANSITION",
+        "valuation": 1
+      },
+      "node_id": "s4:s4_lifting_frontier:6d568ebabaff4f7b"
+    },
+    {
+      "action": {
+        "family_id": "s6_parametric_family",
+        "lifting_certificate": "lifting_cert_0004",
+        "local_lemma": "s6_parent_transition_lemma_0004",
+        "target": "s6_goal_parent_transition",
+        "type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY"
+      },
+      "node_id": "s6_lift:lifting_cert_0004"
+    },
+    {
+      "action": {
+        "family_id": "s6_parametric_family",
+        "lifting_certificate": "lifting_cert_0011",
+        "local_lemma": "s6_parent_transition_lemma_0011",
+        "target": "s6_goal_parent_transition",
+        "type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY"
+      },
+      "node_id": "s6_lift:lifting_cert_0011"
+    },
+    {
+      "action": {
+        "family_id": "s6_parametric_family",
+        "lifting_certificate": "lifting_cert_0018",
+        "local_lemma": "s6_parent_transition_lemma_0018",
+        "target": "s6_goal_parent_transition",
+        "type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY"
+      },
+      "node_id": "s6_lift:lifting_cert_0018"
+    },
+    {
+      "action": {
+        "family_id": "s6_parametric_family",
+        "lifting_certificate": "lifting_cert_0025",
+        "local_lemma": "s6_candidate_generation_from_s3_s4_frontier",
+        "target": "s6_goal_parent_transition",
+        "type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY"
+      },
+      "node_id": "s6_lift:lifting_cert_0025"
+    }
+  ],
+  "s6_dependency_count": 1,
+  "schema": "collatz_lab.proof_action_parent_residual_certificate",
+  "status": "PASS",
+  "version": 1
+}
