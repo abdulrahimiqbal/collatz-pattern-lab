@@ -1,0 +1,14 @@
+run:
+  run_id: RUN-039-independent-cycle-counterexample-audit
+  description: Independent standard-Collatz audit of the RUN-038B/RUN-038E repeatable cycle obstruction
+
+counterexample_audit_run039:
+  out_dir: reports/runs/RUN-039-independent-cycle-counterexample-audit
+  cycle_id: abbe9ad764c55f27
+  cycle_witnesses: reports/runs/RUN-038B-cycle-witness-audit/cycle_witnesses.jsonl
+  raw_collatz_replay: reports/runs/RUN-038B-cycle-witness-audit/raw_collatz_replay.jsonl
+  minimal_invariant_obstruction: reports/runs/RUN-038E-scc-refinement-and-invariant-discovery/minimal_invariant_obstruction.json
+  edge_maps: reports/runs/RUN-038-scc-invariant-discovery/scc_edge_maps_normalized.jsonl
+  manifest: proof_manifest.json
+  certificate_store: certificate_store
+  cycle_counts: [1, 2, 3, 5, 10]

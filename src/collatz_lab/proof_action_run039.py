@@ -1,4 +1,9 @@
-"""RUN-039 top-level replay gate after RUN-038 SCC invariant discovery."""
+"""RUN-039 entrypoints.
+
+The historical RUN-039 top-level replay helper remains available for existing
+tests/configs.  New RUN-039 configs with ``counterexample_audit_run039`` run the
+independent cycle counterexample-family audit.
+"""
 
 from __future__ import annotations
 
@@ -7,6 +12,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .proof_action_counterexample_audit import run_counterexample_audit
 from .replay_strict_proof import replay_manifest
 from .utils import load_yaml
 
@@ -82,12 +88,19 @@ def run_top_level_after_scc_invariant(config_path: str | Path | None = None, *, 
     return result
 
 
+def run_run039_from_config(config_path: str | Path | None = None, *, out: str | Path | None = None) -> dict[str, Any]:
+    cfg = load_yaml(config_path) if config_path else {}
+    if isinstance(cfg.get("counterexample_audit_run039"), dict):
+        return run_counterexample_audit(cfg, out=out)
+    return run_top_level_after_scc_invariant(config_path, out=out)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config")
     parser.add_argument("--out")
     args = parser.parse_args(argv)
-    result = run_top_level_after_scc_invariant(args.config, out=args.out)
+    result = run_run039_from_config(args.config, out=args.out)
     print(json.dumps(result, indent=2, sort_keys=True))
 
 
