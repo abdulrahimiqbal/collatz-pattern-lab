@@ -29,6 +29,7 @@ LOWER_LAYER_MANIFEST_HASH_NAMES = {
     "parent_transition_certificates",
     "s6_lemma_certificates",
     "parent_residual_certificate",
+    "scc_guarded_ranking_certificate",
 }
 TOP_LEVEL_CERTIFICATES = (
     "universal_entry_certificate",
@@ -113,6 +114,7 @@ def build_replay_context(
     s4_rows: list[dict[str, Any]] | None = None,
     s6_rows: list[dict[str, Any]] | None = None,
     parent_residual_certificate: dict[str, Any] | None = None,
+    scc_guarded_ranking_certificate: dict[str, Any] | None = None,
     manifest_hashes: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Pack lower-layer artifacts for strict top-level replay."""
@@ -124,6 +126,7 @@ def build_replay_context(
         "s4_rows": list(s4_rows or []),
         "s6_rows": list(s6_rows or []),
         "parent_residual_certificate": dict(parent_residual_certificate or {}),
+        "scc_guarded_ranking_certificate": dict(scc_guarded_ranking_certificate or {}),
         "manifest_hashes": dict(manifest_hashes or {}),
     }
 
@@ -643,16 +646,40 @@ def _topological_ranks_for_edges(nodes: set[str], edges: list[dict[str, Any]]) -
     return ranks, edge_checks, failures
 
 
-def _run030_ranking_payload(lower: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+def _edge_id_set_from_guarded_scc_certificate(certificate: dict[str, Any]) -> tuple[set[str], dict[str, Any] | None, list[dict[str, Any]]]:
+    if not certificate:
+        return set(), None, []
+    from .proof_action_guarded_scc_ranking import replay_scc_guarded_ranking_certificate
+
+    replay = replay_scc_guarded_ranking_certificate(certificate)
+    if not replay.get("accepted"):
+        return set(), None, [{"reason": "scc_guarded_ranking_certificate_replay_failed", "replay": replay}]
+    covered = set(str(edge_id) for edge_id in certificate.get("covered_edge_ids", []) or [])
+    check = {
+        "scc_id": str(certificate.get("scc_id", "")),
+        "certificate_hash": str(certificate.get("certificate_hash", "")),
+        "proof_kind": str(certificate.get("proof_kind", "")),
+        "covered_edge_count": len(covered),
+        "status": "PASS",
+    }
+    return covered, check, []
+
+
+def _run030_ranking_payload(
+    lower: dict[str, Any],
+    scc_guarded_ranking_certificate: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     transition_edges = _transition_rows_from_lower(lower)
     nonterminal_edges = [edge for edge in transition_edges if not edge.get("terminal_descent")]
+    covered_scc_edges, scc_check, scc_failures = _edge_id_set_from_guarded_scc_certificate(dict(scc_guarded_ranking_certificate or {}))
+    ranking_edges = [edge for edge in nonterminal_edges if str(edge.get("edge_id")) not in covered_scc_edges]
     nodes = {edge["source"] for edge in nonterminal_edges} | {edge["target"] for edge in nonterminal_edges}
-    ranks, edge_checks, rank_failures = _topological_ranks_for_edges(nodes, nonterminal_edges)
+    ranks, edge_checks, rank_failures = _topological_ranks_for_edges(nodes, ranking_edges)
     unresolved_sccs: list[dict[str, Any]] = []
     if ranks is None:
-        components = _tarjan_scc(nodes, nonterminal_edges)
+        components = _tarjan_scc(nodes, ranking_edges)
         for index, component in enumerate(components):
-            internal = [edge for edge in nonterminal_edges if edge["source"] in component and edge["target"] in component]
+            internal = [edge for edge in ranking_edges if edge["source"] in component and edge["target"] in component]
             if len(component) > 1 or any(edge["source"] == edge["target"] for edge in internal):
                 unresolved_sccs.append(
                     {
@@ -667,17 +694,18 @@ def _run030_ranking_payload(lower: dict[str, Any]) -> tuple[dict[str, Any], list
     if unresolved_sccs:
         failures.extend({"reason": "unresolved_scc", **row} for row in unresolved_sccs)
     failures.extend({"reason": "nondecreasing_edge", **row} for row in rank_failures)
+    failures.extend(scc_failures)
     status = "PASS" if not failures else "FAIL"
     payload = {
         "certificate_id": "well_founded_ranking_certificate",
         "type": "WELL_FOUNDED_RANKING_EXACT",
         "domain": "parent_state_transition_graph",
-        "well_founded_order": "topological_dag_rank" if status == "PASS" else "scc_internal_ranking_required",
+        "well_founded_order": "topological_dag_rank_with_guarded_scc_rank" if status == "PASS" and scc_check else "topological_dag_rank" if status == "PASS" else "scc_internal_ranking_required",
         "terminal_edge_count": sum(1 for edge in transition_edges if edge.get("terminal_descent")),
         "nonterminal_edge_count": len(nonterminal_edges),
         "node_ranks": ranks or {},
         "edge_checks": edge_checks,
-        "scc_checks": [],
+        "scc_checks": [scc_check] if scc_check else [],
         "unresolved_sccs": unresolved_sccs,
         "nondecreasing_edges": rank_failures,
         "transition_edges": transition_edges,
@@ -731,7 +759,7 @@ def build_top_level_certificates_after_hardening(
 
     lower = replay_lower_layer_context(context)
     required_domains, covered_domains, coverage_failures = _coverage_domains(graph, lower)
-    ranking, ranking_failures = _run030_ranking_payload(lower)
+    ranking, ranking_failures = _run030_ranking_payload(lower, context.get("scc_guarded_ranking_certificate") if isinstance(context, dict) else None)
     graph_failures = _graph_acceptance_failures(graph)
     lower_failures = list(lower.get("failures") or [])
     transition_failures = [failure for failure in lower_failures if failure.get("layer") in {"S3", "S4", "S6"} or "node_id" in failure]
@@ -1067,7 +1095,10 @@ def replay_top_level_certificate(
         if not isinstance(ranking, dict):
             failures.append({"reason": "missing_ranking_payload"})
         elif strict_run030:
-            expected_ranking, ranking_failures = _run030_ranking_payload(lower)
+            expected_ranking, ranking_failures = _run030_ranking_payload(
+                lower,
+                context.get("scc_guarded_ranking_certificate") if isinstance(context, dict) else None,
+            )
             if ranking != expected_ranking:
                 failures.append({"reason": "ranking_payload_mismatch"})
             failures.extend(ranking_failures)

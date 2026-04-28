@@ -1,0 +1,13 @@
+guarded_scc_ranking_run040:
+  out_dir: reports/runs/RUN-040-guarded-scc-ranking-repair
+  run039_result: reports/runs/RUN-039-independent-cycle-counterexample-audit/run_result.json
+  cycle_invariance_report: reports/runs/RUN-039-independent-cycle-counterexample-audit/cycle_invariance_report.json
+  raw_collatz_multicycle_replay: reports/runs/RUN-039-independent-cycle-counterexample-audit/raw_collatz_multicycle_replay.jsonl
+  scc_edge_maps_normalized: reports/runs/RUN-038-scc-invariant-discovery/scc_edge_maps_normalized.jsonl
+  scc_cycles_full_or_basis: reports/runs/RUN-038-scc-invariant-discovery/scc_cycles_full_or_basis.jsonl
+  parent_transition_certificates: certificate_store/run035_parent_transition_certificates.jsonl
+  parent_coordinate_map_certificates: certificate_store/run034_parent_coordinate_map_certificates.jsonl
+  manifest: proof_manifest.json
+  repeat_refinement_cap: 8
+  repeat_prefix_cycle_limit: 16
+  cycle_detail_limit: 64

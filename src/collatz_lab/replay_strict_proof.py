@@ -122,6 +122,7 @@ def _build_manifest_replay_context(manifest: dict[str, Any], *, manifest_dir: Pa
         s4_rows=_load_optional_jsonl_artifact(manifest, "parent_transition_certificates", manifest_dir=manifest_dir),
         s6_rows=_load_optional_jsonl_artifact(manifest, "s6_lemma_certificates", manifest_dir=manifest_dir),
         parent_residual_certificate=_load_optional_json_artifact(manifest, "parent_residual_certificate", manifest_dir=manifest_dir),
+        scc_guarded_ranking_certificate=_load_optional_json_artifact(manifest, "scc_guarded_ranking_certificate", manifest_dir=manifest_dir),
         manifest_hashes=_manifest_hashes(manifest),
     )
 

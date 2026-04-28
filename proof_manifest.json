@@ -91,7 +91,7 @@
     {
       "name": "src/collatz_lab/proof_action_top_level_cert.py",
       "path": "src/collatz_lab/proof_action_top_level_cert.py",
-      "sha256": "0387e08909b0f7c7022f919c93c1f6b454acaf0e700b7122582d2d6519bb42ce"
+      "sha256": "bd21dcf5b7669b0c8de739e1ce8655a2978f5bd1d7b7e352b85cfb591356777a"
     },
     {
       "name": "src/collatz_lab/proof_verifier.py",
@@ -101,7 +101,7 @@
     {
       "name": "src/collatz_lab/replay_strict_proof.py",
       "path": "src/collatz_lab/replay_strict_proof.py",
-      "sha256": "f3921f46bc263397aa6a3bcd7f3b05614fb1a14c2d5fe3ed3b4f9e527d4e99ef"
+      "sha256": "1d1310e833c3e08a098d7fc19d95da123b170ce8d8cdb92aab307c69abd3e9bd"
     }
   ],
   "source_run_accounting": {
