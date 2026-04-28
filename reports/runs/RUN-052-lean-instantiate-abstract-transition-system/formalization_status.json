@@ -1,0 +1,22 @@
+{
+  "run_id": "RUN-052-lean-instantiate-abstract-transition-system",
+  "status": "FORMALIZATION_GAP",
+  "training_launched": false,
+  "search_launched": false,
+  "lean_modules_built": [
+    "Collatz.Run051Data",
+    "Collatz.Run051Proof"
+  ],
+  "payload_checks_formalized": {
+    "s3_semantic_roles": true,
+    "s6_proof_trees": true,
+    "natural_kernel_to_path_link": true,
+    "top_level_coverage_domain_map": true,
+    "kernel_positive_distance_number_theory": true
+  },
+  "final_theorems": {
+    "run051_descent": false,
+    "collatz_conjecture": false
+  },
+  "reason": "RUN-051 payloads validate as Lean data, but they still do not instantiate the RUN-050 abstract transition-system theorem without additional formal constructors/theorem rules."
+}

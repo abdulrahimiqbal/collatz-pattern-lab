@@ -1,0 +1,333 @@
+{
+  "conclusion": "Every n>1 either descends immediately or enters a covered certified parent-state domain.",
+  "kind": "TOP_LEVEL_COVERAGE_DOMAIN_MAP",
+  "natural_kernel_reference": {
+    "conclusion": "NoInfiniteInternalParentPathOverNat",
+    "kernel_certificate_id": "51669b9eb61f83edd0af54022241cc88895a04a460af0bf2a6499af2cec4e8d7",
+    "scc_id": "P12_P24_internal_s4"
+  },
+  "no_uncovered_domains": true,
+  "parent_state_domains": [
+    {
+      "coverage_certificate_id": "coverage_cert_0001",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0001",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0002",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0002",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0003",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0003",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0004",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0004",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0005",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0005",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0006",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0006",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0007",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0007",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0008",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0008",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0009",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0009",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0010",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0010",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0011",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0011",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0012",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0012",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0013",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0013",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0014",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0014",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0015",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0015",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0016",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0016",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0017",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0017",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0018",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0018",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0019",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0019",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0020",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0020",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0021",
+      "covered_predicate": "q mod 2 in [0, 2)",
+      "domain_id": "coverage_cert_0021",
+      "kind": "residue_coverage",
+      "modulus": 2,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 2,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0022",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0022",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0023",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0023",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0024",
+      "covered_predicate": "q mod 67108864 in [0, 67108864)",
+      "domain_id": "coverage_cert_0024",
+      "kind": "residue_coverage",
+      "modulus": 67108864,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0025",
+      "covered_predicate": "q mod 134217728 in [0, 134217728)",
+      "domain_id": "coverage_cert_0025",
+      "kind": "residue_coverage",
+      "modulus": 134217728,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 134217728,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0026",
+      "covered_predicate": "q mod 268435456 in [0, 268435456)",
+      "domain_id": "coverage_cert_0026",
+      "kind": "residue_coverage",
+      "modulus": 268435456,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 268435456,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "coverage_cert_0027",
+      "covered_predicate": "q mod 536870912 in [0, 536870912)",
+      "domain_id": "coverage_cert_0027",
+      "kind": "residue_coverage",
+      "modulus": 536870912,
+      "parent_state": "P_covered",
+      "residual_certificate_id": "",
+      "residue_end_exclusive": 536870912,
+      "residue_start": 0
+    },
+    {
+      "coverage_certificate_id": "parent_residual_cert_P26_67108863_67108864",
+      "covered_predicate": "q mod 67108864 in [67108863, 67108864)",
+      "domain_id": "P26:residual:67108863:67108864",
+      "kind": "parent_residual",
+      "modulus": 67108864,
+      "parent_state": "P_26",
+      "residual_certificate_id": "P26:residual:67108863:67108864",
+      "residue_end_exclusive": 67108864,
+      "residue_start": 67108863
+    }
+  ],
+  "run_id": "RUN-051-semantic-payload-enrichment-for-lean-bridge",
+  "schema": "collatz_lab.run051_semantic_payload",
+  "semantic_payload_hash": "4abb39cd61a64c4ecf50f1189c8125949a9c88d9c63d328fd39986d008f9f80c",
+  "semantic_validation": {
+    "failures": [],
+    "status": "PASS"
+  },
+  "universal_entry": {
+    "even_case": "C(n) = n / 2 = k",
+    "odd_case": "n = 2^a*q - 1",
+    "odd_valuation_definition": "a = v2(n + 1)"
+  },
+  "version": 1
+}

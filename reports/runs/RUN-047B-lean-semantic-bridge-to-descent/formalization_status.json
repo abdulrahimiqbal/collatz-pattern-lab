@@ -1,0 +1,38 @@
+{
+  "schema": "collatz_lab.run047b_lean_semantic_bridge_status",
+  "version": 1,
+  "run_id": "RUN-047B-lean-semantic-bridge-to-descent",
+  "status": "PARTIAL_SEMANTIC_BRIDGE",
+  "lean_modules": {
+    "Collatz.SemanticBridge": "PASS",
+    "Collatz.Run046Proof": "PASS"
+  },
+  "formalized_semantics": [
+    "parentState and exactParentState over the actual Collatz namespace",
+    "semanticParentTransitionRel using actual iter",
+    "SemanticParentTransition for S4 certificate records",
+    "SemanticDescentOrExit for S3 debt records",
+    "S6LemmaSemanticClaim and top-level semantic hypothesis vocabulary",
+    "even_semantic_descent for actual even Collatz inputs",
+    "S4ParentMapClaim.to_parent_map_payload",
+    "S3DebtClaim.to_debt_arithmetic",
+    "NaturalViabilityKernelEmpty.no_positive_fixed_point_coordinate"
+  ],
+  "not_formalized": [
+    "S4ParentMapClaim.to_semantic_transition",
+    "S3DebtExactClaim.to_semantic_descent_or_exit",
+    "S6LemmaClaim.to_semantic",
+    "natural_kernel_empty_implies_no_infinite_internal_path",
+    "top_level_semantics_imply_descent",
+    "run046_descent : DescentTheorem",
+    "collatz_conjecture : CollatzConjecture"
+  ],
+  "blocking_statuses": [
+    "MISSING_PARENT_TRANSITION_SEMANTICS",
+    "MISSING_S3_DESCENT_SEMANTICS",
+    "MISSING_S6_BLOCKER_SEMANTICS",
+    "MISSING_TOP_LEVEL_COVERAGE_SEMANTICS",
+    "MISSING_NATURAL_KERNEL_SEMANTICS"
+  ],
+  "reason": "RUN-047B added actual Collatz-facing semantic predicates and partial bridge theorems, but the current generated certificate payloads do not contain enough iterate-level witnesses or semantic blocker statements to prove DescentTheorem."
+}

@@ -1,0 +1,16 @@
+{
+  "run_id": "RUN-049-lean-semantic-bridge-finalization",
+  "schema": "collatz_lab.lean_semantic_bridge_status",
+  "status": "PARTIAL_SEMANTIC_BRIDGE",
+  "version": 1,
+  "s4_iterate_witness_bridge": "PASS",
+  "run048_descent_declared": false,
+  "collatz_conjecture_declared": false,
+  "missing_bridge_count": 4,
+  "missing_bridges": [
+    "derive each S4 target-factor equality from domain congruence plus divisibility valuation",
+    "connect S3 ranking/debt decreases to eventual Collatz descent or certified graph exits",
+    "interpret S6 proof-tree dependencies as semantic coverage/no-escape/induction theorems",
+    "prove top-level parent-state coverage and well-founded graph termination over Nat"
+  ]
+}

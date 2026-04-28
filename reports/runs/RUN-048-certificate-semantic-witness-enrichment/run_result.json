@@ -1,0 +1,26 @@
+{
+  "artifacts": {
+    "certificate_store_enriched_certificate_manifest": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run048_enriched_certificate_manifest.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run048_run_result.json",
+    "certificate_store_semantic_witnesses": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run048_semantic_witnesses.jsonl",
+    "enriched_certificate_manifest": "reports/runs/RUN-048-certificate-semantic-witness-enrichment/enriched_certificate_manifest.json",
+    "run_result": "reports/runs/RUN-048-certificate-semantic-witness-enrichment/run_result.json",
+    "semantic_witnesses": "reports/runs/RUN-048-certificate-semantic-witness-enrichment/semantic_witnesses.jsonl"
+  },
+  "build_failure_count": 0,
+  "build_failures": [],
+  "failure_reason": null,
+  "run_id": "RUN-048-certificate-semantic-witness-enrichment",
+  "schema": "collatz_lab.run048_semantic_witness_enrichment",
+  "search_launched": false,
+  "semantic_replay": {
+    "accepted": true,
+    "failure_count": 0,
+    "failures": [],
+    "status": "PASS"
+  },
+  "semantic_witness_count": 347,
+  "status": "PASS",
+  "training_launched": false,
+  "version": 1
+}

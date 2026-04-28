@@ -1,0 +1,6 @@
+$ lake build Collatz.TransitionSystem
+Build completed successfully (4 jobs).
+$ lake build Collatz.SemanticBridge
+Build completed successfully (8 jobs).
+$ lake build Collatz.Run048Proof
+Build completed successfully (11 jobs).

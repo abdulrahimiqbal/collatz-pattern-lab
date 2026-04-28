@@ -1,0 +1,22 @@
+{
+  "run_id": "RUN-048-certificate-semantic-witness-enrichment",
+  "schema": "collatz_lab.enriched_certificate_manifest",
+  "semantic_replay": {
+    "accepted": true,
+    "failure_count": 0,
+    "failures": [],
+    "status": "PASS"
+  },
+  "semantic_witness_count": 347,
+  "semantic_witness_hash": "764d3cce5c4768306097cef0950e047581937f652a74029e36c6eacbc5535264",
+  "source_artifacts": {
+    "natural_viability_kernel_certificate": "certificate_store/run045_natural_viability_kernel_certificate.json",
+    "parent_transition_certificates": "certificate_store/run046_parent_transition_certificates.jsonl",
+    "s3_debt_certificates": "certificate_store/run046_s3_debt_certificates.jsonl",
+    "s6_lemma_certificates": "certificate_store/run046_s6_lemma_certificates.jsonl",
+    "top_level_certificates": "certificate_store/run046_top_level_certificates.jsonl"
+  },
+  "source_manifest": "proof_manifest.json",
+  "status": "PASS",
+  "version": 1
+}

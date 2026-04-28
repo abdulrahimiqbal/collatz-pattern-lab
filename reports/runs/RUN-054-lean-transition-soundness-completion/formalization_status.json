@@ -1,0 +1,25 @@
+{
+  "run_id": "RUN-054-lean-transition-soundness-completion",
+  "status": "TRANSITION_SOUNDNESS_PROVED",
+  "transition_soundness": {
+    "checker_soundness_theorem": "Collatz.Reflection.checkTransitionSoundness_sound",
+    "run_instance_theorem": "Collatz.run051TransitionSoundness_sound",
+    "actual_transition_edges": 135,
+    "ranking_support_edges": 182,
+    "s3_edges_required_for_edge_semantics": 0
+  },
+  "final_theorems": {
+    "run051_descent": false,
+    "collatz_conjecture": false
+  },
+  "remaining_components": [
+    "checkEntry_sound",
+    "checkCoverage_sound",
+    "checkNoEscape_sound",
+    "checkWellFounded_sound"
+  ],
+  "hard_rule_audit": {
+    "axiom_sorry_admit": "PASS",
+    "python_strict_replay": "PASS"
+  }
+}

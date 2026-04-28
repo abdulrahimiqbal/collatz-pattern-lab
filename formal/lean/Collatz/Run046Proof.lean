@@ -1,4 +1,4 @@
-import Collatz.Run046Data
+import Collatz.SemanticBridge
 
 /-!
 RUN-047 Lean replay wrapper for final RUN-045/RUN-046 certificate data.
@@ -49,5 +49,10 @@ theorem run046_top_level_check :
 theorem run046_top_level_sound :
     TopLevelCertificatesImplyDescent run046TopLevelCerts :=
   checkTopLevelCertBundle_sound run046TopLevelCerts run046_top_level_check
+
+theorem run046_even_case_descent
+    (n : Nat) (hn : n > 1) (heven : n % 2 = 0) :
+    eventually_descends n :=
+  even_semantic_descent n hn heven
 
 end Collatz

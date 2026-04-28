@@ -1,0 +1,20 @@
+{
+  "run_id": "RUN-050-lean-abstract-transition-system-bridge",
+  "schema": "collatz_lab.lean_abstract_transition_system_bridge_status",
+  "status": "ABSTRACT_SYSTEM_THEOREM_PROVED",
+  "version": 1,
+  "abstract_theorem": "certified_transition_system_implies_descent",
+  "run048_descent_declared": false,
+  "collatz_conjecture_declared": false,
+  "missing_semantic_fields": [
+    "MISSING_S3_SEMANTIC_ROLE_FIELD",
+    "MISSING_S6_PROOF_TREE_SEMANTICS",
+    "MISSING_KERNEL_TO_PATH_SEMANTIC_LINK",
+    "MISSING_TOP_LEVEL_COVERAGE_DOMAIN_MAP"
+  ],
+  "verification": {
+    "lean_transition_system_build": "PASS",
+    "lean_semantic_bridge_build": "PASS",
+    "lean_run048_proof_build": "PASS"
+  }
+}

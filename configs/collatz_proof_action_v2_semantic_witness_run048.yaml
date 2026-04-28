@@ -1,0 +1,5 @@
+semantic_witness_run048:
+  out_dir: reports/runs/RUN-048-certificate-semantic-witness-enrichment
+  manifest: proof_manifest.json
+  natural_viability_kernel_certificate: certificate_store/run045_natural_viability_kernel_certificate.json
+  write_repo_replay_bundle: false

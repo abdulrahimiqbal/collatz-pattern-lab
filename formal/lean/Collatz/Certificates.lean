@@ -40,6 +40,22 @@ deriving Repr, DecidableEq
 
 abbrev S4ParentMapCert := S4TransitionCert
 
+structure S4ParentTransitionSemanticWitness where
+  certificateId : String
+  sourceParent : Nat
+  targetParent : Nat
+  valuation : Nat
+  sourceDepth : Nat
+  sourceResidue : Nat
+  baseBurstDivisionExponent : Nat
+  standardStepCount : Nat
+  mapA : Nat
+  mapB : Nat
+  mapD : Nat
+  c : Nat
+  semanticWitnessHash : String
+deriving Repr, DecidableEq
+
 structure S3ExactCongruenceCert where
   typeName : String
   branchId : String

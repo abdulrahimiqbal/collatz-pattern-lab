@@ -1,0 +1,40 @@
+{
+  "run_id": "RUN-053-lean-reflection-certified-system",
+  "status": "TRANSITION_SOUNDNESS_GAP",
+  "training_launched": false,
+  "search_launched": false,
+  "lean_modules_built": [
+    "Collatz.CertifiedSystem",
+    "Collatz.ReflectionCheckers",
+    "Collatz.Run051Bundle",
+    "Collatz.Run051ReflectionProof"
+  ],
+  "reflection_bundle": {
+    "typed_node_ids": true,
+    "typed_edge_ids": true,
+    "typed_cert_ids": true,
+    "bundle_generated": true
+  },
+  "component_checks": {
+    "run051Entry_check": true,
+    "run051Coverage_check": true,
+    "run051TransitionSoundness_check": true,
+    "run051NoEscape_check": true,
+    "run051WellFounded_check": true,
+    "run051DescentImplication_check": true,
+    "run051Bundle_check": true
+  },
+  "soundness_theorems": {
+    "checkEntry_sound": false,
+    "checkCoverage_sound": false,
+    "checkTransitionSoundness_sound": false,
+    "checkNoEscape_sound": false,
+    "checkWellFounded_sound": false,
+    "checkCertifiedSystemBundle_sound": false
+  },
+  "final_theorems": {
+    "run051_descent": false,
+    "collatz_conjecture": false
+  },
+  "reason": "The finite typed reflection bundle and component checks build, but the checker-to-semantic soundness theorems would require typed SystemEdge/domain/no-escape constructors not present in the current payloads."
+}

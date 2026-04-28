@@ -1,0 +1,30 @@
+{
+  "conclusion": "NoInfiniteInternalParentPathOverNat",
+  "divisibility_family": {
+    "distance_form": "denominator*q - numerator",
+    "kernel_congruence_depth_unbounded": true,
+    "repeat_forces_divisibility_by": "2^(53*n)",
+    "source": "guarded viability kernel refinement",
+    "statement": "for every N, 2^N divides denominator*q - numerator"
+  },
+  "kernel_certificate_id": "51669b9eb61f83edd0af54022241cc88895a04a460af0bf2a6499af2cec4e8d7",
+  "kernel_fixed_point": {
+    "denominator": 141087436042258129,
+    "numerator": -580126354671
+  },
+  "kind": "NATURAL_KERNEL_TO_PATH_LINK",
+  "no_nat_in_kernel": {
+    "reason": "denominator*q - numerator is positive nonzero for q >= 1 and cannot be divisible by all powers of 2",
+    "therefore_no_positive_integer_q_in_kernel": true
+  },
+  "run_id": "RUN-051-semantic-payload-enrichment-for-lean-bridge",
+  "scc_id": "P12_P24_internal_s4",
+  "schema": "collatz_lab.run051_semantic_payload",
+  "semantic_payload_hash": "b929a580b2bc5ee855103d2e10fe21c952c1bc7e810ece3c455b6ceb9aa24cd8",
+  "semantic_validation": {
+    "failures": [],
+    "status": "PASS"
+  },
+  "statement": "Any infinite internal guarded path over Nat induces membership in the surviving viability kernel.",
+  "version": 1
+}

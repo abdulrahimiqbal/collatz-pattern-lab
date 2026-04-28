@@ -1,0 +1,7 @@
+semantic_payload_enrichment_run051:
+  out_dir: reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge
+  manifest: proof_manifest.json
+  natural_viability_kernel_certificate: certificate_store/run045_natural_viability_kernel_certificate.json
+  run048_semantic_witnesses: certificate_store/run048_semantic_witnesses.jsonl
+  run050_missing_semantic_gaps: reports/runs/RUN-050-lean-abstract-transition-system-bridge/missing_semantic_gaps.md
+  write_repo_replay_bundle: false
