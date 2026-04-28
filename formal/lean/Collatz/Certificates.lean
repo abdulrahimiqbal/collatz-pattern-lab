@@ -21,7 +21,24 @@ structure S4TransitionCert where
   parentFloor : Nat
   membershipTargetParent : Nat
   certificateHash : String
+  hasParentMapPayload : Bool := false
+  mapA : Nat := 0
+  mapB : Nat := 0
+  mapD : Nat := 0
+  baseBurstDivisionExponent : Nat := 0
+  domainModulus : Nat := 0
+  domainResidue : Nat := 0
+  minimumQ : Nat := 0
+  sourceDepth : Nat := 0
+  sourceResidue : Nat := 0
+  parentCoordinateMapCertificateHash : String := ""
+  parentCoordinateMapCertificateId : String := ""
+  parentCoordinateMapReplays : Bool := false
+  parentCoordinateIntegralityProven : Bool := false
+  parentCoordinatePositivityProven : Bool := false
 deriving Repr, DecidableEq
+
+abbrev S4ParentMapCert := S4TransitionCert
 
 structure S3ExactCongruenceCert where
   typeName : String
@@ -77,6 +94,21 @@ structure S6LemmaCert where
   blockerType : String
   dependencyIds : List String
   certificateHash : String
+  hasExactPayload : Bool := false
+  dependencyHashCount : Nat := 0
+  dependencyReplayPayloadCount : Nat := 0
+  coverageCertificateCount : Nat := 0
+  noEscapeCertificateCount : Nat := 0
+  rankingOrInductionCertificateCount : Nat := 0
+  residualParentCertificateCount : Nat := 0
+  s3DebtExactCertificateCount : Nat := 0
+  s4ParentTransitionCertificateCount : Nat := 0
+  allDependenciesPresent : Bool := false
+  allDependenciesHashMatch : Bool := false
+  allDependenciesReplayPass : Bool := false
+  closesTargetBlocker : Bool := false
+  statementMatchesBlocker : Bool := false
+  status : Bool := false
 deriving Repr, DecidableEq
 
 structure ResidualParentCert where
@@ -89,7 +121,152 @@ structure ResidualParentCert where
   rankingDeltaNum : Nat
   rankingDeltaDen : Nat
   certificateHash : String
+deriving Repr, DecidableEq, Inhabited
+
+structure NaturalViabilityKernelCert where
+  numerator : Int
+  denominator : Nat
+  denominatorOdd : Bool
+  numeratorNegative : Bool
+  status : Bool
+  mapA : Nat := 0
+  mapB : Nat := 0
+  mapD : Nat := 0
+  lassoDepth : Nat := 0
+  fixedPointEquation : Bool := false
+  lassoDenominatorIsPowerOfTwo : Bool := false
+  lassoMultiplierIsOdd : Bool := false
+  kernelCongruenceDepthUnbounded : Bool := false
+  anyNaturalQHasFiniteDistance : Bool := false
+  thereforeNoPositiveIntegerQInKernel : Bool := false
+  certificateHash : String := ""
 deriving Repr, DecidableEq
+
+structure UniversalEntryCert where
+  certificateId : String := ""
+  certificateHash : String := ""
+  certificateType : String := ""
+  theoremStatement : String := ""
+  replayStatus : Bool := false
+  strictReplay : Bool := false
+  status : Bool := false
+  evenDenominatorPositive : Bool := false
+  evenStrictDescentForKGeOne : Bool := false
+  oddExactReconstruction : Bool := false
+  oddNPlusOnePositive : Bool := false
+  oddQuotientAfterV2 : Bool := false
+  oddPowerTwoDivides : Bool := false
+deriving Repr, DecidableEq, Inhabited
+
+structure CoverageDomain where
+  domainId : String := ""
+  kind : String := ""
+  modulus : Nat := 0
+  residueStart : Nat := 0
+  residueEndExclusive : Nat := 0
+  parentLevel : Nat := 0
+deriving Repr, DecidableEq, Inhabited
+
+structure ParentStateCoverageCert where
+  certificateId : String := ""
+  certificateHash : String := ""
+  certificateType : String := ""
+  replayStatus : Bool := false
+  strictReplay : Bool := false
+  status : Bool := false
+  requiredDomains : List CoverageDomain := []
+  coveredDomains : List CoverageDomain := []
+  uncoveredDomainCount : Nat := 0
+  lowerExpectedS3 : Nat := 0
+  lowerExpectedS4 : Nat := 0
+  lowerExpectedS6 : Nat := 0
+  lowerPassedS3 : Nat := 0
+  lowerPassedS4 : Nat := 0
+  lowerPassedS6 : Nat := 0
+  lowerLayerStatus : Bool := false
+  parentResidual : ResidualParentCert := {
+    certificateId := "",
+    parentLevel := 0,
+    modulus := 0,
+    residualStart := 0,
+    residualEnd := 0,
+    pathNodeCount := 0,
+    rankingDeltaNum := 0,
+    rankingDeltaDen := 0,
+    certificateHash := ""
+  }
+deriving Repr, DecidableEq, Inhabited
+
+structure TransitionSoundnessCert where
+  certificateId : String := ""
+  certificateHash : String := ""
+  certificateType : String := ""
+  replayStatus : Bool := false
+  strictReplay : Bool := false
+  status : Bool := false
+  expectedS3 : Nat := 0
+  expectedS4 : Nat := 0
+  expectedS6 : Nat := 0
+  s3ExactCertificateCount : Nat := 0
+  s3ExactReplayPass : Nat := 0
+  s4ExactCertificateCount : Nat := 0
+  s4ExactReplayPass : Nat := 0
+  s6ExactCertificateCount : Nat := 0
+  s6ExactReplayPass : Nat := 0
+  failureCount : Nat := 0
+deriving Repr, DecidableEq, Inhabited
+
+structure RankedEdgeCheck where
+  edgeId : String := ""
+  source : String := ""
+  target : String := ""
+  sourceRank : Nat := 0
+  targetRank : Nat := 0
+  decreases : Bool := false
+deriving Repr, DecidableEq, Inhabited
+
+structure GuardedSccCheck where
+  sccId : String := ""
+  proofKind : String := ""
+  status : Bool := false
+  coveredEdgeCount : Nat := 0
+deriving Repr, DecidableEq, Inhabited
+
+structure WellFoundedRankingCert where
+  certificateId : String := ""
+  certificateHash : String := ""
+  certificateType : String := ""
+  replayStatus : Bool := false
+  strictReplay : Bool := false
+  status : Bool := false
+  domain : String := ""
+  wellFoundedOrder : String := ""
+  nonterminalEdgeCount : Nat := 0
+  terminalEdgeCount : Nat := 0
+  transitionEdgeCount : Nat := 0
+  nondecreasingEdgeCount : Nat := 0
+  unresolvedSccCount : Nat := 0
+  edgeChecks : List RankedEdgeCheck := []
+  sccChecks : List GuardedSccCheck := []
+deriving Repr, DecidableEq, Inhabited
+
+structure DescentImplicationCert where
+  certificateId : String := ""
+  certificateHash : String := ""
+  certificateType : String := ""
+  replayStatus : Bool := false
+  strictReplay : Bool := false
+  status : Bool := false
+  descentTheoremStatement : String := ""
+  collatzConjectureStatement : String := ""
+  blockedByCount : Nat := 0
+  baseCaseN : Nat := 0
+  baseCaseReachesOne : Bool := false
+  universalEntryHash : String := ""
+  parentStateCoverageHash : String := ""
+  transitionSoundnessHash : String := ""
+  wellFoundedRankingHash : String := ""
+deriving Repr, DecidableEq, Inhabited
 
 structure TopLevelCertBundle where
   universalEntryHash : String
@@ -102,6 +279,11 @@ structure TopLevelCertBundle where
   acceptedNodeCount : Nat
   totalNodeCount : Nat
   openNodeCount : Nat
+  universalEntry : UniversalEntryCert := {}
+  parentStateCoverage : ParentStateCoverageCert := {}
+  transitionSoundness : TransitionSoundnessCert := {}
+  wellFoundedRanking : WellFoundedRankingCert := {}
+  descentImplication : DescentImplicationCert := {}
 deriving Repr, DecidableEq
 
 structure Run024Manifest where

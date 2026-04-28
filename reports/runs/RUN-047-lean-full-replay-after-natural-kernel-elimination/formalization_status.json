@@ -1,0 +1,22 @@
+{
+  "schema": "collatz_lab.run047_lean_formalization_status",
+  "version": 1,
+  "run_id": "RUN-047-lean-full-replay-after-natural-kernel-elimination",
+  "status": "FORMALIZATION_GAP",
+  "lean_modules": {
+    "Collatz.Run046Data": "PASS",
+    "Collatz.Run046Proof": "PASS"
+  },
+  "formalized_claims": [
+    "run046_s3_sound : AllS3DebtClaims run046S3DebtCerts",
+    "run046_s4_sound : AllS4ParentMapClaims run046S4ParentMapCerts",
+    "run046_s6_sound : AllS6LemmaClaims run046S6LemmaCerts",
+    "run046_kernel_empty : NaturalViabilityKernelEmpty run046NaturalKernelCert",
+    "run046_top_level_sound : TopLevelCertificatesImplyDescent run046TopLevelCerts"
+  ],
+  "not_formalized": [
+    "run046_descent : DescentTheorem",
+    "collatz_conjecture : CollatzConjecture"
+  ],
+  "reason": "Lean now checks final RUN-045/RUN-046 payload arithmetic and structural certificate consistency, but the semantic bridge from checked S6/top-level payloads to DescentTheorem is still missing."
+}

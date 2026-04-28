@@ -1,0 +1,36 @@
+{
+  "run_name": "RUN-047-lean-full-replay-after-natural-kernel-elimination",
+  "status": "FORMALIZATION_GAP",
+  "blocker_type": "LEAN_SEMANTIC_BRIDGE_GAP",
+  "python_prerequisite": {
+    "run": "RUN-046-top-level-after-natural-kernel-elimination",
+    "strict_verifier": "PASS",
+    "proof_confidence_percent": 100.0,
+    "clean_manifest_replay": "PASS"
+  },
+  "lean_replay": {
+    "lake_build_Collatz_Run046Proof": "PASS",
+    "lake_env_lean_CollatzProofCandidate": "PASS",
+    "no_banned_construct_scan": "PASS"
+  },
+  "formalized_components": [
+    "RUN-028/RUN-046 S3 exact debt checker",
+    "RUN-034/RUN-046 S4 parent-map arithmetic checker",
+    "RUN-035/RUN-046 S6 payload consistency checker",
+    "RUN-045 natural viability-kernel arithmetic checker",
+    "RUN-046 top-level certificate consistency checker"
+  ],
+  "missing_formal_components": [
+    "S3 checked debt claims to actual Collatz iterate semantics",
+    "S4 checked parent-map claims to actual parent-state transition semantics",
+    "S6 checked dependency payloads to coverage/no-escape/induction/lifting lemmas",
+    "Top-level coverage domains to universal parent-state coverage",
+    "Well-founded ranking metadata to absence of infinite non-descending Collatz paths",
+    "Top-level checked certificate bundle to DescentTheorem"
+  ],
+  "missing_theorems": [
+    "run046_descent : DescentTheorem",
+    "collatz_conjecture : CollatzConjecture"
+  ],
+  "no_fake_proof": true
+}
