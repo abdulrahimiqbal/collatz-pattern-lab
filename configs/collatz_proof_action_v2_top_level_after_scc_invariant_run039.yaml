@@ -1,0 +1,10 @@
+run:
+  run_id: RUN-039-top-level-after-scc-invariant
+  description: Top-level replay gate after RUN-038 SCC invariant discovery
+
+top_level_after_scc_invariant_run039:
+  out_dir: reports/runs/RUN-039-top-level-after-scc-invariant
+  run038_dir: reports/runs/RUN-038-scc-invariant-discovery
+  run038_result: reports/runs/RUN-038-scc-invariant-discovery/run_result.json
+  run038_obstruction: reports/runs/RUN-038-scc-invariant-discovery/minimal_invariant_obstruction.json
+  manifest: proof_manifest.json

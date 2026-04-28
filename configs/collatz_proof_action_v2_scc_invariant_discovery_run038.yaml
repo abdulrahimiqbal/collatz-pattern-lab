@@ -1,0 +1,16 @@
+run:
+  run_id: RUN-038-scc-invariant-discovery
+  description: Exact SCC invariant/ranking discovery over RUN-036 parent-coordinate maps
+
+scc_invariant_discovery_run038:
+  out_dir: reports/runs/RUN-038-scc-invariant-discovery
+  run030_dir: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  run036_dir: reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps
+  unresolved_sccs: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/unresolved_sccs.jsonl
+  parent_transition_certificates: certificate_store/run035_parent_transition_certificates.jsonl
+  s3_debt_certificates: certificate_store/run035_s3_debt_certificates.jsonl
+  s6_lemma_certificates: certificate_store/run035_s6_lemma_certificates.jsonl
+  s4_parent_coordinate_maps: certificate_store/run035_parent_coordinate_map_certificates.jsonl
+  manifest: proof_manifest.json
+  cycle_cap: 20000
+  refinement_modulus_cap: 4096
