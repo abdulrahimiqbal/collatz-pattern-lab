@@ -1,0 +1,10 @@
+{
+  "coverage_preserved": true,
+  "input_edge_count": 106,
+  "reason": "target parent-coordinate domains are absent",
+  "refined_edge_count": 106,
+  "run_id": "RUN-033-exact-scc-cycle-ranking-certificate",
+  "schema": "collatz_lab.run033_refinement_summary",
+  "status": "NOT_RANKED",
+  "version": 1
+}

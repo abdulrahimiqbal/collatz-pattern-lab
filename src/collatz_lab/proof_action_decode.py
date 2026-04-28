@@ -260,6 +260,55 @@ def _s6_lemma_certificate_replays(parsed: dict[str, Any], facts: dict[str, Any])
     return None
 
 
+def _s3_debt_certificate_fact(facts: dict[str, Any], branch_id: str) -> dict[str, Any] | None:
+    for row in _fact_rows(facts, "s3_debt_certificate"):
+        if str(row.get("branch_id", "")) == branch_id:
+            return row
+    return None
+
+
+def _s3_debt_certificate_payload(row: dict[str, Any]) -> dict[str, Any] | None:
+    return (
+        _decode_json_payload(row.get("certificate_payload"))
+        or _decode_json_payload(row.get("s3_debt_certificate"))
+        or _decode_json_payload(row.get("proof_payload"))
+    )
+
+
+def _s3_status_only_debt_fact(debt: dict[str, Any]) -> bool:
+    return "exact_congruence_passed" in debt or "local_descent_passed" in debt
+
+
+def _s3_debt_certificate_replays(parsed: dict[str, Any], facts: dict[str, Any], state: str) -> ActionCheck | None:
+    branch_id = str(parsed["branch_id"])
+    row = _s3_debt_certificate_fact(facts, branch_id)
+    debt = facts.get("debt_transition") or {}
+    if row is None:
+        if _s3_status_only_debt_fact(debt):
+            return ActionCheck(False, "REJECT_S3_DEBT_STATUS_ONLY", "S3 debt transition has only legacy status booleans")
+        return ActionCheck(False, "REJECT_MISSING_S3_DEBT_CERTIFICATE", "S3 debt certificate is not present in the state")
+    certificate = _s3_debt_certificate_payload(row)
+    if certificate is None:
+        if str(row.get("status", "")) in {"PASS", "ACCEPT"}:
+            return ActionCheck(False, "REJECT_S3_DEBT_STATUS_ONLY", "S3 debt certificate fact has status but no replay payload")
+        return ActionCheck(False, "REJECT_MISSING_S3_DEBT_CERTIFICATE", "S3 debt certificate payload is missing")
+    expected_hash = str(row.get("certificate_hash", "") or "")
+    cert_hash = str(certificate.get("certificate_hash", "") or "")
+    if expected_hash and expected_hash != cert_hash:
+        return ActionCheck(False, "REJECT_S3_DEBT_HASH_MISMATCH", "S3 debt certificate hash does not match state fact")
+
+    from .proof_action_s3_debt_cert import replay_s3_debt_certificate
+
+    replay = replay_s3_debt_certificate(certificate, action=parsed, state=state)
+    if not replay.accepted:
+        if replay.status == "REJECT_S3_DEBT_HASH_MISMATCH":
+            return ActionCheck(False, "REJECT_S3_DEBT_HASH_MISMATCH", replay.reason)
+        if replay.status == "REJECT_S3_DEBT_STATUS_ONLY":
+            return ActionCheck(False, "REJECT_S3_DEBT_STATUS_ONLY", replay.reason)
+        return ActionCheck(False, "REJECT_S3_DEBT_REPLAY_FAIL", replay.reason)
+    return None
+
+
 def _residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_end: int) -> bool:
     if residual_end <= residual_start:
         return False
@@ -365,11 +414,10 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
         for field in ("branch_id", "valuation", "gain_num", "gain_den"):
             if field in debt and parsed[field] != debt[field]:
                 return ActionCheck(False, "REJECT_FIELD_MISMATCH", f"{field} does not match debt transition")
-        if not debt.get("exact_congruence_passed", False):
-            return ActionCheck(False, "REJECT_CONGRUENCE", "debt transition exact congruence failed")
-        if int(parsed["gain_num"]) < int(parsed["gain_den"]) and debt.get("local_descent_passed", False):
-            return ActionCheck(True, "ACCEPT", "exact local debt transition decreases", closed_obligation=True, progress=1.0)
-        return ActionCheck(False, "REJECT_NO_DECREASE", "gain bound is not a local decrease")
+        certificate_failure = _s3_debt_certificate_replays(parsed, facts, state)
+        if certificate_failure is not None:
+            return certificate_failure
+        return ActionCheck(True, "ACCEPT", "exact S3 debt certificate replays", closed_obligation=True, progress=1.0)
 
     if action_type == "DERIVE_PARENT_TRANSITION":
         fact = facts.get("high_parent_successor") or {}
@@ -413,7 +461,8 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
         return ActionCheck(False, "REJECT_CANONICAL_ORDER", "residues must be sorted")
 
     if action_type == "CLOSE_BY_VERIFIER":
-        if str(parsed["status"]) == "PASS" and "PASS" in state:
+        strict_statuses = _fact_values(facts, "strict_verifier_status", "theorem_verifier_status", "verifier_status")
+        if str(parsed["status"]) == "PASS" and "PASS" in strict_statuses:
             return ActionCheck(True, "ACCEPT", "state already carries verifier PASS", closed_obligation=True, progress=1.0)
         return ActionCheck(False, "REJECT_STRICT_VERIFIER", "strict verifier has not passed in this state")
 

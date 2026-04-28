@@ -1,0 +1,8 @@
+s6_after_s3_hardening:
+  run_id: RUN-029-refresh-s6-lemma-payloads-after-s3-hardening
+  out_dir: reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening
+  proof_graph: certificate_store/run028_proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/run028_accepted_action_trace.jsonl
+  s3_debt_certificates: certificate_store/run028_s3_debt_certificates.jsonl
+  parent_transition_certificates: reports/runs/RUN-022-exact-s4-parent-transition-certificates/parent_transition_certificates.jsonl
+  write_repo_replay_bundle: true

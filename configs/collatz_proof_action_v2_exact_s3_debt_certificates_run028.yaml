@@ -1,0 +1,6 @@
+s3_debt_certificates:
+  run_id: RUN-028-exact-s3-debt-certificates
+  out_dir: reports/runs/RUN-028-exact-s3-debt-certificates
+  proof_graph: certificate_store/run024_proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/run024_accepted_action_trace.jsonl
+  write_repo_replay_bundle: true

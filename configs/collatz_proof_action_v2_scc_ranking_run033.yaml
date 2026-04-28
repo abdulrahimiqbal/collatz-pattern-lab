@@ -1,0 +1,10 @@
+run:
+  run_id: RUN-033-exact-scc-cycle-ranking-certificate
+  description: Exact SCC cycle-composition and ranking-certificate attempt for the RUN-030 P12-P24 blocker
+
+scc_ranking_run033:
+  out_dir: reports/runs/RUN-033-exact-scc-cycle-ranking-certificate
+  run030_dir: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  unresolved_sccs: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/unresolved_sccs.jsonl
+  parent_transition_certificates: certificate_store/run030_parent_transition_certificates.jsonl
+  manifest: proof_manifest.json

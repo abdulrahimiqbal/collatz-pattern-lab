@@ -1,0 +1,10 @@
+run:
+  run_id: RUN-037-top-level-after-scc-ranking
+  description: Top-level refresh gate after RUN-036 SCC ranking attempt
+
+top_level_after_scc_ranking_run037:
+  out_dir: reports/runs/RUN-037-top-level-after-scc-ranking
+  run036_dir: reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps
+  run036_result: reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/run_result.json
+  run036_obstruction: reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/minimal_ranking_obstruction.json
+  manifest: proof_manifest.json

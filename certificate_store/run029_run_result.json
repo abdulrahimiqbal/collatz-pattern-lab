@@ -1,0 +1,47 @@
+{
+  "artifacts": {
+    "accepted_action_trace": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/accepted_action_trace_s6_refreshed.jsonl",
+    "final_proof_object": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/final_proof_object.json",
+    "parent_transition_certificates": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/parent_transition_certificates.jsonl",
+    "proof_dependency_graph_frozen": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/proof_dependency_graph_s6_refreshed.json",
+    "s3_debt_certificates": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/s3_debt_certificates.jsonl",
+    "s3_exact_dependency_replay_report": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/s3_exact_dependency_replay_report.json",
+    "s6_lemma_certificates": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/s6_lemma_certificates.jsonl",
+    "s6_lemma_replay_report": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/s6_lemma_replay_report.json"
+  },
+  "big_model_launched": false,
+  "failed_s6_lemma_certificate_count": 0,
+  "failed_s6_lemma_certificates": [],
+  "generated_s6_lemma_certificate_count": 28,
+  "hash_failure_count": 0,
+  "proof_confidence_percent": 0.0,
+  "root_unsound_certificates": [
+    {
+      "count": 3,
+      "node_type": "STRICT_THEOREM_TOP_LEVEL",
+      "reason": "closed graph lacks explicit universal entry, coverage, transition, ranking, and descent certificates",
+      "required_fix": "provide replayable top-level theorem certificates with hashes and proof payloads"
+    }
+  ],
+  "run_id": "RUN-029-refresh-s6-lemma-payloads-after-s3-hardening",
+  "s3_exact_certificate_count": 182,
+  "s3_exact_replay_pass": 182,
+  "s4_exact_certificate_count": 135,
+  "s6_lemma_blockers_after": 0,
+  "s6_lemma_blockers_before": 28,
+  "s6_lemma_replay_pass": 28,
+  "schema": "collatz_lab.run029_refresh_s6_lemma_payloads_after_s3_hardening",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "strict_errors": [
+    "unknown obligations remain: 3",
+    "coverage is not universal over all parent states P_a",
+    "top-level certificate parent_state_coverage_certificate does not replay",
+    "top-level certificate transition_soundness_certificate does not replay",
+    "top-level certificate well_founded_ranking_certificate does not replay"
+  ],
+  "strict_verifier": "FAIL",
+  "training_launched": false,
+  "verifier_status": "FAIL",
+  "version": 1
+}

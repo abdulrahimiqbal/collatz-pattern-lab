@@ -202,7 +202,8 @@ def replay_parent_transition_certificate(
     missing = sorted(required - set(certificate))
     if missing:
         return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", f"missing transition certificate fields: {missing}")
-    if str(certificate.get("type")) != "HIGH_PARENT_SUCCESSOR_EXACT":
+    certificate_type = str(certificate.get("type"))
+    if certificate_type not in {"HIGH_PARENT_SUCCESSOR_EXACT", "HIGH_PARENT_SUCCESSOR_EXACT_WITH_PARENT_MAP"}:
         return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "unsupported transition certificate type")
     if str(certificate.get("status")) != "PASS":
         return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "transition certificate status is not PASS")
@@ -274,6 +275,17 @@ def replay_parent_transition_certificate(
     cert_hash = certificate.get("certificate_hash")
     if cert_hash and str(cert_hash) != _certificate_hash(certificate):
         return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "transition certificate hash mismatch")
+    if certificate_type == "HIGH_PARENT_SUCCESSOR_EXACT_WITH_PARENT_MAP":
+        parent_map = certificate.get("parent_coordinate_map")
+        if not isinstance(parent_map, dict) or not parent_map:
+            return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "map-enriched transition certificate is missing parent_coordinate_map")
+        from .proof_action_parent_coordinate_map import derive_parent_coordinate_map
+
+        expected_map, map_failures = derive_parent_coordinate_map(certificate)
+        if map_failures:
+            return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", f"parent-coordinate map derivation failed: {map_failures}")
+        if parent_map != expected_map:
+            return ActionCheck(False, "REJECT_TRANSITION_CERTIFICATE", "parent-coordinate map payload mismatch")
     return ActionCheck(True, "ACCEPT", "exact symbolic parent-transition certificate replays", progress=0.6)
 
 

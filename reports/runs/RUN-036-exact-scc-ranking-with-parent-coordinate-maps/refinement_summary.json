@@ -1,0 +1,10 @@
+{
+  "coverage_preserved": true,
+  "input_edge_count": 106,
+  "reason": "cycle-domain-compatible refinement/ranking invariant is still required",
+  "refined_edge_count": 106,
+  "run_id": "RUN-036-exact-scc-ranking-with-parent-coordinate-maps",
+  "schema": "collatz_lab.run036_refinement_summary",
+  "status": "NOT_RANKED",
+  "version": 1
+}

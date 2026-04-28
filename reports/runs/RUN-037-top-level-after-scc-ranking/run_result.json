@@ -1,0 +1,27 @@
+{
+  "artifacts": {
+    "ranking_obstruction": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/minimal_ranking_obstruction.json",
+    "root_manifest_replay_result": "reports/runs/RUN-037-top-level-after-scc-ranking/root_manifest_replay_result.json",
+    "run_result": "reports/runs/RUN-037-top-level-after-scc-ranking/run_result.json"
+  },
+  "big_model_launched": false,
+  "hash_failure_count": 0,
+  "proof_confidence_percent": 0.0,
+  "ranking_obstruction": {
+    "affine_edge_map_pass": 106,
+    "classification": "CYCLE_COMPOSITION_NOT_DESCENDING",
+    "cycle_obstruction_count": 20000,
+    "exact_missing_invariant_type": "cycle-domain-compatible ranking over parent coordinate, valuation residue, or debt; simple q-affine cycle descent is insufficient",
+    "run036_status": "CYCLE_COMPOSITION_NOT_DESCENDING",
+    "scc_internal_edge_count": 106
+  },
+  "run_id": "RUN-037-top-level-after-scc-ranking",
+  "schema": "collatz_lab.run037_top_level_after_scc_ranking",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "status": "BLOCKED_BY_RUN036_RANKING_OBSTRUCTION",
+  "strict_verifier": "FAIL",
+  "top_level_replay_pass": 0,
+  "training_launched": false,
+  "version": 1
+}

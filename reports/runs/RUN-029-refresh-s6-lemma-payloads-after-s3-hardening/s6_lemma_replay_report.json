@@ -1,0 +1,10 @@
+{
+  "failed_certificate_count": 0,
+  "failed_certificates": [],
+  "hash_failure_count": 0,
+  "run_id": "RUN-029-refresh-s6-lemma-payloads-after-s3-hardening",
+  "s6_lemma_certificate_count": 28,
+  "s6_lemma_replay_pass": 28,
+  "schema": "collatz_lab.run029_s6_lemma_replay_report",
+  "version": 1
+}

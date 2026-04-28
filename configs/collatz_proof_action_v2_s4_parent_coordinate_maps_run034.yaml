@@ -1,0 +1,15 @@
+run:
+  run_id: RUN-034-exact-s4-parent-coordinate-maps
+  description: Enrich exact S4 parent-transition certificates with replayable parent-coordinate q maps
+
+s4_parent_coordinate_maps_run034:
+  out_dir: reports/runs/RUN-034-exact-s4-parent-coordinate-maps
+  proof_graph: certificate_store/run030_proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/run030_accepted_action_trace.jsonl
+  s3_debt_certificates: certificate_store/run030_s3_debt_certificates.jsonl
+  parent_transition_certificates: certificate_store/run030_parent_transition_certificates.jsonl
+  s6_lemma_certificates: certificate_store/run030_s6_lemma_certificates.jsonl
+  parent_residual_certificate: certificate_store/run030_parent_residual_certificate.json
+  top_level_certificates: certificate_store/run030_top_level_certificates.jsonl
+  scc_internal_edges: reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_internal_edges.jsonl
+  write_repo_replay_bundle: true

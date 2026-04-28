@@ -1,0 +1,8 @@
+{
+  "failed": [],
+  "run_id": "RUN-029-refresh-s6-lemma-payloads-after-s3-hardening",
+  "s3_exact_certificate_count": 182,
+  "s3_exact_replay_pass": 182,
+  "schema": "collatz_lab.run029_s3_exact_dependency_replay_report",
+  "version": 1
+}

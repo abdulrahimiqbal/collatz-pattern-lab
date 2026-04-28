@@ -83,9 +83,9 @@ def test_run024_generates_top_level_certificates_and_clean_replay(tmp_path) -> N
 
     assert result["top_level_certificates_generated"] == 5
     assert result["top_level_certificates_replay_pass"] == 5
-    assert result["strict_verifier"] == "PASS"
-    assert result["proof_confidence_percent"] == 100.0
-    assert replay["audit_status"] == "PASS"
+    assert result["strict_verifier"] == "FAIL"
+    assert result["proof_confidence_percent"] == 0.0
+    assert replay["audit_status"] == "PASS_FOR_VERIFIER_SOUNDNESS"
     assert replay["hash_failure_count"] == 0
 
 
@@ -114,4 +114,3 @@ def test_manifest_hash_mismatch_fails(tmp_path) -> None:
 
     assert result["audit_status"] == "FAIL_REPRODUCTION"
     assert result["hash_failure_count"] == 1
-

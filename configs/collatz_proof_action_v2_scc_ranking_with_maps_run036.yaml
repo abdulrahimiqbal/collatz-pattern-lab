@@ -1,0 +1,11 @@
+run:
+  run_id: RUN-036-exact-scc-ranking-with-parent-coordinate-maps
+  description: Exact SCC cycle/ranking attempt using RUN-034 parent-coordinate maps
+
+scc_ranking_with_maps_run036:
+  out_dir: reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps
+  run030_dir: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  unresolved_sccs: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/unresolved_sccs.jsonl
+  parent_transition_certificates: certificate_store/run035_parent_transition_certificates.jsonl
+  s6_lemma_certificates: certificate_store/run035_s6_lemma_certificates.jsonl
+  cycle_cap: 20000

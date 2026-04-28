@@ -1,0 +1,30 @@
+{
+  "affine_edge_map_fail": 0,
+  "affine_edge_map_pass": 106,
+  "artifacts": {
+    "minimal_ranking_obstruction": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/minimal_ranking_obstruction.json",
+    "run_result": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/run_result.json",
+    "scc_affine_edge_maps": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_affine_edge_maps.jsonl",
+    "scc_cycle_descent_certificates": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_cycle_descent_certificates.jsonl",
+    "scc_cycle_obstructions": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_cycle_obstructions.jsonl",
+    "scc_cycles_checked": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_cycles_checked.jsonl",
+    "scc_internal_edges": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_internal_edges.jsonl",
+    "scc_ranking_certificate": "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps/scc_ranking_certificate.json"
+  },
+  "big_model_launched": false,
+  "cycle_descent_pass": 0,
+  "cycle_enumeration_cap_reached": true,
+  "cycle_obstruction_count": 20000,
+  "cycles_checked": 20000,
+  "floating_point_certificate_used": false,
+  "run_id": "RUN-036-exact-scc-ranking-with-parent-coordinate-maps",
+  "scc_internal_edge_count": 106,
+  "schema": "collatz_lab.run036_exact_scc_ranking_with_parent_coordinate_maps",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "source_run": "RUN-033-exact-scc-cycle-ranking-certificate",
+  "status": "CYCLE_COMPOSITION_NOT_DESCENDING",
+  "training_launched": false,
+  "unresolved_scc_count": 1,
+  "version": 1
+}

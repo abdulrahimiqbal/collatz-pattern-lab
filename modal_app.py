@@ -1214,6 +1214,56 @@ def run_proof_action_v2_exact_s6_lemma_payloads(
 
 
 @app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_exact_s3_debt_certificates(
+    config_path: str = "configs/collatz_proof_action_v2_exact_s3_debt_certificates_run028.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run028 import run_exact_s3_debt_certificates
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("s3_debt_certificates") or {}).get("out_dir")
+        or "reports/runs/RUN-028-exact-s3-debt-certificates"
+    )
+    result = run_exact_s3_debt_certificates(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_refresh_s6_after_s3_hardening(
+    config_path: str = "configs/collatz_proof_action_v2_refresh_s6_after_s3_hardening_run029.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run029 import run_refresh_s6_after_s3_hardening
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("s6_after_s3_hardening") or {}).get("out_dir")
+        or "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening"
+    )
+    result = run_refresh_s6_after_s3_hardening(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
 def run_proof_action_v2_top_level_theorem_certificates(
     config_path: str = "configs/collatz_proof_action_v2_top_level_theorem_certificates_run024.yaml",
     output_dir: str | None = None,
@@ -1234,6 +1284,131 @@ def run_proof_action_v2_top_level_theorem_certificates(
         or "reports/runs/RUN-024-top-level-theorem-certificates"
     )
     result = run_top_level_theorem_certificates(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_top_level_after_hardening_run030(
+    config_path: str = "configs/collatz_proof_action_v2_top_level_after_hardening_run030.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run030 import run_top_level_after_hardening
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("top_level_after_hardening_run030") or {}).get("out_dir")
+        or "reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening"
+    )
+    result = run_top_level_after_hardening(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_s4_parent_coordinate_maps_run034(
+    config_path: str = "configs/collatz_proof_action_v2_s4_parent_coordinate_maps_run034.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run034 import run_s4_parent_coordinate_maps
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("s4_parent_coordinate_maps_run034") or {}).get("out_dir")
+        or "reports/runs/RUN-034-exact-s4-parent-coordinate-maps"
+    )
+    result = run_s4_parent_coordinate_maps(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_refresh_s6_after_s4_map_hardening_run035(
+    config_path: str = "configs/collatz_proof_action_v2_refresh_s6_after_s4_map_hardening_run035.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run035 import run_refresh_s6_after_s4_map_hardening
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("s6_after_s4_map_hardening_run035") or {}).get("out_dir")
+        or "reports/runs/RUN-035-refresh-s6-after-s4-map-hardening"
+    )
+    result = run_refresh_s6_after_s4_map_hardening(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_scc_ranking_with_maps_run036(
+    config_path: str = "configs/collatz_proof_action_v2_scc_ranking_with_maps_run036.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run036 import run_scc_ranking_with_parent_maps
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("scc_ranking_with_maps_run036") or {}).get("out_dir")
+        or "reports/runs/RUN-036-exact-scc-ranking-with-parent-coordinate-maps"
+    )
+    result = run_scc_ranking_with_parent_maps(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_top_level_after_scc_ranking_run037(
+    config_path: str = "configs/collatz_proof_action_v2_top_level_after_scc_ranking_run037.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_run037 import run_top_level_after_scc_ranking
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(
+        output_dir
+        or (cfg.get("top_level_after_scc_ranking_run037") or {}).get("out_dir")
+        or "reports/runs/RUN-037-top-level-after-scc-ranking"
+    )
+    result = run_top_level_after_scc_ranking(config_path, out=_mounted_path(output_dir))
     volume.commit()
     return result
 

@@ -1,0 +1,23 @@
+{
+  "artifacts": {
+    "run_result": "reports/runs/RUN-035-refresh-s6-after-s4-map-hardening/run_result.json",
+    "s6_lemma_certificates": "reports/runs/RUN-035-refresh-s6-after-s4-map-hardening/s6_lemma_certificates.jsonl",
+    "s6_lemma_replay_report": "reports/runs/RUN-035-refresh-s6-after-s4-map-hardening/s6_lemma_replay_report.json"
+  },
+  "big_model_launched": false,
+  "failures": [],
+  "hash_failure_count": 0,
+  "regenerated_s6_lemma_certificates": 28,
+  "run_id": "RUN-035-refresh-s6-after-s4-map-hardening",
+  "s3_exact_certificate_count": 182,
+  "s3_exact_replay_pass": 182,
+  "s4_map_enriched_certificate_count": 135,
+  "s4_map_enriched_replay_pass": 135,
+  "s6_replay_pass": 28,
+  "schema": "collatz_lab.run035_refresh_s6_after_s4_map_hardening",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "strict_verifier": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

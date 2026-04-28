@@ -1,0 +1,1 @@
+{"failure_classification": "MISSING_PARENT_COORDINATE_MAP", "reason": "cycle composition requires replayed parent-coordinate affine edge maps", "status": "FAIL"}

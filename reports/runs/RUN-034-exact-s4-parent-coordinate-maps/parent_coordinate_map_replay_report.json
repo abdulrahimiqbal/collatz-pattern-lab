@@ -1,0 +1,9 @@
+{
+  "all_pass": true,
+  "certificate_count": 135,
+  "failures": [],
+  "replay_pass_count": 135,
+  "run_id": "RUN-034-exact-s4-parent-coordinate-maps",
+  "schema": "collatz_lab.parent_coordinate_map_replay_report",
+  "version": 1
+}

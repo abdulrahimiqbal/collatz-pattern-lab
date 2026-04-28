@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .proof_action_top_level_cert import build_replay_context, replay_lower_layer_context
 from .proof_verifier import build_collatz_descent_theorem_candidate
 
 
@@ -71,12 +72,58 @@ def _artifact_path(manifest: dict[str, Any], name: str, *, manifest_dir: Path) -
     raise KeyError(f"manifest artifact not found: {name}")
 
 
+def _optional_artifact_path(manifest: dict[str, Any], name: str, *, manifest_dir: Path) -> Path | None:
+    for entry in manifest.get("artifacts", []):
+        if entry.get("name") == name:
+            return _resolve_path(str(entry["path"]), manifest_dir=manifest_dir)
+    return None
+
+
+def _manifest_hashes(manifest: dict[str, Any]) -> dict[str, str]:
+    hashes: dict[str, str] = {}
+    for entry in manifest.get("artifacts", []):
+        name = str(entry.get("name", ""))
+        if name:
+            hashes[name] = str(entry.get("sha256", ""))
+    return hashes
+
+
 def _load_graph(path: Path) -> dict[str, Any]:
     payload = _read_json(path)
     graph = payload.get("graph", payload) if isinstance(payload, dict) else payload
     if not isinstance(graph, dict):
         raise ValueError(f"frozen graph artifact is not a JSON object: {path}")
     return graph
+
+
+def _load_optional_jsonl_artifact(manifest: dict[str, Any], name: str, *, manifest_dir: Path) -> list[dict[str, Any]]:
+    path = _optional_artifact_path(manifest, name, manifest_dir=manifest_dir)
+    if path is None or not path.exists():
+        return []
+    return _read_jsonl(path)
+
+
+def _load_optional_json_artifact(manifest: dict[str, Any], name: str, *, manifest_dir: Path) -> dict[str, Any]:
+    path = _optional_artifact_path(manifest, name, manifest_dir=manifest_dir)
+    if path is not None and path.exists():
+        value = _read_json(path)
+        return value if isinstance(value, dict) else {}
+    default_parent = REPO_ROOT / "certificate_store/run019_parent_residual_certificate.json"
+    if name == "parent_residual_certificate" and default_parent.exists():
+        value = _read_json(default_parent)
+        return value if isinstance(value, dict) else {}
+    return {}
+
+
+def _build_manifest_replay_context(manifest: dict[str, Any], *, manifest_dir: Path, graph: dict[str, Any]) -> dict[str, Any]:
+    return build_replay_context(
+        graph=graph,
+        s3_rows=_load_optional_jsonl_artifact(manifest, "s3_debt_certificates", manifest_dir=manifest_dir),
+        s4_rows=_load_optional_jsonl_artifact(manifest, "parent_transition_certificates", manifest_dir=manifest_dir),
+        s6_rows=_load_optional_jsonl_artifact(manifest, "s6_lemma_certificates", manifest_dir=manifest_dir),
+        parent_residual_certificate=_load_optional_json_artifact(manifest, "parent_residual_certificate", manifest_dir=manifest_dir),
+        manifest_hashes=_manifest_hashes(manifest),
+    )
 
 
 def _s4_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
@@ -99,6 +146,40 @@ def _s4_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
                         "reason": check.reason,
                     }
                 )
+    return failures
+
+
+def _s3_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
+    from .proof_action_decode import verify_action_for_state
+
+    failures: list[dict[str, Any]] = []
+    for node_id, node in graph.get("nodes", {}).items():
+        if node.get("node_type") != "S3_TRANSITION" or node.get("status") != "ACCEPTED":
+            continue
+        debt_actions = [
+            row.get("action") or {}
+            for row in node.get("accepted_actions", []) or []
+            if (row.get("action") or {}).get("type") == "CHECK_DEBT_DECREASE"
+        ]
+        if not debt_actions:
+            failures.append(
+                {
+                    "node_id": node_id,
+                    "status": "REJECT_MISSING_S3_DEBT_CERTIFICATE",
+                    "reason": "accepted S3 transition node has no CHECK_DEBT_DECREASE action",
+                }
+            )
+            continue
+        replayed = False
+        last_failure: dict[str, Any] | None = None
+        for action in debt_actions:
+            check = verify_action_for_state(action, str(node.get("state", "")))
+            if check.accepted:
+                replayed = True
+                break
+            last_failure = {"node_id": node_id, "status": check.status, "reason": check.reason}
+        if not replayed:
+            failures.append(last_failure or {"node_id": node_id, "status": "REJECT_S3_DEBT_REPLAY_FAIL", "reason": "S3 debt replay failed"})
     return failures
 
 
@@ -143,7 +224,13 @@ def _s6_graph_replay_failures(graph: dict[str, Any]) -> list[dict[str, Any]]:
     return failures
 
 
-def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str, Any], graph: dict[str, Any]) -> list[dict[str, Any]]:
+def _root_unsound_certificates(
+    trace_rows: list[dict[str, Any]],
+    proof: dict[str, Any],
+    graph: dict[str, Any],
+    *,
+    replay_context: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     roots: list[dict[str, Any]] = []
     derive_rows = [
         row
@@ -166,6 +253,18 @@ def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str
                 "required_fix": "attach and replay an exact HIGH_PARENT_SUCCESSOR_EXACT symbolic parent-transition payload",
             }
         )
+    s3_replay_failures = _s3_graph_replay_failures(graph)
+    if s3_replay_failures:
+        roots.append(
+            {
+                "node_type": "S3_DEBT",
+                "count": len(s3_replay_failures),
+                "reason": "S3 debt certificate replay failed",
+                "required_fix": "replace exact_congruence_passed/local_descent_passed booleans with replayable S3_DEBT_EXACT certificates",
+                "examples": s3_replay_failures[:5],
+            }
+        )
+
     s4_replay_failures = _s4_graph_replay_failures(graph)
     if s4_replay_failures and not any(row["node_type"] == "S4_LIFT" for row in roots):
         roots.append(
@@ -190,6 +289,36 @@ def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str
             }
         )
 
+    lower = replay_lower_layer_context(replay_context)
+    lower_failures = list(lower.get("failures") or [])
+    if lower_failures:
+        by_layer: dict[str, list[dict[str, Any]]] = {}
+        for failure in lower_failures:
+            layer = str(failure.get("layer") or "")
+            if not layer:
+                text = json.dumps(failure, sort_keys=True)
+                if "s3" in text.lower():
+                    layer = "S3"
+                elif "s4" in text.lower() or "transition" in text.lower():
+                    layer = "S4"
+                elif "s6" in text.lower():
+                    layer = "S6"
+                elif "parent_residual" in text.lower():
+                    layer = "PARENT_RESIDUAL"
+                else:
+                    layer = "LOWER_LAYER"
+            by_layer.setdefault(layer, []).append(failure)
+        for layer, failures in sorted(by_layer.items()):
+            roots.append(
+                {
+                    "node_type": f"{layer}_CERTIFICATE",
+                    "count": len(failures),
+                    "reason": "lower-layer certificate replay/count check failed",
+                    "required_fix": "restore the exact manifest-backed certificate rows or regenerate the dependent top-level certificate",
+                    "examples": failures[:5],
+                }
+            )
+
     missing_top_level = [
         row
         for row in proof.get("unknown_obligations", [])
@@ -200,8 +329,9 @@ def _root_unsound_certificates(trace_rows: list[dict[str, Any]], proof: dict[str
             {
                 "node_type": "STRICT_THEOREM_TOP_LEVEL",
                 "count": len(missing_top_level),
-                "reason": "closed graph lacks explicit universal entry, coverage, transition, ranking, and descent certificates",
-                "required_fix": "provide replayable top-level theorem certificates with hashes and proof payloads",
+                "reason": "one or more top-level theorem certificates do not replay",
+                "required_fix": "provide the exact missing replayable top-level theorem certificate(s)",
+                "missing": missing_top_level,
             }
         )
     return roots
@@ -229,8 +359,9 @@ def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None)
 
     graph = _load_graph(_artifact_path(manifest, "proof_dependency_graph_frozen", manifest_dir=manifest_dir))
     trace_rows = _read_jsonl(_artifact_path(manifest, "accepted_action_trace", manifest_dir=manifest_dir))
-    proof = build_collatz_descent_theorem_candidate(proof_graph=graph)
-    roots = _root_unsound_certificates(trace_rows, proof, graph)
+    replay_context = _build_manifest_replay_context(manifest, manifest_dir=manifest_dir, graph=graph)
+    proof = build_collatz_descent_theorem_candidate(proof_graph=graph, replay_context=replay_context)
+    roots = _root_unsound_certificates(trace_rows, proof, graph, replay_context=replay_context)
     if hash_failures:
         roots.append(
             {
@@ -241,14 +372,16 @@ def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None)
             }
         )
 
-    strict_status = str(proof.get("verifier_status", "FAIL"))
+    raw_strict_status = str(proof.get("verifier_status", "FAIL"))
+    strict_status = raw_strict_status
     audit_status = "PASS_FOR_VERIFIER_SOUNDNESS" if not hash_failures else "FAIL_REPRODUCTION"
     verifier_status = strict_status
-    if strict_status == "PASS" and not hash_failures and not roots:
+    if raw_strict_status == "PASS" and not hash_failures and not roots:
         audit_status = "PASS"
-    proof_confidence = 100.0 if strict_status == "PASS" and audit_status == "PASS" else 0.0
-    if strict_status == "PASS" and roots:
-        verifier_status = "UNSOUND_PASS"
+    proof_confidence = 100.0 if raw_strict_status == "PASS" and audit_status == "PASS" else 0.0
+    if raw_strict_status == "PASS" and roots:
+        strict_status = "FAIL"
+        verifier_status = "FAIL"
         proof_confidence = 0.0
 
     result = {

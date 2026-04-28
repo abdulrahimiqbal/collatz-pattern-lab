@@ -1,0 +1,14 @@
+run:
+  run_id: RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  description: Top-level theorem certificate refresh after RUN-028 S3 and RUN-029 S6 hardening
+
+top_level_after_hardening_run030:
+  out_dir: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  manifest: proof_manifest.json
+  proof_graph: certificate_store/run029_proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/run029_accepted_action_trace.jsonl
+  s3_debt_certificates: certificate_store/run029_s3_debt_certificates.jsonl
+  parent_transition_certificates: certificate_store/run029_parent_transition_certificates.jsonl
+  s6_lemma_certificates: certificate_store/run029_s6_lemma_certificates.jsonl
+  parent_residual_certificate: certificate_store/run019_parent_residual_certificate.json
+  write_repo_replay_bundle: true

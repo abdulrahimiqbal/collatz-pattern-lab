@@ -1,6 +1,8 @@
+import html
 import json
 
 from collatz_lab.proof_action_run023 import run_exact_s6_lemma_payloads
+from collatz_lab.proof_action_s3_debt_cert import build_s3_debt_certificate
 from collatz_lab.proof_action_state import canonical_state, state_from_debt_transition
 from collatz_lab.replay_strict_proof import replay_manifest
 
@@ -49,6 +51,18 @@ def _tiny_graph() -> dict:
     }
     s3_state = state_from_debt_transition(s3_row)
     s3_action = {"type": "CHECK_DEBT_DECREASE", "target": "goal_0", "branch_id": "P3:r7:d5", "gain_num": 1, "gain_den": 2, "valuation": 1}
+    s3_certificate = build_s3_debt_certificate(action=s3_action, state=s3_state, node_id="s3:unit")
+    s3_payload = json.dumps(s3_certificate, sort_keys=True, separators=(",", ":"))
+    s3_fact = {
+        "kind": "s3_debt_certificate",
+        "branch_id": s3_certificate["branch_id"],
+        "certificate_id": s3_certificate["certificate_id"],
+        "certificate_hash": s3_certificate["certificate_hash"],
+        "status": s3_certificate["status"],
+        "certificate_payload": s3_payload,
+    }
+    s3_fact_text = "<FACT " + " ".join(f'{key}="{html.escape(str(value), quote=True)}"' for key, value in sorted(s3_fact.items())) + "/>"
+    s3_state = s3_state.replace("</FACTS>", f"{s3_fact_text}\n</FACTS>", 1)
     coverage_action = {"type": "PROVE_RESIDUE_COVERAGE", "target": "s6_goal_no_escape", "modulus": 8, "covered_residue_count": 8, "certificate_id": "coverage_cert_unit"}
     lift_action = {
         "type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY",
@@ -165,5 +179,9 @@ def test_run023_patches_s6_status_only_acceptance_and_replays_manifest(tmp_path)
     assert result["s6_lemma_blockers_before"] == 1
     assert result["s6_lemma_blockers_after"] == 0
     assert result["hash_failure_count"] == 0
-    assert {row["node_type"] for row in replay["root_unsound_certificates"]} == {"STRICT_THEOREM_TOP_LEVEL"}
-
+    assert {row["node_type"] for row in replay["root_unsound_certificates"]} == {
+        "S3_CERTIFICATE",
+        "S4_CERTIFICATE",
+        "S6_CERTIFICATE",
+        "STRICT_THEOREM_TOP_LEVEL",
+    }

@@ -1,0 +1,52 @@
+{
+  "audit_status": "PASS_FOR_VERIFIER_SOUNDNESS",
+  "hash_failure_count": 0,
+  "hash_failures": [],
+  "manifest_path": "reports/runs/RUN-029-refresh-s6-lemma-payloads-after-s3-hardening/proof_manifest.json",
+  "proof_confidence_percent": 0.0,
+  "root_unsound_certificates": [
+    {
+      "count": 3,
+      "node_type": "STRICT_THEOREM_TOP_LEVEL",
+      "reason": "closed graph lacks explicit universal entry, coverage, transition, ranking, and descent certificates",
+      "required_fix": "provide replayable top-level theorem certificates with hashes and proof payloads"
+    }
+  ],
+  "run_id": "RUN-029-refresh-s6-lemma-payloads-after-s3-hardening",
+  "schema": "collatz_lab.strict_proof_replay_result",
+  "source_run_accounting": {
+    "audit_status": "AUDIT_FAIL",
+    "proof_confidence_percent": 0.0,
+    "strict_verifier": "FAIL"
+  },
+  "strict_errors": [
+    "unknown obligations remain: 3",
+    "coverage is not universal over all parent states P_a",
+    "top-level certificate parent_state_coverage_certificate does not replay",
+    "top-level certificate transition_soundness_certificate does not replay",
+    "top-level certificate well_founded_ranking_certificate does not replay"
+  ],
+  "strict_verifier": "FAIL",
+  "unknown_obligations": [
+    {
+      "obligation_id": "top_level:parent_state_coverage_certificate",
+      "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+      "scope": "strict theorem replay",
+      "status": "UNKNOWN"
+    },
+    {
+      "obligation_id": "top_level:transition_soundness_certificate",
+      "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+      "scope": "strict theorem replay",
+      "status": "UNKNOWN"
+    },
+    {
+      "obligation_id": "top_level:well_founded_ranking_certificate",
+      "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+      "scope": "strict theorem replay",
+      "status": "UNKNOWN"
+    }
+  ],
+  "verifier_status": "FAIL",
+  "version": 1
+}

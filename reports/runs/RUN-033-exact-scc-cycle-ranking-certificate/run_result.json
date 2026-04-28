@@ -1,0 +1,41 @@
+{
+  "affine_edge_map_fail": 106,
+  "affine_edge_map_pass": 0,
+  "artifacts": {
+    "minimal_ranking_obstruction": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/minimal_ranking_obstruction.json",
+    "new_math_required": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/new_math_required.md",
+    "refined_scc_edges": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/refined_scc_edges.jsonl",
+    "refined_scc_graph": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/refined_scc_graph.json",
+    "refinement_summary": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/refinement_summary.json",
+    "run_result": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/run_result.json",
+    "scc_affine_edge_maps": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_affine_edge_maps.jsonl",
+    "scc_cycle_descent_certificates": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_cycle_descent_certificates.jsonl",
+    "scc_cycle_obstructions": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_cycle_obstructions.jsonl",
+    "scc_cycles_checked": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_cycles_checked.jsonl",
+    "scc_internal_edges": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_internal_edges.jsonl",
+    "scc_ranking_certificate": "reports/runs/RUN-033-exact-scc-cycle-ranking-certificate/scc_ranking_certificate.json"
+  },
+  "big_model_launched": false,
+  "floating_point_certificate_used": false,
+  "lean_continuation_allowed": false,
+  "manifest_artifact_checks": [
+    {
+      "actual_sha256": "39be4ad75eb75e88855326d316f01c521f05addf37e724099c9a13c1454aff71",
+      "artifact_name": "parent_transition_certificates",
+      "expected_sha256": "39be4ad75eb75e88855326d316f01c521f05addf37e724099c9a13c1454aff71",
+      "matches": true,
+      "path": "certificate_store/run030_parent_transition_certificates.jsonl"
+    }
+  ],
+  "missing_parent_coordinate_map_count": 106,
+  "run_id": "RUN-033-exact-scc-cycle-ranking-certificate",
+  "scc_internal_edge_count": 106,
+  "scc_internal_edge_failures": [],
+  "schema": "collatz_lab.run033_exact_scc_cycle_ranking_certificate",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "status": "MISSING_PARENT_COORDINATE_MAP",
+  "strict_verifier_updated": false,
+  "training_launched": false,
+  "version": 1
+}

@@ -1,0 +1,59 @@
+{
+  "audit_status": "PASS_FOR_VERIFIER_SOUNDNESS",
+  "hash_failure_count": 0,
+  "hash_failures": [],
+  "manifest_path": "reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/proof_manifest.json",
+  "proof_confidence_percent": 0.0,
+  "root_unsound_certificates": [
+    {
+      "count": 2,
+      "missing": [
+        {
+          "obligation_id": "top_level:well_founded_ranking_certificate",
+          "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+          "scope": "strict theorem replay",
+          "status": "UNKNOWN"
+        },
+        {
+          "obligation_id": "top_level:descent_implication_certificate",
+          "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+          "scope": "strict theorem replay",
+          "status": "UNKNOWN"
+        }
+      ],
+      "node_type": "STRICT_THEOREM_TOP_LEVEL",
+      "reason": "one or more top-level theorem certificates do not replay",
+      "required_fix": "provide the exact missing replayable top-level theorem certificate(s)"
+    }
+  ],
+  "run_id": "RUN-030-top-level-theorem-certificates-after-s3-s6-hardening",
+  "schema": "collatz_lab.strict_proof_replay_result",
+  "source_run_accounting": {
+    "audit_status": "AUDIT_FAIL",
+    "proof_confidence_percent": 0.0,
+    "strict_verifier": "FAIL"
+  },
+  "strict_errors": [
+    "unknown obligations remain: 2",
+    "coverage is not universal over all parent states P_a",
+    "top-level certificate well_founded_ranking_certificate does not replay",
+    "top-level certificate descent_implication_certificate does not replay"
+  ],
+  "strict_verifier": "FAIL",
+  "unknown_obligations": [
+    {
+      "obligation_id": "top_level:well_founded_ranking_certificate",
+      "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+      "scope": "strict theorem replay",
+      "status": "UNKNOWN"
+    },
+    {
+      "obligation_id": "top_level:descent_implication_certificate",
+      "reason": "explicit replayable top-level theorem certificate is required; closed proof-action graph is only supporting evidence",
+      "scope": "strict theorem replay",
+      "status": "UNKNOWN"
+    }
+  ],
+  "verifier_status": "FAIL",
+  "version": 1
+}

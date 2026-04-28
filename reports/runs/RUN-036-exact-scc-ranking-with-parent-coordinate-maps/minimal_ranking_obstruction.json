@@ -1,0 +1,651 @@
+{
+  "classification": "CYCLE_COMPOSITION_NOT_DESCENDING",
+  "cycle_enumeration_cap_reached": true,
+  "exact_missing_invariant_type": "cycle-domain-compatible ranking over parent coordinate, valuation residue, or debt; simple q-affine cycle descent is insufficient",
+  "internal_edge_count": 106,
+  "non_descending_cycle_count": 20000,
+  "refinement_status": "SOURCE_BRANCH_REFINEMENT_REQUIRED_FOR_CYCLE_DOMAIN_COMPATIBILITY",
+  "representative_non_descending_cycles": [
+    {
+      "composed_map": {
+        "A": "696198609130885597695136021593547814689632716312296141651066450089",
+        "B": "181268647103642054321059483598237538485824286649220258755994695",
+        "D": "50216813883093446110686315385661331328818843555712276103168"
+      },
+      "cycle_id": "0fe15d6e96e94cfb",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_5b9bcd945f331b14"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "9837555143550917382917826742065912104786424172347944295354628212558981144492673444236470334963",
+        "B": "2561395997529907275612659056318679942924364951108885494608231622316159878978982900257156445",
+        "D": "30354201441027016733116592294117482916287606860189680019559568902170379456331382784"
+      },
+      "cycle_id": "2f63dd1da1f037e2",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_5ef1814f131f85bc",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "9837555143550917382917826742065912104786424172347944295354628212558981144492673444236470334963",
+        "B": "2561395983270685385828596535101869947634993506781919495963649895797527158230305630324419933",
+        "D": "15177100720513508366558296147058741458143803430094840009779784451085189728165691392"
+      },
+      "cycle_id": "6854840ddb0cbced",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_e3b1e4db8c7ec65f",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137959093531528100436738990511231197362860764256760490478978927229886049318781896260825128447791679",
+        "D": "1018517988167243043134222844204689080525734196832968125318070224677190649881668353091698688"
+      },
+      "cycle_id": "cad62b3601d4c4f6",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_bec479111ae6c0ae",
+        "s4:s4_parent_transition_98cc8134ef284a4b",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "29512665430652752148753480226197736314359272517043832886063884637676943433478020332709411004889",
+        "B": "7684187917724549545121344016393625923122944892616058729518785845913832498311288975891843095",
+        "D": "7588550360256754183279148073529370729071901715047420004889892225542594864082845696"
+      },
+      "cycle_id": "2a4783eba46a3d28",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_bec479111ae6c0ae",
+        "s4:s4_parent_transition_4c38e4a7266d75bf",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "29512665430652752148753480226197736314359272517043832886063884637676943433478020332709411004889",
+        "B": "7684187917719816291943491860470326342861572090361351021316578227333616238817808558423230487",
+        "D": "3794275180128377091639574036764685364535950857523710002444946112771297432041422848"
+      },
+      "cycle_id": "af9670d191d3df32",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_bec479111ae6c0ae",
+        "s4:s4_parent_transition_4f422df724f5bb91",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "313487028995334947898311636710352105968826343219733319851858295246737190712070115307",
+        "B": "81622354475570316143188635267659960097148535747486068470175589599656281534650341",
+        "D": "56539106072908298546665520023773392506479484700019806659891398441363832832"
+      },
+      "cycle_id": "55938ced9d5bdc72",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_210f91385ac0188a",
+        "s4:s4_parent_transition_06f5a9967a24eb03",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "6170365191715177779482467945369860501784408913594010934644126825341528124785676079587681",
+        "B": "1606572694078358846921197786170137188491429422606344868516132077477725726780335975439",
+        "D": "452312848583266388373324160190187140051835877600158453279131187530910662656"
+      },
+      "cycle_id": "18b724d409c637bb",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_5a145150de15a7a7",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "6170365191715177779482467945369860501784408913594010934644126825341528124785676079587681",
+        "B": "1606572694503316774678224414462245068466550784944618572527708900668135647018254986255",
+        "D": "904625697166532776746648320380374280103671755200316906558262375061821325312"
+      },
+      "cycle_id": "dba90cc006761b6f",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_988d3e16038d104a",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942622686581534707364838443512138842230934219565942010923647990230409147989417232146565001400895",
+        "D": "4074071952668972172536891376818756322102936787331872501272280898708762599526673412366794752"
+      },
+      "cycle_id": "a8075fc3be393f20",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_203334ac53d5f9da",
+        "s4:s4_parent_transition_5ef1814f131f85bc",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942620772741169612681556235840105866800796413922076539596809146582175702643495056531957538116159",
+        "D": "2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376"
+      },
+      "cycle_id": "1ca643dc8da745d5",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_203334ac53d5f9da",
+        "s4:s4_parent_transition_e3b1e4db8c7ec65f",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "29512665430652752148753480226197736314359272517043832886063884637676943433478020332709411004889",
+        "B": "7684187392767269186469723602418992530494861852899550463837837610935285315171179624261437463",
+        "D": "7588550360256754183279148073529370729071901715047420004889892225542594864082845696"
+      },
+      "cycle_id": "435e5d30cb175db8",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_203334ac53d5f9da",
+        "s4:s4_parent_transition_06f5a9967a24eb03",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942599096736172281718571701840608113222097389772500415394720247836154185925067777509753511498303",
+        "D": "509258994083621521567111422102344540262867098416484062659035112338595324940834176545849344"
+      },
+      "cycle_id": "286638f5392e4943",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_6cbcc71be16709b8",
+        "s4:s4_parent_transition_5ef1814f131f85bc",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942598857506126644883161425881603991293330164067017231478865392380125005256827505557927578587711",
+        "D": "254629497041810760783555711051172270131433549208242031329517556169297662470417088272924672"
+      },
+      "cycle_id": "cc2a99b16afea80d",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_6cbcc71be16709b8",
+        "s4:s4_parent_transition_e3b1e4db8c7ec65f",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "29512665430652752148753480226197736314359272517043832886063884637676943433478020332709411004889",
+        "B": "7684187392113991051373287442616975631261134624291645587499985711096000668275062415503083543",
+        "D": "948568795032094272909893509191171341133987714380927500611236528192824358010355712"
+      },
+      "cycle_id": "d20f3cbd5188436c",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_6cbcc71be16709b8",
+        "s4:s4_parent_transition_06f5a9967a24eb03",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "580897793671538120543914751292250043875533560952973762696395441323395277601147874208719336809230187",
+        "B": "151247860437256834848855381671287794597558448775674305586614526984666638829016003653936558096485",
+        "D": "121416805764108066932466369176469931665150427440758720078238275608681517825325531136"
+      },
+      "cycle_id": "c2b127ce13d10515",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_98cc8134ef284a4b",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "18511095575145533338447403836109581505353226740782032803932380476024584374357028238763043",
+        "B": "4819718082234569023860871844264643801575802383391722438688071497171757722584118576173",
+        "D": "904625697166532776746648320380374280103671755200316906558262375061821325312"
+      },
+      "cycle_id": "32a9bf613b21a9ec",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_4c38e4a7266d75bf",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "18511095575145533338447403836109581505353226740782032803932380476024584374357028238763043",
+        "B": "4819718082234004776112276111108046237324215850530166897148616128822179787902526538797",
+        "D": "452312848583266388373324160190187140051835877600158453279131187530910662656"
+      },
+      "cycle_id": "638cdc40aacf5185",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_00d713d77b0eca92",
+        "s4:s4_parent_transition_4f422df724f5bb91",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942577355643421490245755012292151613405314647508798589630300438196270563475866316565939260248639",
+        "D": "2037035976334486086268445688409378161051468393665936250636140449354381299763336706183397376"
+      },
+      "cycle_id": "2e0c259896f4ac6a",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_1c217065cafcd099",
+        "s4:s4_parent_transition_203334ac53d5f9da",
+        "s4:s4_parent_transition_5ef1814f131f85bc",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "composed_map": {
+        "A": "926138713099787670959935798024513966701772293499227988263405269197039529170894882252068039219702299428401",
+        "B": "241137942576398723238942904113908456135125690245744686865853966881016372153840802905228758635528606271",
+        "D": "1018517988167243043134222844204689080525734196832968125318070224677190649881668353091698688"
+      },
+      "cycle_id": "2a3093d96053775d",
+      "descent_check": {
+        "equal_slope_negative_shift": false,
+        "inequality": "A*q + B < D*q",
+        "kind": "affine_q_descent",
+        "minimum_domain_passes": false,
+        "minimum_q_checked": "1",
+        "slope_decreases": false,
+        "status": "FAIL"
+      },
+      "edge_ids": [
+        "s4:s4_parent_transition_874f308aaaed1445",
+        "s4:s4_parent_transition_73499df187f4649c",
+        "s4:s4_parent_transition_4401f1b1812ff589",
+        "s4:s4_parent_transition_d300f738fbefb665",
+        "s4:s4_parent_transition_81fc270267ae0b47",
+        "s4:s4_parent_transition_b04cf1496e5af295",
+        "s4:s4_parent_transition_4b098b4ba1d5a746",
+        "s4:s4_parent_transition_1c217065cafcd099",
+        "s4:s4_parent_transition_203334ac53d5f9da",
+        "s4:s4_parent_transition_e3b1e4db8c7ec65f",
+        "s4:s4_parent_transition_71a84cc4603cf571",
+        "s4:s4_parent_transition_74bb19d201b2981a"
+      ],
+      "status": "FAIL"
+    }
+  ],
+  "run_id": "RUN-036-exact-scc-ranking-with-parent-coordinate-maps",
+  "schema": "collatz_lab.run036_minimal_ranking_obstruction",
+  "status": "CYCLE_COMPOSITION_NOT_DESCENDING",
+  "unresolved_scc_states": [
+    "P12",
+    "P13",
+    "P14",
+    "P15",
+    "P16",
+    "P17",
+    "P18",
+    "P19",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P24"
+  ],
+  "version": 1,
+  "why_affine_q_descent_fails": "At least one composed q-cycle has A >= D or fails A*q+B < D*q on the exact positive domain check used by this certificate language.",
+  "why_lexicographic_ranking_fails": "No lexicographic affine certificate was synthesized; non-descending q-cycles require a stronger secondary invariant tied to exact cycle domains.",
+  "why_parent_level_ranking_fails": "RUN-032 already found no accepted parent-level/topological ranking; RUN-036 sees explicit cycles."
+}

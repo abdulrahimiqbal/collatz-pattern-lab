@@ -1,0 +1,9 @@
+{
+  "all_pass": true,
+  "certificate_count": 28,
+  "failures": [],
+  "replay_pass_count": 28,
+  "run_id": "RUN-035-refresh-s6-after-s4-map-hardening",
+  "schema": "collatz_lab.run035_s6_lemma_replay_report",
+  "version": 1
+}

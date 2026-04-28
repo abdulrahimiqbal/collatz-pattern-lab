@@ -1,0 +1,181 @@
+{
+  "all_pass": false,
+  "certificate_count": 5,
+  "replay_pass_count": 4,
+  "results": {
+    "descent_implication_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "descent_implication_certificate replays",
+      "status": "ACCEPT"
+    },
+    "parent_state_coverage_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "parent_state_coverage_certificate replays",
+      "status": "ACCEPT"
+    },
+    "transition_soundness_certificate": {
+      "accepted": false,
+      "failures": [
+        {
+          "node_id": "s6_lemma:s6_coverage_lemma_0000",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_coverage_lemma_0007",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_coverage_lemma_0014",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_coverage_lemma_0021",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_global_descent_lemma_0002",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_global_descent_lemma_0009",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_global_descent_lemma_0016",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_global_descent_lemma_0023",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_induction_lemma_0001",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_induction_lemma_0008",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_induction_lemma_0015",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_induction_lemma_0022",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_no_escape_lemma_0003",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_no_escape_lemma_0010",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_no_escape_lemma_0017",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_no_escape_lemma_0024",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parametric_lift_lemma_0005",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parametric_lift_lemma_0012",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parametric_lift_lemma_0019",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parametric_lift_lemma_0026",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parent_transition_lemma_0004",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parent_transition_lemma_0011",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parent_transition_lemma_0018",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_parent_transition_lemma_0025",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_strict_verifier_gap_lemma_0006",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_strict_verifier_gap_lemma_0013",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_strict_verifier_gap_lemma_0020",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        },
+        {
+          "node_id": "s6_lemma:s6_strict_verifier_gap_lemma_0027",
+          "reason": "one or more S6 lemma dependencies failed replay",
+          "status": "REJECT_S6_LEMMA_DEPENDENCY_FAIL"
+        }
+      ],
+      "reason": "transition_soundness_certificate failed replay",
+      "status": "REJECT_TOP_LEVEL_CERTIFICATE"
+    },
+    "universal_entry_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "universal_entry_certificate replays",
+      "status": "ACCEPT"
+    },
+    "well_founded_ranking_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "well_founded_ranking_certificate replays",
+      "status": "ACCEPT"
+    }
+  },
+  "run_id": "RUN-024-top-level-theorem-certificates",
+  "schema": "collatz_lab.top_level_replay_report",
+  "version": 1
+}

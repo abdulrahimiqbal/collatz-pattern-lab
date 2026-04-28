@@ -39,7 +39,12 @@ def _load_optional(path: Path) -> dict[str, Any] | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def verify_proof_object(proof: dict[str, Any], *, proof_graph: dict[str, Any] | None = None) -> dict[str, Any]:
+def verify_proof_object(
+    proof: dict[str, Any],
+    *,
+    proof_graph: dict[str, Any] | None = None,
+    replay_context: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Strictly verify whether a canonical proof object proves Collatz descent."""
 
     errors: list[str] = []
@@ -58,7 +63,7 @@ def verify_proof_object(proof: dict[str, Any], *, proof_graph: dict[str, Any] | 
         top_level = {}
     for cert_name in TOP_LEVEL_CERTIFICATES:
         cert = top_level.get(cert_name)
-        if not _top_level_certificate_replays(cert_name, cert, proof_graph=proof_graph):
+        if not _top_level_certificate_replays(cert_name, cert, proof_graph=proof_graph, replay_context=replay_context):
             errors.append(f"top-level certificate {cert_name} does not replay")
     for row in proof.get("transitions", []):
         status = row.get("status", "UNKNOWN")
@@ -79,7 +84,13 @@ def verify_proof_object(proof: dict[str, Any], *, proof_graph: dict[str, Any] | 
     }
 
 
-def _top_level_certificate_replays(cert_name: str, cert: Any, *, proof_graph: dict[str, Any] | None = None) -> bool:
+def _top_level_certificate_replays(
+    cert_name: str,
+    cert: Any,
+    *,
+    proof_graph: dict[str, Any] | None = None,
+    replay_context: dict[str, Any] | None = None,
+) -> bool:
     """Minimal replay contract for universal theorem certificates.
 
     RUN-021 deliberately does not synthesize these certificates from a closed
@@ -95,7 +106,7 @@ def _top_level_certificate_replays(cert_name: str, cert: Any, *, proof_graph: di
         return False
     if str(cert.get("certificate_type", cert.get("type", ""))) != cert_name:
         return False
-    return replay_top_level_certificate(cert, graph=proof_graph).accepted
+    return replay_top_level_certificate(cert, graph=proof_graph, context=replay_context).accepted
 
 
 def _graph_top_level_certificates(proof_graph: dict[str, Any] | None) -> dict[str, Any]:
@@ -113,6 +124,7 @@ def build_collatz_descent_theorem_candidate(
     valuation_closure: dict[str, Any] | None = None,
     falsifier: dict[str, Any] | None = None,
     global_obligations: dict[str, Any] | None = None,
+    replay_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Assemble the canonical theorem candidate from current reports."""
 
@@ -132,7 +144,12 @@ def build_collatz_descent_theorem_candidate(
         )
     else:
         for cert_name in TOP_LEVEL_CERTIFICATES:
-            if not _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name), proof_graph=proof_graph):
+            if not _top_level_certificate_replays(
+                cert_name,
+                top_level_certificates.get(cert_name),
+                proof_graph=proof_graph,
+                replay_context=replay_context,
+            ):
                 unknowns.append(
                     {
                         "obligation_id": f"top_level:{cert_name}",
@@ -232,7 +249,7 @@ def build_collatz_descent_theorem_candidate(
         try:
             from .proof_action_top_level_cert import replay_top_level_certificates
 
-            top_level_replay_report = replay_top_level_certificates(top_level_certificates, graph=proof_graph)
+            top_level_replay_report = replay_top_level_certificates(top_level_certificates, graph=proof_graph, context=replay_context)
         except Exception as exc:
             top_level_replay_report = {"all_pass": False, "error": str(exc)}
 
@@ -260,7 +277,7 @@ def build_collatz_descent_theorem_candidate(
         },
         "verifier_status": "PENDING",
     }
-    verification = verify_proof_object(proof, proof_graph=proof_graph)
+    verification = verify_proof_object(proof, proof_graph=proof_graph, replay_context=replay_context)
     proof["verifier_status"] = verification["verifier_status"]
     proof["verification"] = verification
     return proof

@@ -273,7 +273,13 @@ def _validate_transition_certificate(value: Any) -> dict[str, Any]:
         "target_membership_certificate",
         "status",
     }
-    allowed = required | {"certificate_hash"}
+    allowed = required | {
+        "certificate_hash",
+        "parent_coordinate_map",
+        "parent_coordinate_map_certificate_id",
+        "parent_coordinate_map_certificate_hash",
+        "replay_checks",
+    }
     unknown = sorted(set(value) - allowed)
     missing = sorted(required - set(value))
     if unknown:
@@ -294,12 +300,24 @@ def _validate_transition_certificate(value: Any) -> dict[str, Any]:
         "target_membership_certificate": _validate_replay_section(value["target_membership_certificate"], "transition_certificate.target_membership_certificate"),
         "status": _require_str(value["status"], "transition_certificate.status"),
     }
-    if cert["type"] != "HIGH_PARENT_SUCCESSOR_EXACT":
-        raise ProofActionError("transition_certificate.type must be HIGH_PARENT_SUCCESSOR_EXACT")
+    if cert["type"] not in {"HIGH_PARENT_SUCCESSOR_EXACT", "HIGH_PARENT_SUCCESSOR_EXACT_WITH_PARENT_MAP"}:
+        raise ProofActionError("transition_certificate.type must be HIGH_PARENT_SUCCESSOR_EXACT or HIGH_PARENT_SUCCESSOR_EXACT_WITH_PARENT_MAP")
     if cert["status"] != "PASS":
         raise ProofActionError("transition_certificate.status must be PASS")
     if "certificate_hash" in value:
         cert["certificate_hash"] = _require_str(value["certificate_hash"], "transition_certificate.certificate_hash")
+    if "parent_coordinate_map" in value:
+        cert["parent_coordinate_map"] = _validate_replay_section(value["parent_coordinate_map"], "transition_certificate.parent_coordinate_map")
+    if "parent_coordinate_map_certificate_id" in value:
+        cert["parent_coordinate_map_certificate_id"] = _require_str(
+            value["parent_coordinate_map_certificate_id"], "transition_certificate.parent_coordinate_map_certificate_id"
+        )
+    if "parent_coordinate_map_certificate_hash" in value:
+        cert["parent_coordinate_map_certificate_hash"] = _require_str(
+            value["parent_coordinate_map_certificate_hash"], "transition_certificate.parent_coordinate_map_certificate_hash"
+        )
+    if "replay_checks" in value:
+        cert["replay_checks"] = _validate_replay_section(value["replay_checks"], "transition_certificate.replay_checks")
     return cert
 
 

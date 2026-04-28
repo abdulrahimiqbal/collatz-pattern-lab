@@ -1,0 +1,14 @@
+run:
+  run_id: RUN-035-refresh-s6-after-s4-map-hardening
+  description: Refresh S6 lemma certificates after S4 parent-coordinate map hardening
+
+s6_after_s4_map_hardening_run035:
+  out_dir: reports/runs/RUN-035-refresh-s6-after-s4-map-hardening
+  proof_graph: certificate_store/run034_proof_dependency_graph_frozen.json
+  accepted_action_trace: certificate_store/run034_accepted_action_trace.jsonl
+  s3_debt_certificates: certificate_store/run034_s3_debt_certificates.jsonl
+  parent_transition_certificates: certificate_store/run034_parent_transition_certificates.jsonl
+  parent_coordinate_map_certificates: certificate_store/run034_parent_coordinate_map_certificates.jsonl
+  parent_residual_certificate: certificate_store/run034_parent_residual_certificate.json
+  top_level_certificates: certificate_store/run034_top_level_certificates.jsonl
+  write_repo_replay_bundle: true

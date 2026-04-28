@@ -1,7 +1,9 @@
+import html
 import json
 
 from collatz_lab.proof_action_dsl import serialize_action
 from collatz_lab.proof_action_parent_transition_cert import build_parent_transition_certificate
+from collatz_lab.proof_action_s3_debt_cert import build_s3_debt_certificate
 from collatz_lab.proof_action_state import canonical_state, state_from_debt_transition
 from collatz_lab.proof_action_theorem_composer import (
     build_theorem_dependency_graph,
@@ -37,8 +39,19 @@ def _s6_lemma_payload() -> dict:
     }
 
 
-def _debt_state() -> str:
-    return state_from_debt_transition(
+def _s3_action() -> dict:
+    return {
+        "type": "CHECK_DEBT_DECREASE",
+        "target": "goal_0",
+        "branch_id": "P7:r1:d2",
+        "gain_num": 1,
+        "gain_den": 4,
+        "valuation": 2,
+    }
+
+
+def _debt_state(*, include_certificate: bool = True) -> str:
+    state = state_from_debt_transition(
         {
             "branch_id": "P7:r1:d2",
             "source_state": {"parent_level": 7, "odd_coordinate_residue": 1, "odd_coordinate_modulus": 8},
@@ -48,6 +61,20 @@ def _debt_state() -> str:
             "exact_congruence_passed": True,
         }
     )
+    if not include_certificate:
+        return state
+    certificate = build_s3_debt_certificate(action=_s3_action(), state=state, node_id="s3:unit")
+    payload = json.dumps(certificate, sort_keys=True, separators=(",", ":"))
+    attrs = {
+        "kind": "s3_debt_certificate",
+        "branch_id": certificate["branch_id"],
+        "certificate_id": certificate["certificate_id"],
+        "certificate_hash": certificate["certificate_hash"],
+        "status": certificate["status"],
+        "certificate_payload": payload,
+    }
+    fact = "<FACT " + " ".join(f'{key}="{html.escape(str(value), quote=True)}"' for key, value in sorted(attrs.items())) + "/>"
+    return state.replace("</FACTS>", f"{fact}\n</FACTS>", 1)
 
 
 def _s4_state(*, include_certificate: bool = True) -> str:
@@ -106,14 +133,7 @@ def test_dependency_graph_contains_theorem_node_types(tmp_path) -> None:
     s6_dir = tmp_path / "s6"
     frontier.mkdir()
     s6_dir.mkdir()
-    s3_action = {
-        "type": "CHECK_DEBT_DECREASE",
-        "target": "goal_0",
-        "branch_id": "P7:r1:d2",
-        "gain_num": 1,
-        "gain_den": 4,
-        "valuation": 2,
-    }
+    s3_action = _s3_action()
     s4_action = {
         "type": "DERIVE_PARENT_TRANSITION",
         "target": "goal_0",
@@ -187,14 +207,7 @@ def test_dependency_graph_contains_theorem_node_types(tmp_path) -> None:
 def test_composer_verifier_checks_selector_proposals_before_accepting(monkeypatch) -> None:
     state = _debt_state()
     reject = {"type": "CLOSE_BY_VERIFIER", "target": "goal_0", "verifier": "strict_collatz_descent", "status": "PASS"}
-    accept = {
-        "type": "CHECK_DEBT_DECREASE",
-        "target": "goal_0",
-        "branch_id": "P7:r1:d2",
-        "gain_num": 1,
-        "gain_den": 4,
-        "valuation": 2,
-    }
+    accept = _s3_action()
     graph = {
         "schema": "collatz_lab.proof_action_theorem_dependency_graph",
         "version": 1,

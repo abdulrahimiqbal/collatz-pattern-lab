@@ -1,0 +1,103 @@
+{
+  "artifacts": [
+    {
+      "name": "proof_dependency_graph_frozen",
+      "path": "proof_dependency_graph_top_level_run030.json",
+      "sha256": "39aef991b511131e6f1d78524a1c2b2940c3586e2d1a818de586218441202a85"
+    },
+    {
+      "name": "accepted_action_trace",
+      "path": "accepted_action_trace_top_level_run030.jsonl",
+      "sha256": "0dcb7a1f4e003fa496437c539504b76077bc0e3afdb16ce2eaf5f320724338e5"
+    },
+    {
+      "name": "s3_debt_certificates",
+      "path": "s3_debt_certificates.jsonl",
+      "sha256": "0dcff4dfaf9d8c87a13e430fd38675c02094b4d150fac2377eeb8a73f7c903b9"
+    },
+    {
+      "name": "parent_transition_certificates",
+      "path": "parent_transition_certificates.jsonl",
+      "sha256": "39be4ad75eb75e88855326d316f01c521f05addf37e724099c9a13c1454aff71"
+    },
+    {
+      "name": "s6_lemma_certificates",
+      "path": "s6_lemma_certificates.jsonl",
+      "sha256": "051791905141db50fd4d2842f3a8f97d2dadfa274b995e309dc3a671dfe08477"
+    },
+    {
+      "name": "parent_residual_certificate",
+      "path": "parent_residual_certificate.json",
+      "sha256": "7ed314e0af8ec1e9dec8e070ea141b26dd9ea4bae0b3ff6473c2118d1975136f"
+    },
+    {
+      "name": "top_level_certificates",
+      "path": "top_level_certificates.jsonl",
+      "sha256": "2070fde749978abe4b9e59aed1d52d92cf47c71a1a7c8d561a6ffeca1ad685e3"
+    },
+    {
+      "name": "top_level_replay_report",
+      "path": "top_level_replay_report.json",
+      "sha256": "6b3dacc13038d7501a7e6cd673fcec499574931a6187870c32b47bad93ef6d96"
+    },
+    {
+      "name": "final_proof_object",
+      "path": "final_proof_object.json",
+      "sha256": "587d29dd97128522632cfea8090b76af7976d339f04649130504065fb7be7cb2"
+    }
+  ],
+  "clean_clone_replay": {
+    "command": "python -m collatz_lab.replay_strict_proof --manifest reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/proof_manifest.json",
+    "requires_committed_or_included_artifacts": true
+  },
+  "run_id": "RUN-030-top-level-theorem-certificates-after-s3-s6-hardening",
+  "schema": "collatz_lab.strict_proof_manifest",
+  "source_files": [
+    {
+      "name": "src/collatz_lab/proof_action_top_level_cert.py",
+      "path": "src/collatz_lab/proof_action_top_level_cert.py",
+      "sha256": "0387e08909b0f7c7022f919c93c1f6b454acaf0e700b7122582d2d6519bb42ce"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_run030.py",
+      "path": "src/collatz_lab/proof_action_run030.py",
+      "sha256": "c792d6f6a88bf365a0d3697122b3d0ff95b43f439aafb7858a2303f90731b366"
+    },
+    {
+      "name": "src/collatz_lab/proof_verifier.py",
+      "path": "src/collatz_lab/proof_verifier.py",
+      "sha256": "e625579c936e2c475ffcc8f1f7a4c9f4760422448499ec1c96e30022c92e5013"
+    },
+    {
+      "name": "src/collatz_lab/replay_strict_proof.py",
+      "path": "src/collatz_lab/replay_strict_proof.py",
+      "sha256": "f3921f46bc263397aa6a3bcd7f3b05614fb1a14c2d5fe3ed3b4f9e527d4e99ef"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_decode.py",
+      "path": "src/collatz_lab/proof_action_decode.py",
+      "sha256": "e01557be09ec8d77854f60f9ac226abaae0243ed678f6bc02c9a8bdf913cdd36"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_s3_debt_cert.py",
+      "path": "src/collatz_lab/proof_action_s3_debt_cert.py",
+      "sha256": "509b165bb194b9b290655cd48af5ec21ec98bd4a4f84005ac68c3688ab31b63f"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "path": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "sha256": "a5d7c945cd46dd88ffeb456bb7f41669555c7c42f8392b325a1c1ad7d460ba3a"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_s6_lemma_cert.py",
+      "path": "src/collatz_lab/proof_action_s6_lemma_cert.py",
+      "sha256": "045e005818dc4c64629d6e3c55251ba04113f496a8226c2ed1dc8705ffda8212"
+    }
+  ],
+  "source_run_accounting": {
+    "audit_status": "AUDIT_FAIL",
+    "proof_confidence_percent": 0.0,
+    "strict_verifier": "FAIL"
+  },
+  "version": 1
+}

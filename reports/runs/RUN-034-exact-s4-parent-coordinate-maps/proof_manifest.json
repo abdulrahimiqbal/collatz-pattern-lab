@@ -1,0 +1,113 @@
+{
+  "artifacts": [
+    {
+      "name": "proof_dependency_graph_frozen",
+      "path": "proof_dependency_graph_frozen.json",
+      "sha256": "587064a09b5b3bc772e43741b75f13070ea179ae2b80da7f1b906886fc628a16"
+    },
+    {
+      "name": "accepted_action_trace",
+      "path": "accepted_action_trace.jsonl",
+      "sha256": "06b69abd6c70c2df4a5a93e11b907c76430c45a9ccd4ac07874e481c52d5dec7"
+    },
+    {
+      "name": "s3_debt_certificates",
+      "path": "s3_debt_certificates.jsonl",
+      "sha256": "0dcff4dfaf9d8c87a13e430fd38675c02094b4d150fac2377eeb8a73f7c903b9"
+    },
+    {
+      "name": "parent_transition_certificates",
+      "path": "s4_transition_certificates_map_enriched.jsonl",
+      "sha256": "27798c42fc81d00de671ce1a127935081e8ac149bcfa20c8a217849bb97a369c"
+    },
+    {
+      "name": "parent_coordinate_map_certificates",
+      "path": "parent_coordinate_map_certificates.jsonl",
+      "sha256": "85a743917912e1ccf55e00bbaf23786c46059f919a7ac082d7dbb35529ec4695"
+    },
+    {
+      "name": "s6_lemma_certificates",
+      "path": "s6_lemma_certificates.jsonl",
+      "sha256": "051791905141db50fd4d2842f3a8f97d2dadfa274b995e309dc3a671dfe08477"
+    },
+    {
+      "name": "parent_residual_certificate",
+      "path": "parent_residual_certificate.json",
+      "sha256": "7ed314e0af8ec1e9dec8e070ea141b26dd9ea4bae0b3ff6473c2118d1975136f"
+    },
+    {
+      "name": "top_level_certificates",
+      "path": "top_level_certificates.jsonl",
+      "sha256": "2070fde749978abe4b9e59aed1d52d92cf47c71a1a7c8d561a6ffeca1ad685e3"
+    },
+    {
+      "name": "final_proof_object",
+      "path": "final_proof_object.json",
+      "sha256": "89816c16492be421a0a71558c516f1885aab0e53a97ac5b52927a0126f6378f4"
+    },
+    {
+      "name": "parent_coordinate_map_replay_report",
+      "path": "parent_coordinate_map_replay_report.json",
+      "sha256": "0e71c94ed5baacfd960e7b3d687c7b8ad55592a6b7243bf6fef9e61320771a16"
+    }
+  ],
+  "clean_clone_replay": {
+    "command": "python -m collatz_lab.replay_strict_proof --manifest reports/runs/RUN-034-exact-s4-parent-coordinate-maps/proof_manifest.json",
+    "requires_committed_or_included_artifacts": true
+  },
+  "run_id": "RUN-034-exact-s4-parent-coordinate-maps",
+  "schema": "collatz_lab.strict_proof_manifest",
+  "source_files": [
+    {
+      "name": "src/collatz_lab/proof_action_parent_coordinate_map.py",
+      "path": "src/collatz_lab/proof_action_parent_coordinate_map.py",
+      "sha256": "2aeb636c2efdbd19a04b85e57ddd06a6757b1ee4ede9c705291b84643417d460"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "path": "src/collatz_lab/proof_action_parent_transition_cert.py",
+      "sha256": "ee8648aa2aec100b98bddea2786fc9745baa5218a3c267d3c4f60a54fbaa8b3a"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_run034.py",
+      "path": "src/collatz_lab/proof_action_run034.py",
+      "sha256": "c4fe75bf152e1595922bdc8521609ff015edf80b1f889c3ea14d72d967b3f353"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_decode.py",
+      "path": "src/collatz_lab/proof_action_decode.py",
+      "sha256": "e01557be09ec8d77854f60f9ac226abaae0243ed678f6bc02c9a8bdf913cdd36"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_s3_debt_cert.py",
+      "path": "src/collatz_lab/proof_action_s3_debt_cert.py",
+      "sha256": "509b165bb194b9b290655cd48af5ec21ec98bd4a4f84005ac68c3688ab31b63f"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_s6_lemma_cert.py",
+      "path": "src/collatz_lab/proof_action_s6_lemma_cert.py",
+      "sha256": "092712c33799b34bcb9e144872a49363ccc8082749ddd7dd9839b8021ae0d283"
+    },
+    {
+      "name": "src/collatz_lab/proof_action_top_level_cert.py",
+      "path": "src/collatz_lab/proof_action_top_level_cert.py",
+      "sha256": "0387e08909b0f7c7022f919c93c1f6b454acaf0e700b7122582d2d6519bb42ce"
+    },
+    {
+      "name": "src/collatz_lab/proof_verifier.py",
+      "path": "src/collatz_lab/proof_verifier.py",
+      "sha256": "e625579c936e2c475ffcc8f1f7a4c9f4760422448499ec1c96e30022c92e5013"
+    },
+    {
+      "name": "src/collatz_lab/replay_strict_proof.py",
+      "path": "src/collatz_lab/replay_strict_proof.py",
+      "sha256": "f3921f46bc263397aa6a3bcd7f3b05614fb1a14c2d5fe3ed3b4f9e527d4e99ef"
+    }
+  ],
+  "source_run_accounting": {
+    "audit_status": "AUDIT_FAIL",
+    "proof_confidence_percent": 0.0,
+    "strict_verifier": "FAIL"
+  },
+  "version": 1
+}

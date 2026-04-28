@@ -1,0 +1,8 @@
+run:
+  run_id: RUN-032-global-ranking-invariant-discovery
+  description: Deterministic ranking invariant discovery for RUN-030 unresolved parent-state SCCs
+
+global_ranking_invariant_discovery_run032:
+  out_dir: reports/runs/RUN-032-global-ranking-invariant-discovery
+  run030_dir: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening
+  unresolved_sccs: reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/unresolved_sccs.jsonl
