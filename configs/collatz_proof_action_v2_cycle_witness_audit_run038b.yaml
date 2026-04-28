@@ -1,0 +1,13 @@
+run:
+  run_id: RUN-038B-cycle-witness-audit
+  description: Concrete executable witness audit for RUN-038 SCC cycle obstruction
+
+cycle_witness_audit_run038b:
+  out_dir: reports/runs/RUN-038B-cycle-witness-audit
+  obstruction: reports/runs/RUN-038-scc-invariant-discovery/minimal_invariant_obstruction.json
+  edge_maps: reports/runs/RUN-038-scc-invariant-discovery/scc_edge_maps_normalized.jsonl
+  cycles: reports/runs/RUN-038-scc-invariant-discovery/scc_cycles_full_or_basis.jsonl
+  manifest: proof_manifest.json
+  certificate_store: certificate_store
+  max_cycle_audits: 64
+  repeat_bound: 12

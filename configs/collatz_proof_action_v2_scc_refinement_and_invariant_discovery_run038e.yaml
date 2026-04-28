@@ -1,0 +1,14 @@
+run:
+  run_id: RUN-038E-scc-refinement-and-invariant-discovery
+  description: Exact refinement and invariant discovery after executable RUN-038B cycle obstruction
+
+scc_refinement_invariant_discovery_run038e:
+  out_dir: reports/runs/RUN-038E-scc-refinement-and-invariant-discovery
+  run038b_dir: reports/runs/RUN-038B-cycle-witness-audit
+  cycle_witnesses: reports/runs/RUN-038B-cycle-witness-audit/cycle_witnesses.jsonl
+  edge_maps: reports/runs/RUN-038-scc-invariant-discovery/scc_edge_maps_normalized.jsonl
+  s3_debt_certificates: certificate_store/run035_s3_debt_certificates.jsonl
+  s4_map_enriched_certificates: certificate_store/run035_parent_transition_certificates.jsonl
+  s6_certificates: certificate_store/run035_s6_lemma_certificates.jsonl
+  max_power2_split: 16
+  max_power3_split: 10
