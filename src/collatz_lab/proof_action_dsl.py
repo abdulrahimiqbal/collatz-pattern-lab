@@ -66,6 +66,31 @@ ACTION_SPECS: dict[str, ActionSpec] = {
         ("type", "target", "modulus", "covered_residue_count", "certificate_id"),
         ("target", "modulus", "covered_residue_count", "certificate_id"),
     ),
+    "PROVE_RESIDUAL_COVERAGE": ActionSpec(
+        (
+            "type",
+            "target",
+            "certificate_id",
+            "parent_certificate_id",
+            "modulus",
+            "residual_start",
+            "residual_end",
+            "covered_residue_count",
+            "leaf_certificate_count",
+            "certificate_hash",
+        ),
+        (
+            "target",
+            "certificate_id",
+            "parent_certificate_id",
+            "modulus",
+            "residual_start",
+            "residual_end",
+            "covered_residue_count",
+            "leaf_certificate_count",
+            "certificate_hash",
+        ),
+    ),
     "PROVE_GLOBAL_DESCENT_INDUCTION": ActionSpec(
         ("type", "target", "lemma_id", "depends_on"),
         ("target", "lemma_id", "depends_on"),
@@ -212,9 +237,10 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
             "target_parent",
             "gain_den",
             "covered_residue_count",
+            "leaf_certificate_count",
         }:
             out[field] = _require_int(value, field, minimum=1)
-        elif field in {"residue", "odd_count", "affine_b", "valuation", "gain_num"}:
+        elif field in {"residue", "odd_count", "affine_b", "valuation", "gain_num", "residual_start", "residual_end"}:
             out[field] = _require_int(value, field, minimum=0)
         elif field == "residues":
             out[field] = _require_int_list(value, field)
@@ -264,6 +290,11 @@ def validate_action(action: dict[str, Any]) -> dict[str, Any]:
         raise ProofActionError("gain_den must be positive")
     if action_type == "PROVE_RESIDUE_COVERAGE" and out["covered_residue_count"] > out["modulus"]:
         raise ProofActionError("covered_residue_count must be <= modulus")
+    if action_type == "PROVE_RESIDUAL_COVERAGE":
+        if out["residual_end"] <= out["residual_start"]:
+            raise ProofActionError("residual_end must be larger than residual_start")
+        if out["residual_end"] > out["modulus"]:
+            raise ProofActionError("residual_end must be <= modulus")
     return canonical_action(out)
 
 

@@ -73,7 +73,7 @@ evaluation:
   compare_heuristic_baseline: true
 
 search:
-  verifier_call_budgets: [10, 100, 1000, 5000]
+  verifier_call_budgets: [5, 10, 25, 50, 100]
   max_depth: 30
   beam_width: 64
   candidates_per_state: 50
@@ -84,6 +84,11 @@ search:
   novelty_bonus: true
   trap_penalty: true
   duplicate_action_penalty: true
+
+proposal_ranking:
+  ranker_weight: 1.0
+  value_weight: 0.25
+  policy_weight: 0.05
 
 ranking:
   verifier_accept_bonus: 10.0

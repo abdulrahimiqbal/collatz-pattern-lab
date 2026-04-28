@@ -1,0 +1,33 @@
+run:
+  id: RUN-016-proof-action-v2-theorem-composer
+  name: RUN-016-proof-action-v2-theorem-composer
+  kind: proof_action_v2_theorem_composer
+  description: Theorem dependency graph composition using frozen RUN-015A listwise selector
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  max_candidate_pair_len: 2176
+  use_candidate_selector_head: true
+  use_value_head: true
+  use_ranker_head: true
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+composer:
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  s6_dir: data/proof_action_v2_s6
+  out_dir: reports/runs/RUN-016-proof-action-v2-theorem-composer
+  beam_width: 64
+  candidates_per_node: 50
+  max_actions_per_node: 12
+  max_iterations: 8
+
+search:
+  policy_mode: listwise_selector
+  beam_width: 64
+  candidates_per_state: 50
+
+output:
+  dir: reports/runs/RUN-016-proof-action-v2-theorem-composer

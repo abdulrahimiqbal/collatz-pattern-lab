@@ -1,0 +1,28 @@
+run:
+  id: RUN-018-proof-action-v2-residual-coverage-cert
+  name: RUN-018-proof-action-v2-residual-coverage-cert
+  kind: proof_action_v2_residual_coverage_cert
+  description: Exact residual coverage certificate for the final RUN-017 S6 blocker
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+composer:
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+residual:
+  run017_dir: reports/runs/RUN-017-proof-action-v2-s6-lemma-repair
+  source_s6_dir: reports/runs/RUN-017-proof-action-v2-s6-lemma-repair/repaired_s6
+  out_dir: reports/runs/RUN-018-proof-action-v2-residual-coverage-cert
+  composer_config: configs/collatz_proof_action_v2_theorem_composer_run016.yaml
+  certificate_id: coverage_cert_0000_residual_67108863_67108864
+  modulus: 67108864
+  residual_start: 67108863
+  residual_end: 67108864
+  max_extra_depth: 16
+  max_steps: 220
+  t_limit_multiplier: 2

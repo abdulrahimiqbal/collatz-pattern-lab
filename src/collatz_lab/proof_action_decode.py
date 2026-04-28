@@ -91,6 +91,42 @@ def _s6_context(facts: dict[str, Any]) -> bool:
     return str(facts.get("gate", "")).startswith("S6") or str(facts.get("goal_kind", "")).startswith("s6")
 
 
+def _fact_rows(facts: dict[str, Any], kind: str) -> list[dict[str, Any]]:
+    rows = facts.get(f"{kind}_facts", [])
+    return [row for row in rows if isinstance(row, dict)] if isinstance(rows, list) else []
+
+
+def _s6_blocker_fact(facts: dict[str, Any]) -> dict[str, Any]:
+    rows = _fact_rows(facts, "s6_blocker")
+    return rows[0] if rows else {}
+
+
+def _int_fact(facts: dict[str, Any], key: str, default: int = 0) -> int:
+    if key in facts:
+        return int(facts.get(key) or default)
+    blocker = _s6_blocker_fact(facts)
+    if key in blocker:
+        return int(blocker.get(key) or default)
+    return default
+
+
+def _residual_covers_gap(facts: dict[str, Any], residual_start: int, residual_end: int) -> bool:
+    if residual_end <= residual_start:
+        return False
+    for row in _fact_rows(facts, "residual_coverage_certificate"):
+        if str(row.get("status", "")) not in {"PASS", "ACCEPT"}:
+            continue
+        try:
+            start = int(row["residual_start"])
+            end = int(row["residual_end"])
+            count = int(row["covered_residue_count"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if start <= residual_start and end >= residual_end and count >= residual_end - residual_start:
+            return True
+    return False
+
+
 def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionCheck:
     """Check one typed action against one canonical proof state."""
 
@@ -221,6 +257,48 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
             return ActionCheck(True, "ACCEPT", "coverage certificate covers every residue in the stated modulus", progress=0.7)
         return ActionCheck(False, "REJECT_INCOMPLETE_COVERAGE", "coverage certificate is partial")
 
+    if action_type == "PROVE_RESIDUAL_COVERAGE":
+        if not _s6_context(facts):
+            return ActionCheck(False, "REJECT_CONTEXT", "residual coverage is an S6 theorem obligation")
+
+        certs = _fact_values(
+            facts,
+            "certificate_id",
+            "coverage_certificate",
+            "residual_coverage_certificate",
+        )
+
+        certificate_id = str(parsed["certificate_id"])
+        parent_certificate_id = str(parsed["parent_certificate_id"])
+        if certificate_id not in certs:
+            return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "residual coverage certificate is not present in the state")
+        if parent_certificate_id not in certs:
+            return ActionCheck(False, "REJECT_MISSING_CERTIFICATE", "parent coverage certificate is not present in the state")
+
+        residual_start = int(parsed["residual_start"])
+        residual_end = int(parsed["residual_end"])
+        covered_count = int(parsed["covered_residue_count"])
+
+        if residual_end <= residual_start:
+            return ActionCheck(False, "REJECT_RESIDUAL_RANGE", "empty residual range")
+
+        if covered_count != residual_end - residual_start:
+            return ActionCheck(False, "REJECT_INCOMPLETE_RESIDUAL_COVERAGE", "residual coverage count does not match residual range")
+
+        blocker_ids = _fact_values(facts, "blocker_id")
+        expected_fragment = f"residual:{residual_start}:{residual_end}"
+        expected_underscore = f"residual_{residual_start}_{residual_end}"
+        if not any(expected_fragment in blocker_id or expected_underscore in blocker_id for blocker_id in blocker_ids) and expected_fragment not in certificate_id and expected_underscore not in certificate_id:
+            return ActionCheck(False, "REJECT_RESIDUAL_MISMATCH", "certificate does not match the open residual blocker")
+
+        return ActionCheck(
+            True,
+            "ACCEPT",
+            "residual coverage certificate closes the exact uncovered residue range",
+            closed_obligation=True,
+            progress=1.0,
+        )
+
     if action_type == "PROVE_GLOBAL_DESCENT_INDUCTION":
         lemmas = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
         depends = set(str(item) for item in parsed["depends_on"])
@@ -245,7 +323,7 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
 
     if action_type == "CERTIFY_NO_ESCAPE_BRANCH":
         branches = _fact_values(facts, "branch_id")
-        certs = _fact_values(facts, "certificate_id")
+        certs = _fact_values(facts, "certificate_id", "no_escape_certificate")
         if not _s6_context(facts):
             return ActionCheck(False, "REJECT_CONTEXT", "no-escape certificates require an S6 state")
         if str(parsed["branch_id"]) in branches and str(parsed["certificate_id"]) in certs:
@@ -289,12 +367,30 @@ def verify_action_for_state(action: dict[str, Any] | str, state: str) -> ActionC
     if action_type == "VERIFY_S6_LEMMA":
         lemma_ids = _fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", []))
         statuses = _fact_values(facts, "verifier_status", "status")
+        certs = _fact_values(
+            facts,
+            "certificate_id",
+            "coverage_certificate",
+            "base_case_certificate",
+            "lifting_certificate",
+            "no_escape_certificate",
+        )
         if not _s6_context(facts):
             return ActionCheck(False, "REJECT_CONTEXT", "S6 lemma verification requires an S6 state")
         if str(parsed["lemma_id"]) not in lemma_ids:
             return ActionCheck(False, "REJECT_UNKNOWN_LEMMA", "lemma id is not available")
-        if str(parsed["status"]) in {"ACCEPT", "PASS"} and statuses & {"ACCEPT", "PASS"}:
-            return ActionCheck(True, "ACCEPT", "S6 lemma verifier accepted the generated lemma", progress=0.8)
+        coverage_modulus = _int_fact(facts, "coverage_modulus", 0)
+        covered_count = _int_fact(facts, "covered_residue_count", 0)
+        if coverage_modulus > 0 and covered_count < coverage_modulus and not _residual_covers_gap(facts, covered_count, coverage_modulus):
+            return ActionCheck(False, "REJECT_INCOMPLETE_COVERAGE", "coverage certificate is partial")
+        has_lemma_specific_certs = (
+            any("coverage" in cert for cert in certs)
+            and any("base" in cert for cert in certs)
+            and any("lift" in cert for cert in certs)
+            and any("escape" in cert for cert in certs)
+        )
+        if str(parsed["status"]) in {"ACCEPT", "PASS"} and (has_lemma_specific_certs or statuses & {"ACCEPT", "PASS"}):
+            return ActionCheck(True, "ACCEPT", "S6 lemma verifier accepted lemma-specific certificates", progress=0.8)
         return ActionCheck(False, "REJECT_S6_LEMMA", "S6 lemma verifier did not accept this lemma")
 
     if action_type == "COMPOSE_GATE_PROOF":
@@ -419,11 +515,22 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
     if _s6_context(facts):
         blockers = list(_fact_values(facts, "blocker_id"))
         lemma_ids = list(_fact_values(facts, "lemma_id") | set(str(item) for item in facts.get("known_lemmas", [])))
-        certs = list(_fact_values(facts, "certificate_id", "coverage_certificate", "base_case_certificate", "lifting_certificate"))
+        certs = list(
+            _fact_values(
+                facts,
+                "certificate_id",
+                "coverage_certificate",
+                "base_case_certificate",
+                "lifting_certificate",
+                "no_escape_certificate",
+                "residual_coverage_certificate",
+            )
+        )
         coverage = next((cert for cert in certs if "coverage" in cert), None)
         base_cert = next((cert for cert in certs if "base" in cert), None)
         lifting_cert = next((cert for cert in certs if "lift" in cert), None)
         no_escape_cert = next((cert for cert in certs if "escape" in cert), None)
+        residual_rows = _fact_rows(facts, "residual_coverage_certificate")
         if lemma_ids:
             lemma = lemma_ids[0]
             candidates.append({"type": "PROPOSE_S6_LEMMA", "target": target, "lemma_id": lemma, "statement": "generated S6 obligation candidate"})
@@ -450,6 +557,26 @@ def legal_action_candidates_from_state(state: str, *, max_candidates: int = 64) 
                 candidates.append({"type": "LIFT_LOCAL_TO_PARAMETRIC_FAMILY", "target": target, "local_lemma": lemma, "family_id": "s6_parametric_family", "lifting_certificate": lifting_cert})
             if blockers and no_escape_cert is not None:
                 candidates.append({"type": "CERTIFY_NO_ESCAPE_BRANCH", "target": target, "branch_id": blockers[0], "certificate_id": no_escape_cert})
+            for residual in residual_rows:
+                try:
+                    residual_start = int(residual["residual_start"])
+                    residual_end = int(residual["residual_end"])
+                except (KeyError, TypeError, ValueError):
+                    continue
+                candidates.append(
+                    {
+                        "type": "PROVE_RESIDUAL_COVERAGE",
+                        "target": target,
+                        "certificate_id": str(residual["certificate_id"]),
+                        "parent_certificate_id": str(residual["parent_certificate_id"]),
+                        "modulus": int(residual["modulus"]),
+                        "residual_start": residual_start,
+                        "residual_end": residual_end,
+                        "covered_residue_count": int(residual.get("covered_residue_count", residual_end - residual_start)),
+                        "leaf_certificate_count": int(residual.get("leaf_certificate_count", 1)),
+                        "certificate_hash": str(residual.get("certificate_hash", "")),
+                    }
+                )
     if facts.get("gate", "").startswith(("S1", "S2", "S3", "S4", "S6")):
         candidates.append({"type": "SPLIT_RESIDUE", "target": target, "modulus": 2, "residues": [0, 1]})
         candidates.append(

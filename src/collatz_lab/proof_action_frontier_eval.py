@@ -12,10 +12,22 @@ from typing import Any
 import torch
 from rich.console import Console
 
+from .proof_action_candidate_selector import (
+    GATE_PROGRESS_OUTCOMES,
+    candidate_utility,
+    infer_target_objective,
+    objective_threshold,
+    selector_candidate_record,
+)
 from .proof_action_decode import dedupe_candidates, legal_action_candidates_from_state, verify_action_for_state
 from .proof_action_dsl import parse_action, serialize_action
 from .proof_action_eval import _closes_or_reduces
-from .proof_action_model import load_checkpoint, score_action_components
+from .proof_action_model import (
+    load_checkpoint,
+    proposal_score_from_components,
+    score_action_components,
+    score_candidate_selector_components,
+)
 from .proof_action_outcome import classify_action_outcome
 from .proof_action_trap_states import parse_candidate_action
 from .utils import load_yaml
@@ -46,7 +58,14 @@ def _config(path: str | Path, checkpoint: str | None = None, eval_dir: str | Non
         "out_dir": str(out or output.get("dir") or "reports/runs/RUN-012-proof-action-v2-frontier-search-small-a100"),
         "candidates_per_state": int((cfg.get("search") or {}).get("candidates_per_state", 50)),
         "beam_width": int((cfg.get("search") or {}).get("beam_width", 64)),
+        "policy_mode": str((cfg.get("search") or {}).get("policy_mode", "proposal_score")),
+        "max_candidate_pair_len": int((cfg.get("model") or {}).get("max_candidate_pair_len", 2176)),
         "max_examples": int(evaluation.get("max_examples", 1000)),
+        "proposal_ranking": {
+            "ranker_weight": float((cfg.get("proposal_ranking") or {}).get("ranker_weight", 1.0)),
+            "value_weight": float((cfg.get("proposal_ranking") or {}).get("value_weight", 0.25)),
+            "policy_weight": float((cfg.get("proposal_ranking") or {}).get("policy_weight", 0.05)),
+        },
     }
 
 
@@ -80,6 +99,31 @@ def _mean(values: list[float]) -> float:
     return sum(values) / max(len(values), 1)
 
 
+def _safe_div(num: float, den: float) -> float:
+    return float(num / den) if den and den > 0 else 0.0
+
+
+def add_normalized_selector_metrics(summary: dict[str, Any]) -> dict[str, Any]:
+    oracle_gate = float(summary.get("oracle_gate_progress_available_rate", 0.0) or 0.0)
+    raw_top5_gate = float(
+        summary.get("selector_raw_top5_gate_progress_rate", summary.get("raw_top5_gate_progress_rate", 0.0)) or 0.0
+    )
+    raw_mrr_gate = float(
+        summary.get(
+            "selector_raw_mrr_first_gate_progress_action",
+            summary.get("raw_mrr_first_gate_progress_action", 0.0),
+        )
+        or 0.0
+    )
+    oracle_best_utility = float(summary.get("oracle_best_utility_mean", 0.0) or 0.0)
+    mean_regret = float(summary.get("mean_policy_regret", 0.0) or 0.0)
+
+    summary["selector_top5_gate_progress_oracle_recall"] = _safe_div(raw_top5_gate, oracle_gate)
+    summary["selector_mrr_gate_progress_oracle_normalized"] = _safe_div(raw_mrr_gate, oracle_gate)
+    summary["normalized_policy_regret"] = _safe_div(mean_regret, oracle_best_utility)
+    return summary
+
+
 def _raw_ordered_candidates(
     *,
     model: Any,
@@ -89,20 +133,53 @@ def _raw_ordered_candidates(
     max_action_len: int,
     beam_width: int,
     candidates_per_state: int,
+    proposal_weights: dict[str, float],
+    policy_mode: str = "proposal_score",
+    max_candidate_pair_len: int = 2176,
 ) -> list[dict[str, Any]]:
     state = str(row["state"])
+    target_objective = str(row.get("target_objective") or infer_target_objective(row))
     actions = _actions_from_row(row, beam_width=beam_width)
+    actions = dedupe_candidates(actions, max_candidates=candidates_per_state)
     texts = [serialize_action(action) for action in actions]
-    components = score_action_components(
-        model,
-        tokenizer,
-        state,
-        texts,
-        max_state_len=max_state_len,
-        max_action_len=max_action_len,
-    )
+    if policy_mode == "listwise_selector":
+        components = score_candidate_selector_components(
+            model,
+            tokenizer,
+            state,
+            texts,
+            max_candidate_pair_len=max_candidate_pair_len,
+        )
+    else:
+        components = score_action_components(
+            model,
+            tokenizer,
+            state,
+            texts,
+            max_state_len=max_state_len,
+            max_action_len=max_action_len,
+        )
     ordered = []
     for action, text, model_scores in zip(actions, texts, components, strict=True):
+        raw_score = (
+            float(model_scores.get("selector_score", 0.0) or 0.0)
+            if policy_mode == "listwise_selector"
+            else proposal_score_from_components(model_scores, **proposal_weights)
+        )
+        ordered.append(
+            {
+                "action": action,
+                "action_text": text,
+                "model_scores": model_scores,
+                "raw_score": raw_score,
+                "target_objective": target_objective,
+            }
+        )
+    ordered.sort(key=lambda item: item["raw_score"], reverse=True)
+
+    for item in ordered:
+        action = item["action"]
+        text = item["action_text"]
         check = verify_action_for_state(action, state)
         outcome = classify_action_outcome(action, state, check).to_dict()
         label = _candidate_label(row, text)
@@ -110,20 +187,18 @@ def _raw_ordered_candidates(
         gate_progress = float(outcome.get("gate_progress_delta", 0.0) or 0.0)
         if downstream == "GATE_PROGRESS":
             gate_progress = max(gate_progress, float(label.get("gate_progress_delta", 1.0) or 1.0))
-        ordered.append(
+        item.update(
             {
-                "action": action,
-                "action_text": text,
-                "model_scores": model_scores,
-                "raw_score": float(model_scores.get("policy_score", 0.0)),
                 "verifier_check": check.to_dict(),
                 "outcome": outcome,
                 "downstream_outcome": downstream,
                 "effective_gate_progress_delta": gate_progress,
             }
         )
-    ordered.sort(key=lambda item: item["raw_score"], reverse=True)
-    return ordered[:candidates_per_state]
+        selector_record = selector_candidate_record(item, gate=str(row.get("gate", "")), target_objective=target_objective)
+        item["selector_outcome_class"] = selector_record["outcome_class"]
+        item["utility"] = selector_record["utility"]
+    return ordered
 
 
 def raw_proposal_eval(
@@ -149,10 +224,16 @@ def raw_proposal_eval(
     gate_mrr: list[float] = []
     duplicate_rates: list[float] = []
     unique_counts: list[float] = []
+    oracle_gate_available: list[float] = []
+    oracle_top1_utilities: list[float] = []
+    oracle_top5_gate_hits: list[float] = []
+    oracle_best_utilities: list[float] = []
+    model_policy_regrets: list[float] = []
     top_metrics = {k: Counter() for k in (1, 5, 10)}
     syntax_top1 = 0
     parse_top1 = 0
     stratified: dict[str, Counter[str]] = {}
+    objective_stratified: dict[str, Counter[str]] = {}
 
     for state_index, row in enumerate(rows):
         ordered = _raw_ordered_candidates(
@@ -163,10 +244,47 @@ def raw_proposal_eval(
             max_action_len=max_action_len,
             beam_width=cfg["beam_width"],
             candidates_per_state=cfg["candidates_per_state"],
+            proposal_weights=cfg["proposal_ranking"],
+            policy_mode=cfg["policy_mode"],
+            max_candidate_pair_len=cfg["max_candidate_pair_len"],
         )
         raw_texts = [item["action_text"] for item in ordered]
         unique_counts.append(float(len(set(raw_texts))))
         duplicate_rates.append(1.0 - (len(set(raw_texts)) / max(len(raw_texts), 1)))
+        target_objective = str(row.get("target_objective") or infer_target_objective(row))
+        threshold = objective_threshold(target_objective)
+        objective_counter = objective_stratified.setdefault(target_objective, Counter())
+        objective_counter["count"] += 1
+        objective_available = any(
+            candidate_utility(item, target_objective) >= threshold
+            for item in ordered
+        )
+        objective_counter["oracle_available"] += 1 if objective_available else 0
+        oracle_ordered = sorted(ordered, key=lambda item: float(item.get("utility", 0.0) or 0.0), reverse=True)
+        oracle_best = oracle_ordered[0] if oracle_ordered else None
+        model_best = ordered[0] if ordered else None
+        if model_best is not None:
+            objective_counter["model_top1_objective_good"] += (
+                1 if candidate_utility(model_best, target_objective) >= threshold else 0
+            )
+        objective_counter["policy_regret_sum"] += (
+            (float(oracle_best.get("utility", 0.0) or 0.0) - float(model_best.get("utility", 0.0) or 0.0))
+            if oracle_best and model_best
+            else 0.0
+        )
+        oracle_gate_available.append(
+            1.0 if any(str(item.get("selector_outcome_class")) in GATE_PROGRESS_OUTCOMES for item in ordered) else 0.0
+        )
+        oracle_top1_utilities.append(float(oracle_best.get("utility", 0.0) or 0.0) if oracle_best else 0.0)
+        oracle_best_utilities.append(float(oracle_best.get("utility", 0.0) or 0.0) if oracle_best else 0.0)
+        oracle_top5_gate_hits.append(
+            1.0 if any(str(item.get("selector_outcome_class")) in GATE_PROGRESS_OUTCOMES for item in oracle_ordered[:5]) else 0.0
+        )
+        model_policy_regrets.append(
+            (float(oracle_best.get("utility", 0.0) or 0.0) - float(model_best.get("utility", 0.0) or 0.0))
+            if oracle_best and model_best
+            else 0.0
+        )
         first_accept = first_close = first_gate = None
         for rank, item in enumerate(ordered, start=1):
             candidate_record = {
@@ -175,6 +293,7 @@ def raw_proposal_eval(
                 "eval_file": row.get("eval_file"),
                 "frontier_kind": row.get("frontier_kind"),
                 "gate": row.get("gate"),
+                "target_objective": target_objective,
                 "rank": rank,
                 **item,
             }
@@ -233,6 +352,28 @@ def raw_proposal_eval(
         "raw_mrr_first_gate_progress_action": _mean(gate_mrr),
         "unique_raw_actions_per_state_mean": _mean(unique_counts),
         "duplicate_raw_action_rate": _mean(duplicate_rates),
+        "oracle_gate_progress_available_rate": _mean(oracle_gate_available),
+        "oracle_top1_utility": _mean(oracle_top1_utilities),
+        "oracle_top5_gate_progress_rate": _mean(oracle_top5_gate_hits),
+        "oracle_best_utility_mean": _mean(oracle_best_utilities),
+        "oracle_policy_regret_current_model": _mean(model_policy_regrets),
+        "mean_policy_regret": _mean(model_policy_regrets),
+        "oracle_available_rate_by_objective": {
+            key: counter["oracle_available"] / max(counter["count"], 1)
+            for key, counter in objective_stratified.items()
+        },
+        "oracle_count_by_objective": {
+            key: int(counter["count"])
+            for key, counter in objective_stratified.items()
+        },
+        "model_top1_objective_hit_rate_by_objective": {
+            key: counter["model_top1_objective_good"] / max(counter["count"], 1)
+            for key, counter in objective_stratified.items()
+        },
+        "oracle_policy_regret_by_objective": {
+            key: counter["policy_regret_sum"] / max(counter["count"], 1)
+            for key, counter in objective_stratified.items()
+        },
         "stratified_raw": {
             key: {
                 "count": int(counter["count"]),
@@ -242,6 +383,7 @@ def raw_proposal_eval(
             for key, counter in stratified.items()
         },
     }
+    add_normalized_selector_metrics(summary)
     (out_dir / "raw_proposal_eval_summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (out_dir / "raw_proposal_candidates.jsonl").write_text(
         "\n".join(json.dumps(item, sort_keys=True) for item in per_candidate) + ("\n" if per_candidate else ""),

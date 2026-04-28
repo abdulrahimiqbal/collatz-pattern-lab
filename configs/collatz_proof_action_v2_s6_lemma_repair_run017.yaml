@@ -1,0 +1,22 @@
+run:
+  id: RUN-017-proof-action-v2-s6-lemma-repair
+  name: RUN-017-proof-action-v2-s6-lemma-repair
+  kind: proof_action_v2_s6_lemma_repair
+  description: Repair rejected RUN-016 S6 lemmas without retraining
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+
+composer:
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  s6_dir: data/proof_action_v2_s6
+
+repair:
+  run016_report: reports/runs/RUN-016-proof-action-v2-theorem-composer/theorem_composition_report.json
+  source_s6_dir: data/proof_action_v2_s6
+  out_dir: reports/runs/RUN-017-proof-action-v2-s6-lemma-repair
+  composer_config: configs/collatz_proof_action_v2_theorem_composer_run016.yaml

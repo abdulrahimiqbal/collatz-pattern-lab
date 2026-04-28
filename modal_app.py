@@ -375,6 +375,19 @@ def _copy_bundled_config(config_path: str) -> None:
         shutil.copy2(bundled, local_config)
 
 
+def _mounted_path(path: str | None) -> str | None:
+    if not path:
+        return path
+    return path if path.startswith("/") else f"{MOUNT}/{path}"
+
+
+def _checkpoint_step(path: Path) -> int:
+    try:
+        return int(path.stem.rsplit("_", 1)[-1])
+    except Exception:
+        return 0
+
+
 def _copy_bundled_proof_inputs() -> None:
     import shutil
 
@@ -951,6 +964,208 @@ def run_proof_action_v2_hard_retrain_frontier_search_small_a100(
         checkpoint=f"{MOUNT}/remote_reports/proof_action_v2/RUN-014-proof-action-v2-hard-retrain-small-a100/final_checkpoint.pt",
         eval_dir=f"{MOUNT}/data/proof_action_v2_frontier_eval",
         out=f"{MOUNT}/remote_reports/proof_action_v2/RUN-014-proof-action-v2-hard-retrain-small-a100",
+    )
+    volume.commit()
+    return summary
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=49152, timeout=10 * 60 * 60)
+def train_proof_action_v2_candidate_selector_small_a100(
+    config_path: str = "configs/collatz_proof_action_v2_listwise_selector_small_a100.yaml",
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_candidate_selector_dataset import build_candidate_selector_dataset
+    from collatz_lab.proof_action_model import train
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    data = cfg.get("data") or {}
+    required_paths = [
+        Path(str(data.get("candidate_sets") or "")),
+        Path(str(data.get("val_candidate_sets") or "")),
+        Path(str(data.get("hard_holdout_candidate_sets") or "")),
+    ]
+    if any(str(path) and (not path.exists() or path.stat().st_size == 0) for path in required_paths):
+        build_candidate_selector_dataset(
+            frontier_dir=f"{MOUNT}/data/proof_action_v2_hard_frontier",
+            hard_trace_dir=f"{MOUNT}/data/proof_action_v2_hard_traces",
+            s6_dir=f"{MOUNT}/data/proof_action_v2_s6",
+            out=f"{MOUNT}/data/proof_action_v2_candidate_selector",
+            min_candidates=5,
+            require_gate_progress_candidate=True,
+            require_accepted_low_utility_candidate=True,
+            require_oracle_gap=0.75,
+            seed=1337,
+        )
+    output_dir = Path(str((cfg.get("output") or {}).get("dir") or "remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100"))
+    final_checkpoint = output_dir / "final_checkpoint.pt"
+    partials = sorted(output_dir.glob("checkpoint_step_*.pt"), key=_checkpoint_step)
+    resume_checkpoint = str(partials[-1]) if partials and not final_checkpoint.exists() else None
+    report = train(config_path, resume_checkpoint=resume_checkpoint)
+    volume.commit()
+    return report
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=6 * 60 * 60)
+def eval_proof_action_v2_candidate_selector_small_a100(
+    config_path: str = "configs/collatz_proof_action_v2_listwise_selector_small_a100.yaml",
+    checkpoint: str | None = None,
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_candidate_selector_eval import evaluate_candidate_selector
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    checkpoint = str(checkpoint or (cfg.get("evaluation") or {}).get("checkpoint") or (cfg.get("model") or {}).get("checkpoint"))
+    output_dir = str(output_dir or (cfg.get("output") or {}).get("dir"))
+    eval_dir = str((cfg.get("evaluation") or cfg.get("eval") or {}).get("frontier_eval_dir") or "data/proof_action_v2_frontier_eval")
+    summary = evaluate_candidate_selector(
+        config_path,
+        checkpoint=_mounted_path(checkpoint),
+        eval_dir=_mounted_path(eval_dir),
+        out=_mounted_path(output_dir),
+    )
+    volume.commit()
+    return summary
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_candidate_selector_frontier_search_small_a100(
+    config_path: str = "configs/collatz_proof_action_v2_listwise_selector_small_a100.yaml",
+    checkpoint: str | None = None,
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_frontier_search import run_frontier_search
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    checkpoint = str(checkpoint or (cfg.get("evaluation") or {}).get("checkpoint") or (cfg.get("model") or {}).get("checkpoint"))
+    output_dir = str(output_dir or (cfg.get("output") or {}).get("dir"))
+    eval_dir = str((cfg.get("evaluation") or cfg.get("eval") or {}).get("frontier_eval_dir") or "data/proof_action_v2_frontier_eval")
+    summary = run_frontier_search(
+        config_path,
+        checkpoint=_mounted_path(checkpoint),
+        eval_dir=_mounted_path(eval_dir),
+        out=_mounted_path(output_dir),
+    )
+    volume.commit()
+    return summary
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_theorem_composer_a100(
+    config_path: str = "configs/collatz_proof_action_v2_theorem_composer_run016.yaml",
+    checkpoint: str | None = None,
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_theorem_composer import run_theorem_composer
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    checkpoint = str(checkpoint or (cfg.get("evaluation") or {}).get("checkpoint") or (cfg.get("model") or {}).get("checkpoint"))
+    output_dir = str(output_dir or (cfg.get("composer") or {}).get("out_dir") or (cfg.get("output") or {}).get("dir"))
+    summary = run_theorem_composer(
+        config_path,
+        checkpoint=_mounted_path(checkpoint),
+        frontier_dir=f"{MOUNT}/data/proof_action_v2_frontier_eval",
+        s6_dir=f"{MOUNT}/data/proof_action_v2_s6",
+        out=_mounted_path(output_dir),
+    )
+    volume.commit()
+    return summary
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_s6_lemma_repair_a100(
+    config_path: str = "configs/collatz_proof_action_v2_s6_lemma_repair_run017.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_s6_lemma_repair import run_s6_lemma_repair
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(output_dir or (cfg.get("repair") or {}).get("out_dir") or "reports/runs/RUN-017-proof-action-v2-s6-lemma-repair")
+    result = run_s6_lemma_repair(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_residual_coverage_cert(
+    config_path: str = "configs/collatz_proof_action_v2_residual_coverage_run018.yaml",
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_residual_coverage import run_residual_coverage_cert
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    output_dir = str(output_dir or (cfg.get("residual") or {}).get("out_dir") or "reports/runs/RUN-018-proof-action-v2-residual-coverage-cert")
+    result = run_residual_coverage_cert(config_path, out=_mounted_path(output_dir))
+    volume.commit()
+    return result
+
+
+@app.function(image=image, volumes={MOUNT: volume}, gpu="A100-40GB", cpu=4.0, memory=32768, timeout=4 * 60 * 60)
+def run_proof_action_v2_theorem_composer(
+    config_path: str = "configs/collatz_proof_action_v2_theorem_composer_run016.yaml",
+    checkpoint: str | None = None,
+    s6_dir: str | None = None,
+    output_dir: str | None = None,
+) -> dict:
+    import os
+    import sys
+
+    sys.path.insert(0, "/root/collatz-pattern-lab/src")
+    from collatz_lab.proof_action_theorem_composer import run_theorem_composer
+    from collatz_lab.utils import load_yaml
+
+    os.chdir(MOUNT)
+    _copy_bundled_config(config_path)
+    cfg = load_yaml(config_path)
+    checkpoint = str(checkpoint or (cfg.get("evaluation") or {}).get("checkpoint") or (cfg.get("model") or {}).get("checkpoint"))
+    output_dir = str(output_dir or (cfg.get("composer") or {}).get("out_dir") or (cfg.get("output") or {}).get("dir"))
+    s6_dir = str(s6_dir or (cfg.get("composer") or {}).get("s6_dir") or "data/proof_action_v2_s6")
+    summary = run_theorem_composer(
+        config_path,
+        checkpoint=_mounted_path(checkpoint),
+        frontier_dir=f"{MOUNT}/data/proof_action_v2_frontier_eval",
+        s6_dir=_mounted_path(s6_dir),
+        out=_mounted_path(output_dir),
     )
     volume.commit()
     return summary

@@ -1,0 +1,30 @@
+run:
+  id: RUN-014B-proof-action-v2-fixed-eval-small-a100
+  name: RUN-014B-proof-action-v2-fixed-eval-small-a100
+  kind: proof_action_v2_fixed_eval
+  description: Fixed pre-verifier proposal-ranking eval for the existing RUN-014B checkpoint
+
+model:
+  checkpoint: remote_reports/proof_action_v2/RUN-014B-proof-action-v2-gate-progress-fix-small-a100/final_checkpoint.pt
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-014B-proof-action-v2-gate-progress-fix-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  train_rows: data/proof_action_v2_ranker/train.jsonl
+  max_examples: 2000
+  raw_proposal_eval: true
+  leakage_check: true
+
+search:
+  verifier_call_budgets: [5, 10, 25, 50, 100]
+  max_depth: 30
+  candidates_per_state: 50
+  beam_width: 64
+
+proposal_ranking:
+  ranker_weight: 1.0
+  value_weight: 0.25
+  policy_weight: 0.05
+
+output:
+  dir: reports/runs/RUN-014B-fixed-eval

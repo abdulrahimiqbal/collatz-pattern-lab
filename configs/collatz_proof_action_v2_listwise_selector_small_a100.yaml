@@ -1,0 +1,74 @@
+run:
+  id: RUN-015A-proof-action-v2-listwise-selector-small-a100
+  name: RUN-015A-proof-action-v2-listwise-selector-small-a100
+  kind: proof_action_v2_listwise_selector
+  description: Small cross-encoder candidate selector trained on hard frontier candidate sets
+
+model:
+  init_checkpoint: remote_reports/proof_action_v2/RUN-014B-proof-action-v2-gate-progress-fix-small-a100/final_checkpoint.pt
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  architecture: same_as_RUN_014B_plus_candidate_selector
+  d_model: 384
+  encoder_layers: 8
+  decoder_layers: 6
+  heads: 6
+  ffn_dim: 1536
+  dropout: 0.1
+  max_state_len: 2048
+  max_action_len: 128
+  max_candidate_pair_len: 2176
+  max_vocab_size: 32768
+  max_candidates_per_set: 50
+  use_candidate_selector_head: true
+  use_value_head: true
+  use_ranker_head: true
+
+data:
+  candidate_sets: data/proof_action_v2_candidate_selector/train_candidate_sets.jsonl
+  val_candidate_sets: data/proof_action_v2_candidate_selector/val_candidate_sets.jsonl
+  hard_holdout_candidate_sets: data/proof_action_v2_candidate_selector/hard_holdout_candidate_sets.jsonl
+
+training:
+  max_steps: 2000
+  lr: 0.00003
+  warmup_steps: 200
+  batch_size: 8
+  selector_batch_size: 8
+  bf16: true
+  grad_clip: 1.0
+  gradient_clip: 1.0
+  checkpoint_every: 500
+  progress_every: 50
+  seed: 1337
+
+loss:
+  selector_listwise_weight: 4.0
+  utility_regression_weight: 1.0
+  outcome_class_weight: 1.0
+  decoder_policy_weight: 0.05
+  old_pairwise_ranker_weight: 0.1
+  value_weight: 0.1
+  selector_temperature: 0.25
+
+evaluation:
+  checkpoint: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100/final_checkpoint.pt
+  frontier_eval_dir: data/proof_action_v2_frontier_eval
+  train_rows: data/proof_action_v2_ranker/train.jsonl
+  max_examples: 2000
+  raw_proposal_eval: true
+  leakage_check: true
+
+search:
+  policy_mode: listwise_selector
+  verifier_call_budgets: [5, 10, 25, 50, 100]
+  candidates_per_state: 50
+  beam_width: 64
+  max_depth: 30
+
+proposal_ranking:
+  ranker_weight: 1.0
+  value_weight: 0.25
+  policy_weight: 0.05
+
+output:
+  dir: remote_reports/proof_action_v2/RUN-015A-proof-action-v2-listwise-selector-small-a100

@@ -89,7 +89,27 @@ def parse_state_facts(state: str) -> dict[str, Any]:
             if kind:
                 facts.setdefault(f"{kind}_facts", []).append(attrs)
             for key, value in attrs.items():
-                if key in {"modulus", "residue", "steps", "odd_count", "affine_b", "valuation", "gain_num", "gain_den", "source_parent", "target_parent", "n", "first_descent_below_n", "steps_to_descent", "max_value"}:
+                if key in {
+                    "modulus",
+                    "residue",
+                    "steps",
+                    "odd_count",
+                    "affine_b",
+                    "valuation",
+                    "gain_num",
+                    "gain_den",
+                    "source_parent",
+                    "target_parent",
+                    "n",
+                    "first_descent_below_n",
+                    "steps_to_descent",
+                    "max_value",
+                    "coverage_modulus",
+                    "covered_residue_count",
+                    "residual_start",
+                    "residual_end",
+                    "leaf_certificate_count",
+                }:
                     attrs[key] = int(value)
                 elif key in {"reaches_terminal_cycle", "local_descent_passed", "sample_checks_passed", "exact_congruence_passed"}:
                     attrs[key] = value.lower() == "true"

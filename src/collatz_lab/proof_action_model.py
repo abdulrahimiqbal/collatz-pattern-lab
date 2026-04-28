@@ -21,6 +21,11 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset, WeightedRandomSampler
 
 from .models import PositionalEncoding, masked_mean
+from .proof_action_candidate_selector import (
+    SELECTOR_OUTCOME_CLASSES,
+    SELECTOR_OUTCOME_TO_ID,
+    format_candidate_pair_input,
+)
 from .proof_action_tokenizer import BOS, EOS, PAD, SPECIAL_TOKENS, ProofActionTokenizer, build_tokenizer, pad_1d
 from .utils import load_yaml, save_yaml
 
@@ -44,10 +49,13 @@ class ProofActionSeq2Seq(nn.Module):
         max_seq_len: int = 2048,
         use_value_head: bool = True,
         use_ranker_head: bool = False,
+        use_candidate_selector_head: bool = False,
+        num_outcome_classes: int = len(SELECTOR_OUTCOME_CLASSES),
     ) -> None:
         super().__init__()
         self.use_value_head = use_value_head
         self.use_ranker_head = use_ranker_head
+        self.use_candidate_selector_head = use_candidate_selector_head
         self.vocab_size = vocab_size
         self.d_model = d_model
         self.token_embedding = nn.Embedding(vocab_size, d_model)
@@ -78,6 +86,25 @@ class ProofActionSeq2Seq(nn.Module):
             nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(d_model, 1),
+        )
+        self.candidate_selector_head = nn.Sequential(
+            nn.LayerNorm(d_model),
+            nn.Linear(d_model, d_model),
+            nn.GELU(),
+            nn.Dropout(dropout),
+            nn.Linear(d_model, 1),
+        )
+        self.candidate_utility_head = nn.Sequential(
+            nn.LayerNorm(d_model),
+            nn.Linear(d_model, max(d_model // 2, 1)),
+            nn.GELU(),
+            nn.Linear(max(d_model // 2, 1), 1),
+        )
+        self.candidate_outcome_head = nn.Sequential(
+            nn.LayerNorm(d_model),
+            nn.Linear(d_model, d_model),
+            nn.GELU(),
+            nn.Linear(d_model, num_outcome_classes),
         )
 
     def encode(self, input_ids: torch.Tensor, attention_mask: torch.Tensor | None = None) -> torch.Tensor:
@@ -140,6 +167,28 @@ class ProofActionSeq2Seq(nn.Module):
         pooled = masked_mean(memory, attention_mask)
         return self.rank_actions_from_pooled(pooled, action_input_ids, action_attention_mask=action_attention_mask)
 
+    def score_candidate_pairs(
+        self,
+        candidate_input_ids: torch.Tensor,
+        candidate_attention_mask: torch.Tensor,
+    ) -> dict[str, torch.Tensor]:
+        bsz, k, seq_len = candidate_input_ids.shape
+        flat_ids = candidate_input_ids.reshape(bsz * k, seq_len)
+        flat_mask = candidate_attention_mask.reshape(bsz * k, seq_len)
+
+        memory = self.encode(flat_ids, attention_mask=flat_mask)
+        pooled = masked_mean(memory, flat_mask)
+
+        selector_score = self.candidate_selector_head(pooled).reshape(bsz, k)
+        utility_pred = self.candidate_utility_head(pooled).reshape(bsz, k)
+        outcome_logits = self.candidate_outcome_head(pooled).reshape(bsz, k, -1)
+
+        return {
+            "selector_score": selector_score,
+            "utility_pred": utility_pred,
+            "outcome_logits": outcome_logits,
+        }
+
 
 def _resolve_rows(path: str | Path) -> list[dict[str, Any]]:
     text = str(path)
@@ -165,8 +214,13 @@ class TrainConfig:
     rows_path: str
     output_dir: str
     pairs_path: str | None = None
+    candidate_sets_path: str | None = None
+    val_candidate_sets_path: str | None = None
+    hard_holdout_candidate_sets_path: str | None = None
     max_state_len: int = 2048
     max_action_len: int = 128
+    max_candidate_pair_len: int = 2176
+    max_candidates_per_set: int = 50
     max_vocab_size: int = 16384
     d_model: int = 384
     encoder_layers: int = 8
@@ -189,13 +243,19 @@ class TrainConfig:
     bf16: bool = False
     use_value_head: bool = True
     use_ranker_head: bool = False
+    use_candidate_selector_head: bool = False
     pair_batch_size: int = 16
+    selector_batch_size: int = 8
     train_splits: tuple[str, ...] = ("train",)
     val_splits: tuple[str, ...] = ("val", "test", "challenge")
     init_checkpoint: str | None = None
     s6_policy_loss_weight: float = 1.0
     hard_trace_policy_loss_weight: float = 1.0
     accepted_good_vs_dead_end_pair_weight: float = 1.0
+    selector_listwise_loss_weight: float = 0.0
+    utility_regression_loss_weight: float = 0.0
+    outcome_class_loss_weight: float = 0.0
+    selector_temperature: float = 0.25
 
 
 def _as_tuple(value: Any, default: tuple[str, ...]) -> tuple[str, ...]:
@@ -213,15 +273,23 @@ def config_from_yaml(path: str | Path) -> TrainConfig:
     training = cfg.get("training", {})
     loss = cfg.get("loss", {})
     output = cfg.get("output", {})
-    rows_path = str(data.get("rows") or data.get("dataset") or Path(data.get("dir", "data/proof_action_v2")) / "rows.jsonl")
+    rows_value = data.get("rows") or data.get("dataset")
+    if rows_value is None and data.get("dir") and not data.get("candidate_sets"):
+        rows_value = Path(data.get("dir", "data/proof_action_v2")) / "rows.jsonl"
+    rows_path = str(rows_value or "")
     return TrainConfig(
         rows_path=rows_path,
         output_dir=str(output.get("dir") or cfg.get("output_dir") or "reports/proof_action_v2/run"),
         pairs_path=str(data.get("pairs") or Path(data.get("dir", Path(rows_path).parent)) / "train_pairs.jsonl")
         if data.get("pairs") or data.get("dir")
         else None,
+        candidate_sets_path=str(data.get("candidate_sets")) if data.get("candidate_sets") else None,
+        val_candidate_sets_path=str(data.get("val_candidate_sets")) if data.get("val_candidate_sets") else None,
+        hard_holdout_candidate_sets_path=str(data.get("hard_holdout_candidate_sets")) if data.get("hard_holdout_candidate_sets") else None,
         max_state_len=int(model.get("max_state_len", 2048)),
         max_action_len=int(model.get("max_action_len", 128)),
+        max_candidate_pair_len=int(model.get("max_candidate_pair_len", 2176)),
+        max_candidates_per_set=int(model.get("max_candidates_per_set", training.get("max_candidates_per_set", 50))),
         max_vocab_size=int(model.get("max_vocab_size", 16384)),
         d_model=int(model.get("d_model", 384)),
         encoder_layers=int(model.get("encoder_layers", 8)),
@@ -234,9 +302,9 @@ def config_from_yaml(path: str | Path) -> TrainConfig:
         lr=float(training.get("lr", 2e-4)),
         weight_decay=float(training.get("weight_decay", 0.01)),
         warmup_steps=int(training.get("warmup_steps", 1000)),
-        policy_loss_weight=float(loss.get("policy_weight", training.get("policy_loss_weight", 1.0))),
+        policy_loss_weight=float(loss.get("decoder_policy_weight", loss.get("policy_weight", training.get("policy_loss_weight", 1.0)))),
         value_loss_weight=float(loss.get("value_weight", training.get("value_loss_weight", 0.3))),
-        ranker_loss_weight=float(loss.get("ranker_weight", training.get("ranker_loss_weight", 0.7))),
+        ranker_loss_weight=float(loss.get("old_pairwise_ranker_weight", loss.get("ranker_weight", training.get("ranker_loss_weight", 0.7)))),
         gradient_clip=float(training.get("gradient_clip", 1.0)),
         seed=int(training.get("seed", 1337)),
         checkpoint_every=int(training.get("checkpoint_every", 500)),
@@ -244,13 +312,19 @@ def config_from_yaml(path: str | Path) -> TrainConfig:
         bf16=bool(training.get("bf16", False)),
         use_value_head=bool(model.get("use_value_head", True)),
         use_ranker_head=bool(model.get("use_ranker_head", False)),
+        use_candidate_selector_head=bool(model.get("use_candidate_selector_head", False)),
         pair_batch_size=int(training.get("pair_batch_size", training.get("batch_size", 16))),
+        selector_batch_size=int(training.get("selector_batch_size", training.get("batch_size", 8))),
         train_splits=_as_tuple(data.get("train_splits"), ("train",)),
         val_splits=_as_tuple(data.get("val_splits"), ("val", "test", "challenge")),
         init_checkpoint=model.get("init_checkpoint") or training.get("init_checkpoint"),
         s6_policy_loss_weight=float(loss.get("s6_policy_weight", 1.0)),
         hard_trace_policy_loss_weight=float(loss.get("hard_trace_policy_weight", 1.0)),
         accepted_good_vs_dead_end_pair_weight=float(loss.get("accepted_good_vs_dead_end_pair_weight", 1.0)),
+        selector_listwise_loss_weight=float(loss.get("selector_listwise_weight", 0.0)),
+        utility_regression_loss_weight=float(loss.get("utility_regression_weight", 0.0)),
+        outcome_class_loss_weight=float(loss.get("outcome_class_weight", 0.0)),
+        selector_temperature=float(loss.get("selector_temperature", 0.25)),
     )
 
 
@@ -308,6 +382,35 @@ class ProofActionPairRows(Dataset[dict[str, torch.Tensor]]):
         }
 
 
+class ProofActionCandidateSetRows(Dataset[dict[str, Any]]):
+    def __init__(self, rows: list[dict[str, Any]], tokenizer: ProofActionTokenizer, cfg: TrainConfig) -> None:
+        self.rows = rows
+        self.tokenizer = tokenizer
+        self.cfg = cfg
+
+    def __len__(self) -> int:
+        return len(self.rows)
+
+    def __getitem__(self, index: int) -> dict[str, Any]:
+        row = self.rows[index]
+        state = str(row["state"])
+        candidates = list(row.get("candidates") or [])[: self.cfg.max_candidates_per_set]
+        pair_ids = []
+        utilities = []
+        outcome_ids = []
+        for candidate in candidates:
+            action_text = str(candidate["action_text"])
+            pair_ids.append(self.tokenizer.encode(format_candidate_pair_input(state, action_text), self.cfg.max_candidate_pair_len))
+            utilities.append(float(candidate.get("utility", 0.0) or 0.0))
+            outcome = str(candidate.get("outcome_class", "REJECTED"))
+            outcome_ids.append(int(SELECTOR_OUTCOME_TO_ID.get(outcome, SELECTOR_OUTCOME_TO_ID["REJECTED"])))
+        return {
+            "candidate_input_ids": pair_ids,
+            "candidate_utilities": torch.tensor(utilities, dtype=torch.float),
+            "candidate_outcome_ids": torch.tensor(outcome_ids, dtype=torch.long),
+        }
+
+
 def collate_action_batch(batch: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:
     input_ids = pad_1d([row["input_ids"] for row in batch], pad_value=PAD)
     target_ids = pad_1d([row["target_ids"] for row in batch], pad_value=PAD)
@@ -321,6 +424,28 @@ def collate_action_batch(batch: list[dict[str, torch.Tensor]]) -> dict[str, torc
         "hard_trace_flag": torch.stack([row["hard_trace_flag"] for row in batch]),
         "s6_flag": torch.stack([row["s6_flag"] for row in batch]),
         "original_flag": torch.stack([row["original_flag"] for row in batch]),
+    }
+
+
+def collate_candidate_set_batch(batch: list[dict[str, Any]]) -> dict[str, torch.Tensor]:
+    max_k = max((len(row["candidate_input_ids"]) for row in batch), default=0)
+    max_len = max((seq.numel() for row in batch for seq in row["candidate_input_ids"]), default=0)
+    input_ids = torch.full((len(batch), max_k, max_len), PAD, dtype=torch.long)
+    candidate_mask = torch.zeros((len(batch), max_k), dtype=torch.bool)
+    utilities = torch.zeros((len(batch), max_k), dtype=torch.float)
+    outcome_ids = torch.zeros((len(batch), max_k), dtype=torch.long)
+    for row_index, row in enumerate(batch):
+        candidate_mask[row_index, : len(row["candidate_input_ids"])] = True
+        utilities[row_index, : row["candidate_utilities"].numel()] = row["candidate_utilities"]
+        outcome_ids[row_index, : row["candidate_outcome_ids"].numel()] = row["candidate_outcome_ids"]
+        for candidate_index, seq in enumerate(row["candidate_input_ids"]):
+            input_ids[row_index, candidate_index, : seq.numel()] = seq
+    return {
+        "candidate_input_ids": input_ids,
+        "candidate_attention_mask": input_ids.ne(PAD),
+        "candidate_mask": candidate_mask,
+        "candidate_utilities": utilities,
+        "candidate_outcome_ids": outcome_ids,
     }
 
 
@@ -409,6 +534,43 @@ def _ranker_loss(model: ProofActionSeq2Seq, batch: dict[str, torch.Tensor]) -> t
     }
 
 
+def _selector_loss(model: ProofActionSeq2Seq, batch: dict[str, torch.Tensor], cfg: TrainConfig) -> tuple[torch.Tensor, dict[str, float]]:
+    outputs = model.score_candidate_pairs(batch["candidate_input_ids"], batch["candidate_attention_mask"])
+    candidate_mask = batch["candidate_mask"].bool()
+    utilities = batch["candidate_utilities"]
+    selector_scores = outputs["selector_score"].masked_fill(~candidate_mask, -1e9)
+    utility_targets = utilities.masked_fill(~candidate_mask, -1e9)
+    target_dist = torch.softmax(utility_targets / max(cfg.selector_temperature, 1e-6), dim=-1)
+    selector_log_probs = torch.log_softmax(selector_scores, dim=-1)
+    selector_loss = -(target_dist * selector_log_probs).sum(dim=-1).mean()
+
+    utility_per_item = F.smooth_l1_loss(outputs["utility_pred"], utilities, reduction="none")
+    utility_loss = utility_per_item[candidate_mask].mean() if candidate_mask.any() else selector_loss.new_tensor(0.0)
+
+    outcome_logits = outputs["outcome_logits"]
+    outcome_loss = (
+        F.cross_entropy(outcome_logits[candidate_mask], batch["candidate_outcome_ids"][candidate_mask])
+        if candidate_mask.any()
+        else selector_loss.new_tensor(0.0)
+    )
+    total = (
+        cfg.selector_listwise_loss_weight * selector_loss
+        + cfg.utility_regression_loss_weight * utility_loss
+        + cfg.outcome_class_loss_weight * outcome_loss
+    )
+    pred_best = selector_scores.argmax(dim=-1)
+    true_best = utilities.masked_fill(~candidate_mask, -1e9).argmax(dim=-1)
+    top1_accuracy = (pred_best == true_best).float().mean()
+    regret = utilities.gather(1, true_best.unsqueeze(1)).squeeze(1) - utilities.gather(1, pred_best.unsqueeze(1)).squeeze(1)
+    return total, {
+        "selector_loss": float(selector_loss.detach().item()),
+        "selector_utility_loss": float(utility_loss.detach().item()),
+        "selector_outcome_loss": float(outcome_loss.detach().item()),
+        "selector_top1_accuracy": float(top1_accuracy.detach().item()),
+        "selector_policy_regret": float(regret.detach().mean().item()),
+    }
+
+
 def _lr_scale(step: int, max_steps: int, warmup_steps: int) -> float:
     if warmup_steps > 0 and step <= warmup_steps:
         return step / warmup_steps
@@ -451,9 +613,14 @@ def load_checkpoint(path: str | Path, *, device: torch.device | None = None) -> 
         heads=int(cfg_data.get("heads", 6)),
         ffn_dim=int(cfg_data.get("ffn_dim", 1536)),
         dropout=0.0,
-        max_seq_len=max(int(cfg_data.get("max_state_len", 2048)), int(cfg_data.get("max_action_len", 128))),
+        max_seq_len=max(
+            int(cfg_data.get("max_state_len", 2048)),
+            int(cfg_data.get("max_action_len", 128)),
+            int(cfg_data.get("max_candidate_pair_len", 2176)),
+        ),
         use_value_head=bool(cfg_data.get("use_value_head", True)),
         use_ranker_head=bool(cfg_data.get("use_ranker_head", False)),
+        use_candidate_selector_head=bool(cfg_data.get("use_candidate_selector_head", False)),
     ).to(target_device)
     model.load_state_dict(checkpoint["model_state"], strict=False)
     model.eval()
@@ -478,6 +645,9 @@ def _load_init_checkpoint_weights(model: ProofActionSeq2Seq, tokenizer: ProofAct
             copied.append(key)
             continue
         if key == "token_embedding.weight" and current[key].dim() == 2 and value.dim() == 2:
+            if current[key].size(1) != value.size(1):
+                skipped.append(key)
+                continue
             merged = current[key].clone()
             merged[: min(len(SPECIAL_TOKENS), merged.size(0), value.size(0))] = value[
                 : min(len(SPECIAL_TOKENS), merged.size(0), value.size(0))
@@ -490,6 +660,9 @@ def _load_init_checkpoint_weights(model: ProofActionSeq2Seq, tokenizer: ProofAct
             copied.append(key)
             continue
         if key == "output.weight" and current[key].dim() == 2 and value.dim() == 2:
+            if current[key].size(1) != value.size(1):
+                skipped.append(key)
+                continue
             merged = current[key].clone()
             merged[: min(len(SPECIAL_TOKENS), merged.size(0), value.size(0))] = value[
                 : min(len(SPECIAL_TOKENS), merged.size(0), value.size(0))
@@ -630,23 +803,134 @@ def score_action_texts(
     return scores
 
 
-def train(config_path: str | Path) -> dict[str, Any]:
+@torch.no_grad()
+def score_candidate_selector_components(
+    model: ProofActionSeq2Seq,
+    tokenizer: ProofActionTokenizer,
+    state: str,
+    action_texts: list[str],
+    *,
+    max_candidate_pair_len: int,
+) -> list[dict[str, Any]]:
+    if not action_texts:
+        return []
+    device = next(model.parameters()).device
+    encoded = [
+        tokenizer.encode(format_candidate_pair_input(state, action_text), max_candidate_pair_len)
+        for action_text in action_texts
+    ]
+    input_ids = pad_1d(encoded, pad_value=PAD).unsqueeze(0).to(device)
+    attention_mask = input_ids.ne(PAD)
+    outputs = model.score_candidate_pairs(input_ids, attention_mask)
+    selector_scores = outputs["selector_score"].squeeze(0)
+    utility_pred = outputs["utility_pred"].squeeze(0)
+    outcome_probs = torch.softmax(outputs["outcome_logits"].squeeze(0), dim=-1)
+    outcome_ids = outcome_probs.argmax(dim=-1)
+    return [
+        {
+            "selector_score": float(selector_scores[index].item()),
+            "utility_pred": float(utility_pred[index].item()),
+            "selector_outcome_class": SELECTOR_OUTCOME_CLASSES[int(outcome_ids[index].item())],
+            "selector_outcome_confidence": float(outcome_probs[index, outcome_ids[index]].item()),
+        }
+        for index in range(len(action_texts))
+    ]
+
+
+def proposal_score_from_components(
+    components: dict[str, float],
+    *,
+    ranker_weight: float = 1.0,
+    value_weight: float = 0.25,
+    policy_weight: float = 0.05,
+) -> float:
+    """Non-oracular candidate score used before verifier feedback.
+
+    Policy log-prob is only a weak tie-breaker because it measures serialized
+    action likelihood, not theorem utility.
+    """
+    return float(
+        ranker_weight * float(components.get("ranker_score", 0.0) or 0.0)
+        + value_weight * float(components.get("value_score", 0.0) or 0.0)
+        + policy_weight * float(components.get("policy_score", 0.0) or 0.0)
+    )
+
+
+def _selector_rows_to_policy_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    policy_rows: list[dict[str, Any]] = []
+    for row in rows:
+        candidates = list(row.get("candidates") or [])
+        if not candidates:
+            continue
+        best_index = int(row.get("best_candidate_index", 0) or 0)
+        best_index = max(0, min(best_index, len(candidates) - 1))
+        best = candidates[best_index]
+        policy_rows.append(
+            {
+                "state": row.get("state", ""),
+                "target_action_text": best.get("action_text", ""),
+                "verifier_status": "ACCEPT" if float(best.get("utility", 0.0) or 0.0) > 0 else "REJECT",
+                "reward": max(0.0, min(1.0, float(best.get("utility", 0.0) or 0.0))),
+                "eventually_closed": float(best.get("utility", 0.0) or 0.0) >= 0.75,
+                "split": row.get("split", "train"),
+                "gate": row.get("gate"),
+                "source_family": "candidate_selector_best_action",
+            }
+        )
+    return policy_rows
+
+
+def _latest_checkpoint_step(path: str | Path) -> int:
+    name = Path(path).stem
+    try:
+        return int(name.rsplit("_", 1)[-1])
+    except Exception:
+        return 0
+
+
+def _move_optimizer_state_to_device(optimizer: torch.optim.Optimizer, device: torch.device) -> None:
+    for state in optimizer.state.values():
+        for key, value in list(state.items()):
+            if torch.is_tensor(value):
+                state[key] = value.to(device)
+
+
+def train(config_path: str | Path, *, resume_checkpoint: str | Path | None = None) -> dict[str, Any]:
     cfg = config_from_yaml(config_path)
     random.seed(cfg.seed)
     torch.manual_seed(cfg.seed)
-    rows = _resolve_rows(cfg.rows_path)
-    if not rows:
-        raise ValueError(f"no proof-action rows found at {cfg.rows_path}")
+    resume_payload: dict[str, Any] | None = None
+    if resume_checkpoint:
+        resume_payload = torch.load(resume_checkpoint, map_location="cpu")
+    rows = _resolve_rows(cfg.rows_path) if cfg.rows_path else []
+    candidate_rows = _resolve_rows(cfg.candidate_sets_path) if cfg.candidate_sets_path else []
+    if not rows and not candidate_rows:
+        raise ValueError(f"no proof-action rows found at {cfg.rows_path or cfg.candidate_sets_path}")
+    if not rows and candidate_rows:
+        rows = _selector_rows_to_policy_rows(candidate_rows)
     pair_rows = _resolve_rows(cfg.pairs_path) if cfg.pairs_path and Path(cfg.pairs_path).exists() else []
     train_rows = [row for row in rows if row.get("split") in cfg.train_splits]
     val_rows = [row for row in rows if row.get("split") in cfg.val_splits] or rows[: min(len(rows), 64)]
     if not train_rows:
         train_rows = rows
+    train_candidate_rows = [row for row in candidate_rows if row.get("split") in cfg.train_splits] or candidate_rows
+    val_candidate_rows = _resolve_rows(cfg.val_candidate_sets_path) if cfg.val_candidate_sets_path else [
+        row for row in candidate_rows if row.get("split") in cfg.val_splits
+    ]
     vocab_rows = list(rows)
     for pair in pair_rows[: max(len(rows), 1)]:
         vocab_rows.append({"state": pair.get("state", ""), "target_action_text": pair.get("better_action", "")})
         vocab_rows.append({"state": pair.get("state", ""), "target_action_text": pair.get("worse_action", "")})
-    tokenizer = build_tokenizer(vocab_rows, max_vocab_size=cfg.max_vocab_size)
+    for row in candidate_rows:
+        state = str(row.get("state", ""))
+        for candidate in row.get("candidates") or []:
+            action_text = str(candidate.get("action_text", ""))
+            vocab_rows.append({"state": format_candidate_pair_input(state, action_text), "target_action_text": action_text})
+    tokenizer = (
+        ProofActionTokenizer.from_json(resume_payload["tokenizer"])
+        if resume_payload is not None and "tokenizer" in resume_payload
+        else build_tokenizer(vocab_rows, max_vocab_size=cfg.max_vocab_size)
+    )
 
     output_dir = Path(cfg.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -667,6 +951,18 @@ def train(config_path: str | Path) -> dict[str, Any]:
         pair_weights = _sample_weights(train_pair_rows)
         pair_sampler = WeightedRandomSampler(pair_weights, num_samples=max(len(pair_weights), cfg.pair_batch_size), replacement=True) if any(abs(weight - 1.0) > 1e-9 for weight in pair_weights) else None
         pair_loader = DataLoader(pair_ds, batch_size=cfg.pair_batch_size, shuffle=pair_sampler is None, sampler=pair_sampler, collate_fn=collate_pair_batch)
+    selector_loader = None
+    val_selector_loader = None
+    if train_candidate_rows and (
+        cfg.selector_listwise_loss_weight > 0
+        or cfg.utility_regression_loss_weight > 0
+        or cfg.outcome_class_loss_weight > 0
+    ):
+        selector_ds = ProofActionCandidateSetRows(train_candidate_rows, tokenizer, cfg)
+        selector_loader = DataLoader(selector_ds, batch_size=cfg.selector_batch_size, shuffle=True, collate_fn=collate_candidate_set_batch)
+        if val_candidate_rows:
+            val_selector_ds = ProofActionCandidateSetRows(val_candidate_rows, tokenizer, cfg)
+            val_selector_loader = DataLoader(val_selector_ds, batch_size=cfg.selector_batch_size, shuffle=False, collate_fn=collate_candidate_set_batch)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = ProofActionSeq2Seq(
         vocab_size=tokenizer.vocab_size,
@@ -676,21 +972,29 @@ def train(config_path: str | Path) -> dict[str, Any]:
         heads=cfg.heads,
         ffn_dim=cfg.ffn_dim,
         dropout=cfg.dropout,
-        max_seq_len=max(cfg.max_state_len, cfg.max_action_len),
+        max_seq_len=max(cfg.max_state_len, cfg.max_action_len, cfg.max_candidate_pair_len),
         use_value_head=cfg.use_value_head,
         use_ranker_head=cfg.use_ranker_head,
+        use_candidate_selector_head=cfg.use_candidate_selector_head,
     )
     init_report: dict[str, Any] | None = None
     if cfg.init_checkpoint:
         init_path = Path(cfg.init_checkpoint)
-        if init_path.exists():
+        if resume_payload is not None:
+            init_report = {"resume_checkpoint": str(resume_checkpoint), "loaded": True}
+        elif init_path.exists():
             init_report = _load_init_checkpoint_weights(model, tokenizer, init_path)
         else:
             init_report = {"init_checkpoint": str(init_path), "loaded": False, "reason": "not found"}
     model = model.to(device)
+    if resume_payload is not None:
+        model.load_state_dict(resume_payload["model_state"], strict=False)
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    if resume_payload is not None and isinstance(resume_payload.get("optimizer_state"), dict):
+        optimizer.load_state_dict(resume_payload["optimizer_state"])
+        _move_optimizer_state_to_device(optimizer, device)
     parameter_count = sum(parameter.numel() for parameter in model.parameters())
-    action_memory = {
+    action_memory = dict(resume_payload.get("action_memory") or {}) if resume_payload is not None else {
         _state_key(str(row["state"])): str(row["target_action_text"])
         for row in train_rows
         if row.get("verifier_status") == "ACCEPT"
@@ -698,9 +1002,11 @@ def train(config_path: str | Path) -> dict[str, Any]:
 
     iterator = iter(train_loader)
     pair_iterator = iter(pair_loader) if pair_loader is not None else None
+    selector_iterator = iter(selector_loader) if selector_loader is not None else None
     started = time.time()
     latest_metrics: dict[str, float] = {}
-    for step in range(1, cfg.max_steps + 1):
+    start_step = int(resume_payload.get("step", 0) or 0) + 1 if resume_payload is not None else 1
+    for step in range(start_step, cfg.max_steps + 1):
         try:
             batch = next(iterator)
         except StopIteration:
@@ -721,6 +1027,16 @@ def train(config_path: str | Path) -> dict[str, Any]:
             rank_loss, rank_parts = _ranker_loss(model, pair_batch)
             loss = loss + cfg.ranker_loss_weight * rank_loss
             loss_parts.update(rank_parts)
+        if selector_loader is not None and selector_iterator is not None:
+            try:
+                selector_batch = next(selector_iterator)
+            except StopIteration:
+                selector_iterator = iter(selector_loader)
+                selector_batch = next(selector_iterator)
+            selector_batch = {key: value.to(device) for key, value in selector_batch.items()}
+            selector_loss, selector_parts = _selector_loss(model, selector_batch, cfg)
+            loss = loss + selector_loss
+            loss_parts.update(selector_parts)
         optimizer.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), cfg.gradient_clip)
@@ -758,6 +1074,7 @@ def train(config_path: str | Path) -> dict[str, Any]:
 
     model.eval()
     val_losses = []
+    selector_val_losses = []
     with torch.no_grad():
         for index, batch in enumerate(val_loader):
             if index >= 10:
@@ -765,6 +1082,13 @@ def train(config_path: str | Path) -> dict[str, Any]:
             batch = {key: value.to(device) for key, value in batch.items()}
             val_loss, _ = _loss(model, batch, cfg)
             val_losses.append(float(val_loss.item()))
+        if val_selector_loader is not None:
+            for index, batch in enumerate(val_selector_loader):
+                if index >= 10:
+                    break
+                batch = {key: value.to(device) for key, value in batch.items()}
+                val_selector_loss, _ = _selector_loss(model, batch, cfg)
+                selector_val_losses.append(float(val_selector_loss.item()))
     final_checkpoint = output_dir / "final_checkpoint.pt"
     torch.save(_checkpoint_payload(model, optimizer, tokenizer, cfg, cfg.max_steps, action_memory), final_checkpoint)
     report = {
@@ -774,16 +1098,25 @@ def train(config_path: str | Path) -> dict[str, Any]:
         "model_name": "CollatzProofAction-v2",
         "config_path": str(config_path),
         "rows_path": cfg.rows_path,
+        "candidate_sets_path": cfg.candidate_sets_path,
         "output_dir": str(output_dir),
         "checkpoint_path": str(final_checkpoint),
         "row_count": len(rows),
+        "candidate_set_count": len(candidate_rows),
         "pair_rows": len(pair_rows),
         "train_rows": len(train_rows),
         "val_rows": len(val_rows),
+        "train_candidate_sets": len(train_candidate_rows),
+        "val_candidate_sets": len(val_candidate_rows),
         "train_steps_completed": cfg.max_steps,
+        "resume_checkpoint": str(resume_checkpoint) if resume_checkpoint else None,
         "parameter_count": parameter_count,
         "init_checkpoint_report": init_report,
-        "metrics": {**latest_metrics, "val_loss": sum(val_losses) / max(len(val_losses), 1)},
+        "metrics": {
+            **latest_metrics,
+            "val_loss": sum(val_losses) / max(len(val_losses), 1),
+            "selector_val_loss": sum(selector_val_losses) / max(len(selector_val_losses), 1) if selector_val_losses else 0.0,
+        },
         "interface_rule": "checkpoint utility is judged by free generated typed actions checked by the verifier",
     }
     (output_dir / "training_report.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -795,13 +1128,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
     train_cmd = sub.add_parser("train")
     train_cmd.add_argument("--config", required=True)
+    train_cmd.add_argument("--resume-checkpoint")
     return parser
 
 
 def main(argv: list[str] | None = None) -> None:
     args = build_arg_parser().parse_args(argv)
     if args.command == "train":
-        report = train(args.config)
+        report = train(args.config, resume_checkpoint=args.resume_checkpoint)
         Console().print(report)
 
 
