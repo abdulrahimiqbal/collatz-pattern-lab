@@ -1,0 +1,6 @@
+top_level_after_natural_kernel_elimination_run046:
+  out_dir: reports/runs/RUN-046-top-level-after-natural-kernel-elimination
+  run045_result: reports/runs/RUN-045-natural-viability-kernel-elimination/run_result.json
+  scc_guarded_ranking_certificate: reports/runs/RUN-045-natural-viability-kernel-elimination/scc_guarded_ranking_certificate.json
+  manifest: proof_manifest.json
+  write_repo_replay_bundle: true

@@ -224,7 +224,12 @@ def build_collatz_descent_theorem_candidate(
         "odds": "Every odd n can be written as P_a, but current report covers only sampled finite a/r-depth.",
     }
     top_level_replays = proof_action_graph_loaded and not proof_graph.get("open", []) and all(
-        _top_level_certificate_replays(cert_name, top_level_certificates.get(cert_name), proof_graph=proof_graph)
+        _top_level_certificate_replays(
+            cert_name,
+            top_level_certificates.get(cert_name),
+            proof_graph=proof_graph,
+            replay_context=replay_context,
+        )
         for cert_name in TOP_LEVEL_CERTIFICATES
     )
     if top_level_replays:

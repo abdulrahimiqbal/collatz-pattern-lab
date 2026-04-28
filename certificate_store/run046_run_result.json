@@ -1,0 +1,28 @@
+{
+  "artifacts": {
+    "final_proof_object": "reports/runs/RUN-046-top-level-after-natural-kernel-elimination/final_proof_object.json",
+    "root_manifest_replay_result": "reports/runs/RUN-046-top-level-after-natural-kernel-elimination/root_manifest_replay_result.json",
+    "run_result": "reports/runs/RUN-046-top-level-after-natural-kernel-elimination/run_result.json",
+    "top_level_certificates": "reports/runs/RUN-046-top-level-after-natural-kernel-elimination/top_level_certificates.jsonl",
+    "top_level_replay_report": "reports/runs/RUN-046-top-level-after-natural-kernel-elimination/top_level_replay_report.json"
+  },
+  "big_model_launched": false,
+  "clean_manifest_replay": {
+    "hash_failure_count": 0,
+    "proof_confidence_percent": 100.0,
+    "strict_verifier": "PASS"
+  },
+  "hash_failure_count": 0,
+  "proof_confidence_percent": 100.0,
+  "run_id": "RUN-046-top-level-after-natural-kernel-elimination",
+  "schema": "collatz_lab.run046_top_level_after_natural_kernel_elimination",
+  "search_launched": false,
+  "selector_work_launched": false,
+  "status": "PASS",
+  "strict_verifier": "PASS",
+  "top_level_certificate_failures": [],
+  "top_level_certificates_generated": 5,
+  "top_level_replay_pass": 5,
+  "training_launched": false,
+  "version": 1
+}

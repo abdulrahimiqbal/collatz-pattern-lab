@@ -1,0 +1,40 @@
+{
+  "all_pass": true,
+  "certificate_count": 5,
+  "replay_pass_count": 5,
+  "results": {
+    "descent_implication_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "descent_implication_certificate replays",
+      "status": "ACCEPT"
+    },
+    "parent_state_coverage_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "parent_state_coverage_certificate replays",
+      "status": "ACCEPT"
+    },
+    "transition_soundness_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "transition_soundness_certificate replays",
+      "status": "ACCEPT"
+    },
+    "universal_entry_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "universal_entry_certificate replays",
+      "status": "ACCEPT"
+    },
+    "well_founded_ranking_certificate": {
+      "accepted": true,
+      "failures": [],
+      "reason": "well_founded_ranking_certificate replays",
+      "status": "ACCEPT"
+    }
+  },
+  "run_id": "RUN-046-top-level-after-natural-kernel-elimination",
+  "schema": "collatz_lab.top_level_replay_report",
+  "version": 1
+}

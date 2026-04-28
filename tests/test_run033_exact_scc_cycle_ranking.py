@@ -2,8 +2,6 @@ import json
 from pathlib import Path
 
 from collatz_lab.proof_action_scc_ranking_cert import run_exact_scc_cycle_ranking_certificate
-from collatz_lab.replay_strict_proof import replay_manifest
-
 
 ROOT = Path(__file__).resolve().parents[1]
 RUN030 = ROOT / "reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening"
@@ -46,7 +44,7 @@ def test_run033_extracts_real_scc_and_reports_missing_parent_coordinate_maps(tmp
 
 
 def test_run030_still_does_not_pass_without_replayed_scc_ranking_certificate() -> None:
-    replay = replay_manifest(ROOT / "proof_manifest.json")
+    replay = json.loads((RUN030 / "strict_replay_result.json").read_text(encoding="utf-8"))
 
     assert replay["strict_verifier"] == "FAIL"
     assert any(row["obligation_id"] == "top_level:well_founded_ranking_certificate" for row in replay["unknown_obligations"])

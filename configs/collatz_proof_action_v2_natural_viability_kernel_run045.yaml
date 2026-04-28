@@ -1,0 +1,4 @@
+natural_viability_kernel_run045:
+  out_dir: reports/runs/RUN-045-natural-viability-kernel-elimination
+  run044_guarded_viability_kernel: reports/runs/RUN-044-guarded-viability-kernel-elimination/guarded_viability_kernel.json
+  guarded_edge_domains: reports/runs/RUN-040-guarded-scc-ranking-repair/guarded_edge_domains.jsonl

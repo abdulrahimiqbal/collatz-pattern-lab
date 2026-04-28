@@ -491,8 +491,20 @@ def replay_scc_guarded_ranking_certificate(
     if certificate.get("status") != "PASS":
         failures.append({"reason": "guarded_ranking_status_not_pass", "status": certificate.get("status")})
     proof_kind = certificate.get("proof_kind")
-    if proof_kind not in {"guarded_dag_rank", "bounded_guard_exit", "lexicographic_ranking", "delayed_descent"}:
+    if proof_kind not in {"guarded_dag_rank", "bounded_guard_exit", "lexicographic_ranking", "delayed_descent", "viability_kernel_elimination", "natural_viability_kernel_elimination"}:
         failures.append({"reason": "unsupported_guarded_ranking_proof_kind", "proof_kind": proof_kind})
+    if proof_kind == "natural_viability_kernel_elimination":
+        try:
+            from .proof_action_natural_viability_kernel import replay_natural_viability_kernel_certificate
+        except ImportError as exc:  # pragma: no cover - defensive import guard
+            failures.append({"reason": "natural_viability_replay_import_failed", "detail": str(exc)})
+        else:
+            natural_certificate = certificate.get("natural_viability_kernel_certificate")
+            natural_replay = replay_natural_viability_kernel_certificate(natural_certificate if isinstance(natural_certificate, dict) else {})
+            if not natural_replay.get("accepted"):
+                failures.append({"reason": "natural_viability_kernel_certificate_replay_failed", "replay": natural_replay})
+            if certificate.get("natural_viability_kernel_certificate_hash") != (natural_certificate or {}).get("certificate_hash"):
+                failures.append({"reason": "natural_viability_kernel_certificate_hash_ref_mismatch"})
     covered = set(str(edge_id) for edge_id in certificate.get("covered_edge_ids", []) or [])
     if expected_edge_ids is not None:
         expected = set(str(edge_id) for edge_id in expected_edge_ids)

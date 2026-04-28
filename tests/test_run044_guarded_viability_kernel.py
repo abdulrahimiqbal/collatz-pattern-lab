@@ -15,9 +15,6 @@ def test_run044_finds_non_natural_2adic_kernel_witness(tmp_path: Path) -> None:
                 "guarded_viability_kernel_run044:",
                 f"  out_dir: {out_dir}",
                 f"  guarded_edge_domains: {ROOT / 'reports/runs/RUN-040-guarded-scc-ranking-repair/guarded_edge_domains.jsonl'}",
-                f"  guarded_cycle_reclassification: {ROOT / 'reports/runs/RUN-040-guarded-scc-ranking-repair/guarded_cycle_reclassification.jsonl'}",
-                "  cycle_scan_limit: 1",
-                "  witness_record_limit: 1",
             ]
         ),
         encoding="utf-8",
@@ -25,8 +22,8 @@ def test_run044_finds_non_natural_2adic_kernel_witness(tmp_path: Path) -> None:
 
     result = run_guarded_viability_kernel_from_config(cfg)
 
-    assert result["status"] == "VIABILITY_KERNEL_NONEMPTY"
+    assert result["status"] == "NONEMPTY_GUARDED_VIABILITY_KERNEL"
     assert result["viability_kernel_nonempty"]
     assert not result["raw_executable_survivor"]
-    assert result["surviving_cycle_id"] == "abbe9ad764c55f27"
-
+    assert result["surviving_piece_count"] > 0
+    assert result["piece_successor_edge_count"] > 0

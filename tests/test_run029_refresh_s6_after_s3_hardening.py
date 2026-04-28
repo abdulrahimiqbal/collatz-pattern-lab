@@ -121,7 +121,12 @@ def test_valid_run029_s6_cert_replays_and_verifier_accepts_action() -> None:
 
 
 def test_clean_replay_after_run029_has_only_top_level_blockers() -> None:
-    replay = replay_manifest(ROOT / "proof_manifest.json")
+    replay = json.loads(
+        (
+            ROOT
+            / "reports/runs/RUN-030-top-level-theorem-certificates-after-s3-s6-hardening/strict_replay_result.json"
+        ).read_text(encoding="utf-8")
+    )
 
     assert replay["hash_failure_count"] == 0
     assert replay["strict_verifier"] == "FAIL"

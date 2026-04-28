@@ -39,6 +39,7 @@ def run_top_level_after_scc_ranking(config_path: str | Path | None = None, *, ou
     status = "BLOCKED_BY_RUN036_RANKING_OBSTRUCTION"
     if run036_result.get("status") == "PASS":
         status = "RUN036_PASS_TOP_LEVEL_REFRESH_NOT_IMPLEMENTED"
+    blocked = status != "PASS"
     result = {
         "schema": "collatz_lab.run037_top_level_after_scc_ranking",
         "version": 1,
@@ -49,8 +50,8 @@ def run_top_level_after_scc_ranking(config_path: str | Path | None = None, *, ou
         "search_launched": False,
         "status": status,
         "top_level_replay_pass": 0,
-        "strict_verifier": root_replay.get("strict_verifier"),
-        "proof_confidence_percent": root_replay.get("proof_confidence_percent"),
+        "strict_verifier": "FAIL" if blocked else root_replay.get("strict_verifier"),
+        "proof_confidence_percent": 0.0 if blocked else root_replay.get("proof_confidence_percent"),
         "hash_failure_count": root_replay.get("hash_failure_count", 0),
         "ranking_obstruction": {
             "run036_status": run036_result.get("status"),

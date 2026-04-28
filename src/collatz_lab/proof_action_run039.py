@@ -52,6 +52,7 @@ def run_top_level_after_scc_invariant(config_path: str | Path | None = None, *, 
     top_level_replay_pass = 0
     if run038_result.get("status") == "PASS" and run038_result.get("accepted_scc_ranking") is True:
         status = "RUN038_PASS_TOP_LEVEL_REFRESH_REQUIRES_SCC_AWARE_REPLAY"
+    blocked = status != "PASS"
 
     result = {
         "schema": "collatz_lab.run039_top_level_after_scc_invariant",
@@ -64,8 +65,8 @@ def run_top_level_after_scc_invariant(config_path: str | Path | None = None, *, 
         "status": status,
         "top_level_certificates_generated": 0,
         "top_level_replay_pass": top_level_replay_pass,
-        "strict_verifier": root_replay.get("strict_verifier"),
-        "proof_confidence_percent": root_replay.get("proof_confidence_percent"),
+        "strict_verifier": "FAIL" if blocked else root_replay.get("strict_verifier"),
+        "proof_confidence_percent": 0.0 if blocked else root_replay.get("proof_confidence_percent"),
         "hash_failure_count": root_replay.get("hash_failure_count", 0),
         "scc_invariant_obstruction": {
             "run038_status": run038_result.get("status"),
