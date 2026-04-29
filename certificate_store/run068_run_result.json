@@ -1,0 +1,76 @@
+{
+  "accepted_certificate_count": 0,
+  "artifacts": {
+    "accepted_high_parent_invariant_certificate": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/accepted_high_parent_invariant_certificate.json",
+    "candidate_invariant_verifications": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/candidate_invariant_verifications.jsonl",
+    "candidate_invariants": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/candidate_invariants.jsonl",
+    "certificate_store_accepted_high_parent_invariant_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_accepted_high_parent_invariant_certificate.json",
+    "certificate_store_candidate_invariant_verifications": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_candidate_invariant_verifications.jsonl",
+    "certificate_store_candidate_invariants": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_candidate_invariants.jsonl",
+    "certificate_store_minimal_high_parent_invariant_obstruction": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_minimal_high_parent_invariant_obstruction.json",
+    "certificate_store_remaining_uncovered_high_parent_domains": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_remaining_uncovered_high_parent_domains.jsonl",
+    "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_remaining_uncovered_parent_families.jsonl",
+    "certificate_store_root_relative_transition_graph": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_root_relative_transition_graph.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_run_result.json",
+    "high_parent_missing_invariant": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/high_parent_missing_invariant.md",
+    "minimal_high_parent_invariant_obstruction": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/minimal_high_parent_invariant_obstruction.json",
+    "remaining_uncovered_high_parent_domains": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/remaining_uncovered_high_parent_domains.jsonl",
+    "remaining_uncovered_parent_families": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/remaining_uncovered_parent_families.jsonl",
+    "root_relative_transition_graph": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/root_relative_transition_graph.json",
+    "run_result": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/run_result.json"
+  },
+  "candidate_invariant_count": 9,
+  "candidate_invariant_types_attempted": [
+    "BOUNDED_COMPOSITION_DESCENT",
+    "DIRECT_ROOT_DESCENT",
+    "FINITE_SUBSYSTEM_ENTRY_WITH_ROOT_MARGIN",
+    "LEXICOGRAPHIC",
+    "LOWER_DEBT_ENTRY",
+    "PIECEWISE_RESIDUE",
+    "ROOT_DEBT_DECREASE",
+    "ROOT_MARGIN_DECREASE",
+    "V3_DEBT"
+  ],
+  "failed_reasons": [
+    "BOUNDED_COMPOSITION_DESCENT_MISSING",
+    "DIRECT_ROOT_DESCENT_INEQUALITY_MISSING",
+    "FINITE_SUBSYSTEM_ROOT_MARGIN_MISSING",
+    "LEXICOGRAPHIC_DECREASE_NOT_PROVED",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "PIECEWISE_RESIDUE_COVERAGE_MISSING",
+    "ROOT_DEBT_DECREASE_NOT_PROVED",
+    "ROOT_MARGIN_WELL_FOUNDED_MEASURE_MISSING",
+    "V3_DEBT_DECREASE_NOT_PROVED"
+  ],
+  "formalization_status": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_MISSING",
+  "ml_hypothesis_generation_launched": false,
+  "progress_transition_count": 0,
+  "remaining_uncovered_domain_count": 1,
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_MISSING",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no exact high-parent root-relative invariant certificate",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "root_relative_graph_status": "NO_ROOT_RELATIVE_PROGRESS_CERTIFIED",
+  "run_id": "RUN-068-high-parent-root-relative-invariant-search",
+  "run_result_hash": "7f498f0945973eb44f4c953810c974f024d794cdac69150fa1094c8162ce80cc",
+  "schema": "collatz_lab.run068_high_parent_invariant_search",
+  "status": "FAIL",
+  "symbolic_search_launched": true,
+  "training_launched": false,
+  "transition_count": 512,
+  "version": 1
+}

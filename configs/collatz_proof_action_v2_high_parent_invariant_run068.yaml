@@ -1,0 +1,10 @@
+high_parent_invariant_run068:
+  out_dir: reports/runs/RUN-068-high-parent-root-relative-invariant-search
+  p32_special_transition_schema: certificate_store/run067_p32_special_transition_schema.json
+  p32_special_transition_families: certificate_store/run067_p32_special_transition_families.jsonl
+  p32_special_uncovered_domains: certificate_store/run067_p32_special_uncovered_domains.jsonl
+  root_debt_states: certificate_store/run065_high_parent_root_debt_states.jsonl
+  run065_remaining_uncovered: certificate_store/run065_remaining_uncovered_parent_families.jsonl
+  ml_hypothesis_generation: false
+  max_composition_depth: 4
+  max_representative_transitions: 8

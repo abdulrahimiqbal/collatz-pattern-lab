@@ -1,0 +1,391 @@
+{
+  "candidate_invariant_types_attempted": [
+    "BOUNDED_COMPOSITION_DESCENT",
+    "DIRECT_ROOT_DESCENT",
+    "FINITE_SUBSYSTEM_ENTRY_WITH_ROOT_MARGIN",
+    "LEXICOGRAPHIC",
+    "LOWER_DEBT_ENTRY",
+    "PIECEWISE_RESIDUE",
+    "ROOT_DEBT_DECREASE",
+    "ROOT_MARGIN_DECREASE",
+    "V3_DEBT"
+  ],
+  "exact_uncovered_domain": {
+    "d_range": {
+      "lower_bound": 1,
+      "type": "tail"
+    },
+    "domain_id": "high_parent_all_d_ge_1_q_odd_positive",
+    "example": {
+      "a": 33,
+      "d": 1,
+      "n_expr": "2^33 - 1",
+      "q": 1
+    },
+    "failed_invariant_classes": [
+      {
+        "candidate_id": "direct_root_descent_from_p32_special_families",
+        "detail": "missing exact proof current_final < root",
+        "invariant_type": "DIRECT_ROOT_DESCENT",
+        "reason": "DIRECT_ROOT_DESCENT_INEQUALITY_MISSING"
+      },
+      {
+        "candidate_id": "p32_special_transitions_decrease_debt",
+        "detail": "not every covered transition proves d' < d",
+        "invariant_type": "ROOT_DEBT_DECREASE",
+        "reason": "ROOT_DEBT_DECREASE_NOT_PROVED"
+      },
+      {
+        "candidate_id": "root_relative_rational_margin_decreases",
+        "detail": "margin decrease or well-founded measure is missing",
+        "invariant_type": "ROOT_MARGIN_DECREASE",
+        "reason": "ROOT_MARGIN_WELL_FOUNDED_MEASURE_MISSING"
+      },
+      {
+        "candidate_id": "p32_special_enters_lower_debt_family",
+        "detail": "no exact lower-debt entry certificate is present",
+        "invariant_type": "LOWER_DEBT_ENTRY",
+        "reason": "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING"
+      },
+      {
+        "candidate_id": "finite_subsystem_entry_has_root_margin",
+        "detail": "finite subsystem entry lacks root-relative margin",
+        "invariant_type": "FINITE_SUBSYSTEM_ENTRY_WITH_ROOT_MARGIN",
+        "reason": "FINITE_SUBSYSTEM_ROOT_MARGIN_MISSING"
+      },
+      {
+        "candidate_id": "bounded_composition_root_descent",
+        "detail": "bounded composition has no exact descent proof",
+        "invariant_type": "BOUNDED_COMPOSITION_DESCENT",
+        "reason": "BOUNDED_COMPOSITION_DESCENT_MISSING"
+      },
+      {
+        "candidate_id": "v3_coordinate_debt_decreases",
+        "detail": "v3 feature is recorded but no universal decrease theorem is certified",
+        "invariant_type": "V3_DEBT",
+        "reason": "V3_DEBT_DECREASE_NOT_PROVED"
+      },
+      {
+        "candidate_id": "lexicographic_debt_margin_parent_rank",
+        "detail": "lexicographic components do not have a certified decrease proof",
+        "invariant_type": "LEXICOGRAPHIC",
+        "reason": "LEXICOGRAPHIC_DECREASE_NOT_PROVED"
+      },
+      {
+        "candidate_id": "piecewise_residue_family_partition",
+        "detail": "residue split is bounded or incomplete",
+        "invariant_type": "PIECEWISE_RESIDUE",
+        "reason": "PIECEWISE_RESIDUE_COVERAGE_MISSING"
+      }
+    ],
+    "failure_reason": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_MISSING",
+    "family_id": "odd_entry_parent_levels_ge_33",
+    "kind": "REMAINING_HIGH_PARENT_INVARIANT_DOMAIN",
+    "parent_level_range": {
+      "lower_bound": 33,
+      "type": "tail"
+    },
+    "q_domain": "q > 0 and q % 2 = 1"
+  },
+  "failed_reasons": [
+    "BOUNDED_COMPOSITION_DESCENT_MISSING",
+    "DIRECT_ROOT_DESCENT_INEQUALITY_MISSING",
+    "FINITE_SUBSYSTEM_ROOT_MARGIN_MISSING",
+    "LEXICOGRAPHIC_DECREASE_NOT_PROVED",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "PIECEWISE_RESIDUE_COVERAGE_MISSING",
+    "ROOT_DEBT_DECREASE_NOT_PROVED",
+    "ROOT_MARGIN_WELL_FOUNDED_MEASURE_MISSING",
+    "V3_DEBT_DECREASE_NOT_PROVED"
+  ],
+  "minimal_example": {
+    "a": 33,
+    "d": 1,
+    "n": 8589934591,
+    "q": 1
+  },
+  "new_invariant_needed": true,
+  "obstruction_hash": "aa6fe0e6740fc4e193b27c3b3137dd86b7acab70c43a7ee0da5d3c39c66fd3a4",
+  "obstruction_id": "high_parent_d_ge_1_q_odd_root_relative_invariant",
+  "representative_transition_families": [
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 2,
+          "modulus": 2,
+          "residue": 0
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 8,
+          "modulus_power": 3,
+          "residue": 3
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 1
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 34359738368,
+        "gain_num": 16677181699666569,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 8,
+        "q_residue": 3
+      },
+      "transition_id": "d0_mod2:h1:b1:q3_mod8"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 2,
+          "residue": 1
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 8,
+          "modulus_power": 3,
+          "residue": 1
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 1
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 17179869184,
+        "gain_num": 5559060566555523,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 8,
+        "q_residue": 1
+      },
+      "transition_id": "d1_mod2:h1:b1:q1_mod8"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 4,
+          "modulus": 4,
+          "residue": 0
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 7
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 2
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 137438953472,
+        "gain_num": 150094635296999121,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 16,
+        "q_residue": 7
+      },
+      "transition_id": "d0_mod4:h1:b2:q7_mod16"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 4,
+          "residue": 1
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 13
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 2
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 17179869184,
+        "gain_num": 5559060566555523,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 16,
+        "q_residue": 13
+      },
+      "transition_id": "d1_mod4:h1:b2:q13_mod16"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 2,
+          "modulus": 4,
+          "residue": 2
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 15
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 2
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 34359738368,
+        "gain_num": 16677181699666569,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 16,
+        "q_residue": 15
+      },
+      "transition_id": "d2_mod4:h1:b2:q15_mod16"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 3,
+          "modulus": 4,
+          "residue": 3
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 5
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 2
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 68719476736,
+        "gain_num": 50031545098999707,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 16,
+        "q_residue": 5
+      },
+      "transition_id": "d3_mod4:h1:b2:q5_mod16"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 8,
+          "modulus": 8,
+          "residue": 0
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 32,
+          "modulus_power": 5,
+          "residue": 15
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 3
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 2199023255552,
+        "gain_num": 12157665459056928801,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 32,
+        "q_residue": 15
+      },
+      "transition_id": "d0_mod8:h1:b3:q15_mod32"
+    },
+    {
+      "classification": {
+        "decreases_debt": false,
+        "descends_below_root": false,
+        "exits_to_finite_subsystem": true,
+        "finite_subsystem_margin_available": false,
+        "root_relative_outcome": "FINITE_SUBSYSTEM_ENTRY_NEEDS_ROOT_MARGIN",
+        "transitions_to_high_parent_special_state": false
+      },
+      "domain_predicate": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 8,
+          "residue": 1
+        },
+        "h": 1,
+        "q_congruence": {
+          "modulus": 32,
+          "modulus_power": 5,
+          "residue": 5
+        },
+        "q_domain": "q > 0 and q % 2 = 1",
+        "target_parent": 3
+      },
+      "root_relative_margin_at_min_debt": {
+        "gain_den": 17179869184,
+        "gain_num": 5559060566555523,
+        "gain_num_lt_gain_den": false,
+        "q_modulus": 32,
+        "q_residue": 5
+      },
+      "transition_id": "d1_mod8:h1:b3:q5_mod32"
+    }
+  ],
+  "run_id": "RUN-068-high-parent-root-relative-invariant-search",
+  "schema": "collatz_lab.run068_high_parent_invariant_search",
+  "status": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_MISSING",
+  "suggested_missing_invariant_fields": [
+    "exact composed root-relative gain numerator/denominator for transition paths",
+    "proof that unbounded h/b tails are covered by the same invariant",
+    "target-coordinate v3 theorem for Q = 3^d*q",
+    "well-founded measure whose decrease is proved by integer inequalities for every residue family"
+  ],
+  "version": 1,
+  "why_no_progress_relation_was_certified": [
+    "RUN-067 families derive exact P32 special transitions but include no root-relative progress family.",
+    "Finite-subsystem exits still lack a certificate with margin below the original root 2^(32+d)*q - 1.",
+    "No exact debt, margin, v3, lexicographic, residue, or bounded-composition measure was verified over the full domain."
+  ]
+}

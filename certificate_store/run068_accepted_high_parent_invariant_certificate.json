@@ -1,0 +1,17 @@
+{
+  "accepted_certificate_count": 0,
+  "certificates": [],
+  "kind": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_CERTIFICATE_BUNDLE",
+  "root_relative_descent_proved": false,
+  "run_id": "RUN-068-high-parent-root-relative-invariant-search",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "no exact invariant certificate replayed over d >= 1 and q odd positive",
+        "reason": "HIGH_PARENT_ROOT_RELATIVE_INVARIANT_MISSING"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "status": "FAIL"
+}
