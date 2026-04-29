@@ -1,0 +1,11 @@
+{
+  "certificate_hash": "a5235d221c384a00967f13559d18b79f5eb91bcf1a37866409e27063bcf467b1",
+  "kind": "HIGH_PARENT_TO_P32_TRANSITION_CERTIFICATE",
+  "lean_theorem": "Collatz.high_parent_to_p32",
+  "root_relative_descent_proved": false,
+  "run_id": "RUN-059-high-parent-parametric-entry",
+  "schema": "collatz_lab.run059_high_parent_parametric_entry",
+  "semantic_role": "TRANSITION_ONLY_NOT_DESCENT",
+  "statement": "For a >= 32 and q > 0, Collatz.iter (2*(a-32)) (2^a*q - 1) = 2^32*(3^(a-32)*q) - 1.",
+  "version": 1
+}

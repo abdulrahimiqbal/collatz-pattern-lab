@@ -1,0 +1,45 @@
+{
+  "artifacts": {
+    "certificate_store_p1_direct_descent_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run058_p1_direct_descent_certificate.json",
+    "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run058_remaining_uncovered_parent_families.jsonl",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run058_run_result.json",
+    "formalization_status": "reports/runs/RUN-058-p1-direct-descent-entry/formalization_status.json",
+    "missing_p1_direct_descent_gaps": "reports/runs/RUN-058-p1-direct-descent-entry/missing_p1_direct_descent_gaps.md",
+    "p1_direct_descent_certificate": "reports/runs/RUN-058-p1-direct-descent-entry/p1_direct_descent_certificate.json",
+    "remaining_uncovered_parent_families": "reports/runs/RUN-058-p1-direct-descent-entry/remaining_uncovered_parent_families.jsonl",
+    "run_result": "reports/runs/RUN-058-p1-direct-descent-entry/run_result.json"
+  },
+  "closed_family": "odd_entry_parent_level_1",
+  "failures": [],
+  "formalization_status": "P1_DIRECT_DESCENT_PROVED",
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "run_id": "RUN-058-p1-direct-descent-entry",
+  "schema": "collatz_lab.run058_p1_direct_descent_entry",
+  "search_launched": false,
+  "source_artifacts": {
+    "run057_uncovered_parent_families": {
+      "path": "certificate_store/run057_uncovered_parent_families.jsonl",
+      "sha256": "cd819a8ceb0790522c006e89156783d5be1847673771342e5316c3af282452fe"
+    }
+  },
+  "status": "PASS",
+  "training_launched": false,
+  "version": 1
+}

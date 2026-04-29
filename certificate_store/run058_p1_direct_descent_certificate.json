@@ -1,0 +1,27 @@
+{
+  "arithmetic_witness": {
+    "descent_inequality": "(3*q - 1) / 2 < 2*q - 1 for q > 1",
+    "n_expr": "2*q - 1",
+    "step_1": "C(n) = 6*q - 2",
+    "step_2": "C^2(n) = 3*q - 1",
+    "step_3": "C^3(n) = (3*q - 1) / 2",
+    "step_count": 3
+  },
+  "certificate_hash": "37d738a72fdeb07342ea6e65246b8c93d7b91712a0e3c1df82986d5f8a39493c",
+  "covered_family_id": "odd_entry_parent_level_1",
+  "hypotheses": {
+    "n_gt_one": "2*q - 1 > 1, hence q > 1",
+    "parent_level": 1,
+    "q_positive_odd": "q > 0 and q % 2 = 1"
+  },
+  "kind": "P1_DIRECT_DESCENT_ENTRY_CERTIFICATE",
+  "lean_theorem": "Collatz.p1_direct_descent",
+  "run_id": "RUN-058-p1-direct-descent-entry",
+  "schema": "collatz_lab.run058_p1_direct_descent",
+  "semantic_validation": {
+    "failures": [],
+    "status": "PASS"
+  },
+  "statement": "For q > 1 odd, n = 2*q - 1 descends in three Collatz steps.",
+  "version": 1
+}

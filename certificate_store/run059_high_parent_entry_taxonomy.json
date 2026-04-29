@@ -1,0 +1,40 @@
+{
+  "failure_reason": "FINITE_SYSTEM_ROOT_RELATIVE_DESCENT_GAP",
+  "family_id": "odd_entry_parent_levels_ge_33",
+  "parent_level_range": {
+    "lower_bound": 33,
+    "type": "tail"
+  },
+  "proved_transition": {
+    "entry_current_expr": "2^32 * 3^(a-32) * q - 1",
+    "lean_theorem": "Collatz.high_parent_to_p32",
+    "root_expr": "2^a*q - 1",
+    "statement": "For a >= 32, P_a(q) reaches P_32(3^(a-32)*q) after 2*(a-32) Collatz steps."
+  },
+  "q_domain": "q > 0 and q % 2 = 1",
+  "route_attempts": [
+    {
+      "detail": "forced transition to P32 grows the odd coordinate by 3^(a-32); no descent-before-entry certificate is present",
+      "failure_reason": "HIGH_PARENT_DESCENT_BELOW_ROOT_GAP",
+      "route": "DIRECT_DESCENT_BEFORE_FINITE_ENTRY",
+      "status": "FAIL"
+    },
+    {
+      "detail": "finite system descent is not root-relative to 2^a*q - 1 after the high-parent growth step",
+      "failure_reason": "FINITE_SYSTEM_ROOT_RELATIVE_DESCENT_GAP",
+      "route": "FINITE_SYSTEM_DESCENT_BELOW_ORIGINAL_ROOT",
+      "status": "FAIL"
+    },
+    {
+      "detail": "no high-parent ranking/descent theorem is present in the current payloads",
+      "failure_reason": "HIGH_PARENT_RANKING_GAP",
+      "route": "SEPARATE_HIGH_PARENT_RANKING",
+      "status": "FAIL"
+    }
+  ],
+  "run_id": "RUN-059-high-parent-parametric-entry",
+  "schema": "collatz_lab.run059_high_parent_parametric_entry",
+  "status": "FAIL",
+  "taxonomy_hash": "5b1aa1e6601576ecaec8d7c91019d960efec78816d570cef4093ce9095c4efce",
+  "version": 1
+}

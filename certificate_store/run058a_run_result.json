@@ -1,0 +1,122 @@
+{
+  "artifacts": {
+    "certificate_store_proof_scope_status": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run058a_proof_scope_status.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run058a_run_result.json",
+    "formalization_status": "reports/runs/RUN-058A-proof-scope-status-guard/formalization_status.json",
+    "proof_scope_status": "reports/runs/RUN-058A-proof-scope-status-guard/proof_scope_status.json",
+    "run_result": "reports/runs/RUN-058A-proof-scope-status-guard/run_result.json"
+  },
+  "formalization_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+  "proof_scope_status": {
+    "global_verifier_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+    "public_proof_confidence_percent": 0.0,
+    "schema": "collatz_lab.proof_scope_status",
+    "scope_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+    "subsystem_proof_confidence_percent": 100.0,
+    "subsystem_status": "CERTIFIED_SUBSYSTEM_PASS",
+    "uncovered_families": [
+      {
+        "example": {
+          "a": 1,
+          "n": 5,
+          "q": 3
+        },
+        "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+        "family_id": "odd_entry_parent_level_1",
+        "kind": "UNCOVERED_PARENT_FAMILY",
+        "missing_transition_or_coverage_certificate": "no generated P1 node/domain and no odd immediate-descent certificate",
+        "parent_level_range": {
+          "level": 1,
+          "type": "singleton"
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      {
+        "example": {
+          "a": 33,
+          "n_expr": "2^33 - 1",
+          "q": 1
+        },
+        "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+        "family_id": "odd_entry_parent_levels_ge_33",
+        "kind": "UNCOVERED_PARENT_FAMILY",
+        "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+        "parent_level_range": {
+          "lower_bound": 33,
+          "type": "tail"
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      }
+    ],
+    "uncovered_family_count": 2,
+    "version": 1
+  },
+  "run_id": "RUN-058A-proof-scope-status-guard",
+  "schema": "collatz_lab.run058a_proof_scope_status_guard",
+  "search_launched": false,
+  "source_artifacts": {
+    "manifest": {
+      "path": "proof_manifest.json",
+      "sha256": "50c6149c505d946091370bd9aeb652d2fbc74a8c891825fcc1618daa39840029"
+    },
+    "run057_uncovered_parent_families": {
+      "path": "certificate_store/run057_uncovered_parent_families.jsonl",
+      "sha256": "cd819a8ceb0790522c006e89156783d5be1847673771342e5316c3af282452fe"
+    }
+  },
+  "status": "PASS",
+  "strict_replay": {
+    "audit_status": "PASS",
+    "global_verifier_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+    "hash_failure_count": 0,
+    "hash_failures": [],
+    "manifest_path": "proof_manifest.json",
+    "proof_confidence_percent": 0.0,
+    "proof_scope_status": {
+      "global_verifier_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+      "public_proof_confidence_percent": 0.0,
+      "schema": "collatz_lab.proof_scope_status",
+      "scope_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+      "subsystem_proof_confidence_percent": 100.0,
+      "subsystem_status": "CERTIFIED_SUBSYSTEM_PASS",
+      "uncovered_families": [
+        {
+          "example": {
+            "a": 33,
+            "n_expr": "2^33 - 1",
+            "q": 1
+          },
+          "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+          "family_id": "odd_entry_parent_levels_ge_33",
+          "kind": "UNCOVERED_PARENT_FAMILY",
+          "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+          "parent_level_range": {
+            "lower_bound": 33,
+            "type": "tail"
+          },
+          "q_domain": "q > 0 and q % 2 = 1"
+        }
+      ],
+      "uncovered_family_count": 1,
+      "version": 1
+    },
+    "root_unsound_certificates": [],
+    "run_id": "RUN-046-top-level-after-natural-kernel-elimination",
+    "schema": "collatz_lab.strict_proof_replay_result",
+    "source_run_accounting": {
+      "audit_status": "PASS",
+      "proof_confidence_percent": 100.0,
+      "strict_verifier": "PASS"
+    },
+    "strict_errors": [],
+    "strict_verifier": "PASS",
+    "subsystem_proof_confidence_percent": 100.0,
+    "subsystem_strict_verifier": "PASS",
+    "subsystem_verifier_status": "PASS",
+    "unknown_obligations": [],
+    "verifier_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+    "version": 1
+  },
+  "training_launched": false,
+  "version": 1
+}

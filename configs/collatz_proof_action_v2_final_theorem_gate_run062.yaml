@@ -1,0 +1,3 @@
+final_theorem_gate_run062:
+  out_dir: reports/runs/RUN-062-certified-bundle-soundness-final-theorem
+  run061_result: certificate_store/run061_run_result.json

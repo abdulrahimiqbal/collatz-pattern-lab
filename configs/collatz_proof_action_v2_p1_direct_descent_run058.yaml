@@ -1,0 +1,3 @@
+p1_direct_descent_run058:
+  out_dir: reports/runs/RUN-058-p1-direct-descent-entry
+  run057_uncovered_parent_families: certificate_store/run057_uncovered_parent_families.jsonl

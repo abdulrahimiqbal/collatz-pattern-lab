@@ -1,0 +1,5 @@
+entry_closure_maps_run060:
+  out_dir: reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure
+  p1_certificate: certificate_store/run058_p1_direct_descent_certificate.json
+  high_parent_taxonomy: certificate_store/run059_high_parent_entry_taxonomy.json
+  run058_remaining: certificate_store/run058_remaining_uncovered_parent_families.jsonl

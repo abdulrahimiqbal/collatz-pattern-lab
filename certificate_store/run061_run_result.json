@@ -1,0 +1,18 @@
+{
+  "artifacts": {
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run061_run_result.json",
+    "formalization_status": "reports/runs/RUN-061-global-lean-semantics/formalization_status.json",
+    "missing_global_lean_semantics_gaps": "reports/runs/RUN-061-global-lean-semantics/missing_global_lean_semantics_gaps.md",
+    "run_result": "reports/runs/RUN-061-global-lean-semantics/run_result.json"
+  },
+  "formalization_status": "ENTRY_COVERAGE_SOUNDNESS_BLOCKED",
+  "gaps": [
+    "ENTRY_MAP_GAP_HIGH_PARENT"
+  ],
+  "run_id": "RUN-061-global-lean-semantics",
+  "schema": "collatz_lab.run061_global_lean_semantics",
+  "search_launched": false,
+  "status": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

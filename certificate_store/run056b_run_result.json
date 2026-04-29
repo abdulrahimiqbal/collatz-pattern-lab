@@ -5,13 +5,13 @@
     "certificate_store_no_escape_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_no_escape_map.json",
     "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_run_result.json",
     "certificate_store_well_founded_bridge": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_well_founded_bridge.json",
-    "coverage_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/coverage_map.json",
-    "entry_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/entry_map.json",
-    "formalization_status": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/formalization_status.json",
-    "missing_global_semantic_map_gaps": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/missing_global_semantic_map_gaps.md",
-    "no_escape_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/no_escape_map.json",
-    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/run_result.json",
-    "well_founded_bridge": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/well_founded_bridge.json"
+    "coverage_map": "reports/runs/RUN-056B-global-semantic-maps/coverage_map.json",
+    "entry_map": "reports/runs/RUN-056B-global-semantic-maps/entry_map.json",
+    "formalization_status": "reports/runs/RUN-056B-global-semantic-maps/formalization_status.json",
+    "missing_global_semantic_map_gaps": "reports/runs/RUN-056B-global-semantic-maps/missing_global_semantic_map_gaps.md",
+    "no_escape_map": "reports/runs/RUN-056B-global-semantic-maps/no_escape_map.json",
+    "run_result": "reports/runs/RUN-056B-global-semantic-maps/run_result.json",
+    "well_founded_bridge": "reports/runs/RUN-056B-global-semantic-maps/well_founded_bridge.json"
   },
   "build_failure_count": 6,
   "build_failures": [

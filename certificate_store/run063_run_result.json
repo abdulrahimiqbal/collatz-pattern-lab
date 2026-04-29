@@ -1,0 +1,15 @@
+{
+  "artifacts": {
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run063_run_result.json",
+    "external_reviewer_checklist": "reports/runs/RUN-063-final-external-audit-package/external_reviewer_checklist.md",
+    "formalization_status": "reports/runs/RUN-063-final-external-audit-package/formalization_status.json",
+    "run_result": "reports/runs/RUN-063-final-external-audit-package/run_result.json"
+  },
+  "formalization_status": "AUDIT_PACKAGE_BLOCKED",
+  "run_id": "RUN-063-final-external-audit-package",
+  "schema": "collatz_lab.run063_final_external_audit_package",
+  "search_launched": false,
+  "status": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

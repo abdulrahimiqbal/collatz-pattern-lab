@@ -1,0 +1,4 @@
+proof_scope_guard_run058a:
+  out_dir: reports/runs/RUN-058A-proof-scope-status-guard
+  manifest: proof_manifest.json
+  run057_uncovered_parent_families: certificate_store/run057_uncovered_parent_families.jsonl

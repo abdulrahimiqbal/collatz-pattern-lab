@@ -1,0 +1,8 @@
+parametric_entry_coverage_run057:
+  out_dir: reports/runs/RUN-057-parametric-entry-coverage-theorem
+  coverage_domain_map: certificate_store/run051_top_level_coverage_domain_map.json
+  s4_semantic_witnesses: certificate_store/run048_semantic_witnesses.jsonl
+  s3_semantic_roles: certificate_store/run051_s3_semantic_roles.jsonl
+  s6_proof_trees: certificate_store/run051_s6_proof_trees.jsonl
+  top_level_certificates: certificate_store/run046_top_level_certificates.jsonl
+  write_repo_replay_bundle: false

@@ -1,0 +1,77 @@
+{
+  "artifacts": {
+    "certificate_store_parent_level_coverage_taxonomy": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_parent_level_coverage_taxonomy.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_run_result.json",
+    "certificate_store_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_uncovered_parent_families.jsonl",
+    "formalization_status": "reports/runs/RUN-057-parametric-entry-coverage-theorem/formalization_status.json",
+    "missing_parametric_entry_coverage": "reports/runs/RUN-057-parametric-entry-coverage-theorem/missing_parametric_entry_coverage.md",
+    "parent_level_coverage_taxonomy": "reports/runs/RUN-057-parametric-entry-coverage-theorem/parent_level_coverage_taxonomy.json",
+    "run_result": "reports/runs/RUN-057-parametric-entry-coverage-theorem/run_result.json",
+    "uncovered_parent_families": "reports/runs/RUN-057-parametric-entry-coverage-theorem/uncovered_parent_families.jsonl"
+  },
+  "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+  "formalization_status": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+  "run_id": "RUN-057-parametric-entry-coverage-theorem",
+  "schema": "collatz_lab.run057_parametric_entry_coverage",
+  "search_launched": false,
+  "source_artifacts": {
+    "coverage_domain_map": {
+      "path": "certificate_store/run051_top_level_coverage_domain_map.json",
+      "sha256": "5967cd1f750967d206063701da84f95ac30eb99b79c02fe4d1eb42d16e653ad3"
+    },
+    "s3_semantic_roles": {
+      "path": "certificate_store/run051_s3_semantic_roles.jsonl",
+      "sha256": "44183d69f504ebd998cd57eb94d7accfba063801eee4370edb44683d53270faf"
+    },
+    "s4_semantic_witnesses": {
+      "path": "certificate_store/run048_semantic_witnesses.jsonl",
+      "sha256": "764d3cce5c4768306097cef0950e047581937f652a74029e36c6eacbc5535264"
+    },
+    "s6_proof_trees": {
+      "path": "certificate_store/run051_s6_proof_trees.jsonl",
+      "sha256": "9a0c4abdb723933e0478547f94eca07920399cebcdf6383af38ffd7f188ca9c9"
+    },
+    "top_level_certificates": {
+      "path": "certificate_store/run046_top_level_certificates.jsonl",
+      "sha256": "d95514b91b1fc1c466bc342a763cbfd3dbc63f059983ab3171579f7f86140837"
+    }
+  },
+  "status": "FAIL",
+  "training_launched": false,
+  "uncovered_family_count": 2,
+  "uncovered_parent_families": [
+    {
+      "example": {
+        "a": 1,
+        "n": 5,
+        "q": 3
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_level_1",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no generated P1 node/domain and no odd immediate-descent certificate",
+      "parent_level_range": {
+        "level": 1,
+        "type": "singleton"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    },
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "version": 1
+}

@@ -1,0 +1,18 @@
+{
+  "artifacts": {
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run062_run_result.json",
+    "formalization_status": "reports/runs/RUN-062-certified-bundle-soundness-final-theorem/formalization_status.json",
+    "missing_final_theorem_gaps": "reports/runs/RUN-062-certified-bundle-soundness-final-theorem/missing_final_theorem_gaps.md",
+    "run_result": "reports/runs/RUN-062-certified-bundle-soundness-final-theorem/run_result.json"
+  },
+  "formalization_status": "FINAL_THEOREM_BLOCKED",
+  "gaps": [
+    "ENTRY_COVERAGE_SOUNDNESS_BLOCKED"
+  ],
+  "run_id": "RUN-062-certified-bundle-soundness-final-theorem",
+  "schema": "collatz_lab.run062_final_theorem_gate",
+  "search_launched": false,
+  "status": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

@@ -1,0 +1,226 @@
+{
+  "coverage_domain_count": 28,
+  "coverage_taxonomy": [
+    {
+      "category": "COVERED_FINITE_PARENT_LEVEL",
+      "coverage_domains_by_parent": {
+        "P_26": 1,
+        "P_covered": 27
+      },
+      "parent_levels": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "supported": true
+    },
+    {
+      "category": "COVERED_PARAMETRIC_PARENT_FAMILY",
+      "families": [],
+      "supported": false
+    },
+    {
+      "category": "IMMEDIATE_DESCENT_PARENT_FAMILY",
+      "families": [],
+      "supported": false
+    },
+    {
+      "category": "TRANSITIONS_INTO_CERTIFIED_RANGE",
+      "source_parent_levels": [
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "supported": true,
+      "target_parent_levels": [
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "transition_count": 135
+    },
+    {
+      "category": "UNCOVERED_PARENT_FAMILY",
+      "families": [
+        {
+          "example": {
+            "a": 1,
+            "n": 5,
+            "q": 3
+          },
+          "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+          "family_id": "odd_entry_parent_level_1",
+          "kind": "UNCOVERED_PARENT_FAMILY",
+          "missing_transition_or_coverage_certificate": "no generated P1 node/domain and no odd immediate-descent certificate",
+          "parent_level_range": {
+            "level": 1,
+            "type": "singleton"
+          },
+          "q_domain": "q > 0 and q % 2 = 1"
+        },
+        {
+          "example": {
+            "a": 33,
+            "n_expr": "2^33 - 1",
+            "q": 1
+          },
+          "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+          "family_id": "odd_entry_parent_levels_ge_33",
+          "kind": "UNCOVERED_PARENT_FAMILY",
+          "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+          "parent_level_range": {
+            "lower_bound": 33,
+            "type": "tail"
+          },
+          "q_domain": "q > 0 and q % 2 = 1"
+        }
+      ],
+      "supported": false
+    }
+  ],
+  "entry_parent_decomposition": {
+    "odd_n_gt_one": "a = v2(n + 1), q = (n + 1) / 2^a, n = 2^a*q - 1",
+    "parent_level_range": "a >= 1 and unbounded",
+    "q_domain": "q > 0 and q % 2 = 1"
+  },
+  "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+  "finite_parent_levels": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+  ],
+  "residual_parent_levels": [
+    26
+  ],
+  "run_id": "RUN-057-parametric-entry-coverage-theorem",
+  "s4_source_parent_levels": [
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "s4_target_parent_levels": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+  ],
+  "schema": "collatz_lab.run057_parametric_entry_coverage",
+  "status": "FAIL",
+  "taxonomy_hash": "6bf3183f6b13e9ff8f033b56ebee7b2f41c5eccc16d53a00b3eb07bea0e8e447",
+  "uncovered_family_count": 2,
+  "universal_entry_coverage_supported": false,
+  "version": 1
+}

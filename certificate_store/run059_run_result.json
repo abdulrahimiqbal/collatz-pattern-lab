@@ -1,0 +1,21 @@
+{
+  "artifacts": {
+    "certificate_store_high_parent_entry_taxonomy": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run059_high_parent_entry_taxonomy.json",
+    "certificate_store_high_parent_transition_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run059_high_parent_transition_certificate.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run059_run_result.json",
+    "formalization_status": "reports/runs/RUN-059-high-parent-parametric-entry/formalization_status.json",
+    "high_parent_entry_taxonomy": "reports/runs/RUN-059-high-parent-parametric-entry/high_parent_entry_taxonomy.json",
+    "high_parent_transition_certificate": "reports/runs/RUN-059-high-parent-parametric-entry/high_parent_transition_certificate.json",
+    "missing_high_parent_parametric_entry": "reports/runs/RUN-059-high-parent-parametric-entry/missing_high_parent_parametric_entry.md",
+    "run_result": "reports/runs/RUN-059-high-parent-parametric-entry/run_result.json"
+  },
+  "formalization_status": "FINITE_SYSTEM_ROOT_RELATIVE_DESCENT_GAP",
+  "root_relative_descent_proved": false,
+  "run_id": "RUN-059-high-parent-parametric-entry",
+  "schema": "collatz_lab.run059_high_parent_parametric_entry",
+  "search_launched": false,
+  "status": "FAIL",
+  "training_launched": false,
+  "transition_to_p32_proved": true,
+  "version": 1
+}

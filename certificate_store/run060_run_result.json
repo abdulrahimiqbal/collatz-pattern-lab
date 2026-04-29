@@ -1,0 +1,39 @@
+{
+  "artifacts": {
+    "certificate_store_entry_closure_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run060_entry_closure_map.json",
+    "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run060_remaining_uncovered_parent_families.jsonl",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run060_run_result.json",
+    "entry_closure_map": "reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure/entry_closure_map.json",
+    "formalization_status": "reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure/formalization_status.json",
+    "missing_entry_closure_gaps": "reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure/missing_entry_closure_gaps.md",
+    "remaining_uncovered_parent_families": "reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure/remaining_uncovered_parent_families.jsonl",
+    "run_result": "reports/runs/RUN-060-rerun-global-semantic-maps-after-entry-closure/run_result.json"
+  },
+  "formalization_status": "ENTRY_MAP_GAP_HIGH_PARENT",
+  "high_parent_closed": false,
+  "p1_closed": true,
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "run_id": "RUN-060-rerun-global-semantic-maps-after-entry-closure",
+  "schema": "collatz_lab.run060_entry_closure_maps",
+  "search_launched": false,
+  "status": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

@@ -1,0 +1,44 @@
+{
+  "global_verifier_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+  "public_proof_confidence_percent": 0.0,
+  "schema": "collatz_lab.proof_scope_status",
+  "scope_status": "UNIVERSAL_COLLATZ_ENTRY_FAIL",
+  "subsystem_proof_confidence_percent": 100.0,
+  "subsystem_status": "CERTIFIED_SUBSYSTEM_PASS",
+  "uncovered_families": [
+    {
+      "example": {
+        "a": 1,
+        "n": 5,
+        "q": 3
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_level_1",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no generated P1 node/domain and no odd immediate-descent certificate",
+      "parent_level_range": {
+        "level": 1,
+        "type": "singleton"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    },
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no parametric lift/high-parent coverage family into the finite certified node range",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "uncovered_family_count": 2,
+  "version": 1
+}

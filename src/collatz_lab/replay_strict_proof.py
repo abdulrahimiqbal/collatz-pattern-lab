@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from .proof_action_top_level_cert import build_replay_context, replay_lower_layer_context
+from .proof_scope_status import build_proof_scope_status
 from .proof_verifier import build_collatz_descent_theorem_candidate
 
 
@@ -352,6 +353,15 @@ def _source_run_accounting(manifest: dict[str, Any]) -> dict[str, Any]:
     return dict(source)
 
 
+def _apply_global_scope_guard(manifest: dict[str, Any], manifest_path: Path) -> bool:
+    """Only the root proof manifest is treated as a public/global claim."""
+    try:
+        is_root_manifest = manifest_path.resolve() == (REPO_ROOT / "proof_manifest.json").resolve()
+    except FileNotFoundError:
+        is_root_manifest = False
+    return is_root_manifest or str(manifest.get("run_id", "")).startswith("RUN-046")
+
+
 def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None) -> dict[str, Any]:
     manifest_path = Path(manifest_path)
     manifest_dir = manifest_path.parent
@@ -401,6 +411,16 @@ def replay_manifest(manifest_path: str | Path, *, out: str | Path | None = None)
         "unknown_obligations": proof.get("unknown_obligations", []),
         "strict_errors": proof.get("verification", {}).get("errors", []),
     }
+
+    if _apply_global_scope_guard(manifest, manifest_path):
+        scope = build_proof_scope_status(strict_replay=result)
+        result["proof_scope_status"] = scope
+        result["subsystem_strict_verifier"] = result["strict_verifier"]
+        result["subsystem_verifier_status"] = result["verifier_status"]
+        result["subsystem_proof_confidence_percent"] = result["proof_confidence_percent"]
+        result["global_verifier_status"] = scope["global_verifier_status"]
+        result["proof_confidence_percent"] = scope["public_proof_confidence_percent"]
+        result["verifier_status"] = scope["global_verifier_status"]
 
     if out is not None:
         out_path = Path(out)

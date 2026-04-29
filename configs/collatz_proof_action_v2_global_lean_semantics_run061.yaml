@@ -1,0 +1,3 @@
+global_lean_semantics_run061:
+  out_dir: reports/runs/RUN-061-global-lean-semantics
+  run060_result: certificate_store/run060_run_result.json
