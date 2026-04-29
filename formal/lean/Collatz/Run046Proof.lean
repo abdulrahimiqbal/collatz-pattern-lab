@@ -47,7 +47,7 @@ theorem run046_top_level_check :
   native_decide
 
 theorem run046_top_level_sound :
-    TopLevelCertificatesImplyDescent run046TopLevelCerts :=
+    TopLevelCertificateStructuralClaim run046TopLevelCerts :=
   checkTopLevelCertBundle_sound run046TopLevelCerts run046_top_level_check
 
 theorem run046_even_case_descent

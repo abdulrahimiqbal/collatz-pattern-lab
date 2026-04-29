@@ -6,15 +6,21 @@
     "run_instance_theorem": "Collatz.run051TransitionSoundness_sound",
     "actual_transition_edges": 135,
     "ranking_support_edges": 182,
-    "s3_edges_required_for_edge_semantics": 0
+    "s3_edges_required_for_edge_semantics": 0,
+    "s4_guard_fields_checked": [
+      "source_depth",
+      "source_residue",
+      "map_a",
+      "map_b",
+      "map_d",
+      "branch_c"
+    ]
   },
   "final_theorems": {
     "run051_descent": false,
     "collatz_conjecture": false
   },
   "remaining_components": [
-    "checkEntry_sound",
-    "checkCoverage_sound",
     "checkNoEscape_sound",
     "checkWellFounded_sound"
   ],

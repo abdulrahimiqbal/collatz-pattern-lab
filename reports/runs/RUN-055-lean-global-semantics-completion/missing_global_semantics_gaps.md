@@ -1,35 +1,30 @@
 # RUN-055 Global Semantics Gaps
 
-RUN-055 did not add `run051_descent` or `collatz_conjecture`.
+RUN-055 still does not add `run051_descent` or `collatz_conjecture`.
 
-Lean proves the current reflected system cannot satisfy entry semantics:
+The earlier empty projection blocker has been repaired. Lean now proves:
 
-- `Collatz.GlobalSemantics.reflected_system_not_universal_entry`
-- `Collatz.run051_entry_soundness_obstructed`
+- `Collatz.Reflection.checkEntry_sound`
+- `Collatz.Reflection.checkCoverage_sound`
+- `Collatz.run051Entry_sound`
+- `Collatz.run051Coverage_sound`
 
-The exact blocking gap is:
+The exact current blocking gap is:
 
-- `MISSING_ENTRY_TO_COVERAGE_LINK`
+- `MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS`
 
 Reason:
 
-`CertifiedSystemBundle.system` currently projects:
+S6 proof trees are now checked structurally: dependencies must exist in the typed bundle, dependency claim kinds must match, proof steps must have inputs, and each proof tree must contain a rule that closes its claim kind. That still does not construct the semantic theorem required by `NoEscapeSemantics`: every covered nonterminal state must have a modeled transition or certified exit.
 
-- `entryState := fun _ _ => False`
-- `covered := fun _ => False`
+Remaining gaps:
 
-Therefore `checkEntry run051Bundle = true` cannot imply `UniversalEntrySemantics run051Bundle.system`. The RUN-051 coverage-domain payload validates descriptive domain metadata, but it does not yet construct a typed `InternalState` for arbitrary odd `n > 1`, nor prove that this state is covered by the reflected system.
-
-Remaining gaps after entry:
-
-- `MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM`
 - `MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS`
 - `MISSING_KERNEL_TO_PATH_LINK`
 - `MISSING_WELL_FOUNDED_RANK_BRIDGE`
 
 Next required enrichment/formalization:
 
-1. Replace the empty `entryState` and `covered` projection with typed predicates derived from the RUN-051 coverage domain map.
-2. Prove arbitrary odd `n > 1` maps to a typed covered parent-state domain.
-3. Prove S6 no-escape proof trees construct `NoEscapeSemantics`.
-4. Prove guarded natural-kernel elimination and ranking support construct `WellFoundedSystem`.
+1. Prove S6 no-escape proof trees construct `NoEscapeSemantics`.
+2. Prove guarded natural-kernel elimination and ranking support construct `WellFoundedSystem`.
+3. Combine entry, coverage, transition soundness, no-escape, and well-foundedness into `checkCertifiedSystemBundle_sound`.

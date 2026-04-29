@@ -13,10 +13,12 @@ The edge audit partitions the reflected records as:
 - `RANKING_SUPPORT_ONLY`: 182 S3 debt/ranking-support records
 - `S3 edges required for EdgeSemantics`: 0
 
+The reflected S4 edge source domains now include branch residue/depth and
+parent-coordinate map fields (`mapA`, `mapB`, `mapD`, `branchC`), and
+`checkTransitionEdgeCert` checks the corresponding map identities.
+
 The final `run051_descent : DescentTheorem` theorem is still not declared because these non-transition soundness components remain:
 
-- `checkEntry_sound`
-- `checkCoverage_sound`
 - `checkNoEscape_sound`
 - `checkWellFounded_sound`
 

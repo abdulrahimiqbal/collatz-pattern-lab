@@ -72,7 +72,9 @@ theorem EdgeCert.toSystemEdge_reflected_semantics
     ReflectedEdgeSemantics cert.toSystemEdge := by
   intro state hsource
   rcases hsource with
-    ⟨hparent_pos, q, q', hq_pos, _hnode, hcurrent, htarget⟩
+    ⟨hparent_pos, _hresidue_lt, _hmapA, _hmapB, _hmapD,
+      _hbranchC, _hdenom, q, q', hq_pos, _hq_odd, hq'_pos,
+      _hbranch, _hmap, _hnode, hcurrent, htarget⟩
   let t := 2 * cert.sourceParent + cert.baseBurstDivisionExponent
   let m := parentStateNat cert.targetParent q'
   have htpos : t > 0 := by
@@ -91,7 +93,7 @@ theorem EdgeCert.toSystemEdge_reflected_semantics
       hq_pos
       htarget
   refine ⟨t, m, htpos, hiter, ?_⟩
-  exact EdgeOutcome.internal ⟨q', rfl⟩
+  exact EdgeOutcome.internal ⟨q', hq'_pos, rfl⟩
 
 theorem EdgeCert.toSystemEdge_semantics
     {CertId NodeId : Type}

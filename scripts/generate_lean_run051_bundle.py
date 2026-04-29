@@ -186,6 +186,12 @@ def generate(
                 "valuation": 0,
                 "base_burst_division_exponent": 0,
                 "standard_step_count": 0,
+                "source_depth": 0,
+                "source_residue": 0,
+                "map_a": 0,
+                "map_b": 0,
+                "map_d": 0,
+                "branch_c": 0,
                 "gain_num": nat(row.get("gain_num")),
                 "gain_den": nat(row.get("gain_den")),
                 "has_iterate": False,
@@ -197,6 +203,8 @@ def generate(
             target = pnode(row.get("target_parent", 0))
             source_rank = ranks.get(source, 0)
             target_rank = ranks.get(target, 0)
+            parent_map = row.get("parent_coordinate_map") if isinstance(row.get("parent_coordinate_map"), dict) else {}
+            branch_identity = row.get("branch_coordinate_identity") if isinstance(row.get("branch_coordinate_identity"), dict) else {}
             edge_meta[item["edge_id"]] = {
                 "cert_id": str(row.get("certificate_id", "")),
                 "kind": "EdgeKind.s4ParentTransition",
@@ -209,6 +217,12 @@ def generate(
                 "valuation": nat(row.get("valuation")),
                 "base_burst_division_exponent": nat(row.get("base_burst_division_exponent")),
                 "standard_step_count": nat(row.get("standard_step_count")),
+                "source_depth": nat(row.get("source_depth")),
+                "source_residue": nat(row.get("source_residue")),
+                "map_a": nat(parent_map.get("A")),
+                "map_b": nat(parent_map.get("B")),
+                "map_d": nat(parent_map.get("D")),
+                "branch_c": nat(branch_identity.get("c")),
                 "gain_num": 0,
                 "gain_den": 0,
                 "has_iterate": True,
@@ -231,12 +245,18 @@ def generate(
                 f"    role := {meta['role']},",
                 f"    sourceNode := {node_ref(meta['source'])},",
                 f"    targetNode := {node_ref(meta['target'])},",
-                f"    sourceParent := {meta['source_parent']},",
-                f"    targetParent := {meta['target_parent']},",
-                f"    valuation := {meta['valuation']},",
-                f"    baseBurstDivisionExponent := {meta['base_burst_division_exponent']},",
-                f"    standardStepCount := {meta['standard_step_count']},",
-                f"    gainNum := {meta['gain_num']},",
+                    f"    sourceParent := {meta['source_parent']},",
+                    f"    targetParent := {meta['target_parent']},",
+                    f"    valuation := {meta['valuation']},",
+                    f"    baseBurstDivisionExponent := {meta['base_burst_division_exponent']},",
+                    f"    standardStepCount := {meta['standard_step_count']},",
+                    f"    sourceDepth := {meta['source_depth']},",
+                    f"    sourceResidue := {meta['source_residue']},",
+                    f"    mapA := {meta['map_a']},",
+                    f"    mapB := {meta['map_b']},",
+                    f"    mapD := {meta['map_d']},",
+                    f"    branchC := {meta['branch_c']},",
+                    f"    gainNum := {meta['gain_num']},",
                 f"    gainDen := {meta['gain_den']},",
                 f"    hasIterateWitness := {bool_lit(meta['has_iterate'])},",
                 f"    rankingDecrease := {bool_lit(meta['ranking_decrease'])},",
@@ -495,10 +515,16 @@ def generate(
             "edge_kind": meta["audit_kind"],
             "lean_kind": meta["kind"],
             "lean_role": meta["role"],
-            "has_iterate_witness": meta["has_iterate"],
-            "ranking_decrease": meta["ranking_decrease"],
-            "guarded_kernel": meta["guarded_kernel"],
-        }
+                "has_iterate_witness": meta["has_iterate"],
+                "ranking_decrease": meta["ranking_decrease"],
+                "guarded_kernel": meta["guarded_kernel"],
+                "source_depth": meta["source_depth"],
+                "source_residue": meta["source_residue"],
+                "map_a": meta["map_a"],
+                "map_b": meta["map_b"],
+                "map_d": meta["map_d"],
+                "branch_c": meta["branch_c"],
+            }
         for edge, meta in sorted(edge_meta.items(), key=lambda item: edge_ctor[item[0]])
     ]
     audit = {

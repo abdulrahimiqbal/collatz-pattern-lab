@@ -1,21 +1,22 @@
 {
   "run_id": "RUN-055-lean-global-semantics-completion",
-  "status": "FORMALIZATION_GAP",
+  "status": "NO_ESCAPE_SOUNDNESS_GAP",
   "proved": {
     "transition_soundness": true,
-    "global_semantics_obstruction": true,
+    "entry_semantics": true,
+    "coverage_semantics": true,
+    "s6_structural_soundness": true,
     "run051_descent": false,
     "collatz_conjecture": false
   },
-  "blocked_stage": "entry semantics",
-  "primary_gap": "MISSING_ENTRY_TO_COVERAGE_LINK",
+  "blocked_stage": "no-escape semantics",
+  "primary_gap": "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS",
   "lean_diagnostics": [
-    "Collatz.GlobalSemantics.reflected_system_not_universal_entry",
-    "Collatz.run051_entry_soundness_obstructed"
+    "Collatz.Reflection.checkEntry_sound",
+    "Collatz.Reflection.checkCoverage_sound",
+    "Collatz.Reflection.checkS6ProofTree_sound"
   ],
   "remaining_components": [
-    "checkEntry_sound",
-    "checkCoverage_sound",
     "checkNoEscape_sound",
     "checkWellFounded_sound",
     "checkCertifiedSystemBundle_sound"

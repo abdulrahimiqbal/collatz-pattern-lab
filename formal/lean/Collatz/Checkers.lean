@@ -156,7 +156,7 @@ theorem checkAllS4TransitionCerts_sound
     AllS4TransitionClaims certs :=
   checkAllS4ParentMapCerts_sound certs
 
-def S6LemmaExactPayloadClaim (cert : S6LemmaCert) : Prop :=
+def S6LemmaExactPayloadStructuralClaim (cert : S6LemmaCert) : Prop :=
   cert.dependencyHashCount = cert.dependencyIds.length ∧
   cert.dependencyReplayPayloadCount = cert.dependencyIds.length ∧
   cert.coverageCertificateCount > 0 ∧
@@ -171,17 +171,19 @@ def S6LemmaExactPayloadClaim (cert : S6LemmaCert) : Prop :=
   cert.statementMatchesBlocker = true ∧
   cert.status = true
 
-def S6LemmaClaim (cert : S6LemmaCert) : Prop :=
+abbrev S6LemmaExactPayloadClaim := S6LemmaExactPayloadStructuralClaim
+
+def S6LemmaStructuralClaim (cert : S6LemmaCert) : Prop :=
   cert.certificateId ≠ "" ∧
   cert.lemmaId ≠ "" ∧
   cert.blockerId ≠ "" ∧
   cert.dependencyIds ≠ [] ∧
-  (cert.hasExactPayload = false ∨ S6LemmaExactPayloadClaim cert)
+  (cert.hasExactPayload = false ∨ S6LemmaExactPayloadStructuralClaim cert)
 
-abbrev S6LemmaStructuralClaim := S6LemmaClaim
+abbrev S6LemmaClaim := S6LemmaStructuralClaim
 
 instance (cert : S6LemmaCert) : Decidable (S6LemmaClaim cert) := by
-  unfold S6LemmaClaim S6LemmaExactPayloadClaim
+  unfold S6LemmaClaim S6LemmaStructuralClaim S6LemmaExactPayloadStructuralClaim
   infer_instance
 
 def checkS6LemmaCert (cert : S6LemmaCert) : Bool :=
@@ -396,7 +398,7 @@ def TransitionSoundnessClaim (cert : TransitionSoundnessCert) : Prop :=
   cert.expectedS6 = cert.s6ExactCertificateCount ∧
   cert.expectedS6 = cert.s6ExactReplayPass
 
-def WellFoundedRankingClaim (cert : WellFoundedRankingCert) : Prop :=
+def WellFoundedRankingStructuralClaim (cert : WellFoundedRankingCert) : Prop :=
   cert.certificateType = "well_founded_ranking_certificate" ∧
   cert.replayStatus = true ∧
   cert.strictReplay = true ∧
@@ -409,7 +411,9 @@ def WellFoundedRankingClaim (cert : WellFoundedRankingCert) : Prop :=
   AllRankedEdgeCheckClaims cert.edgeChecks ∧
   AllGuardedSccCheckClaims cert.sccChecks
 
-def DescentImplicationClaim (cert : DescentImplicationCert) : Prop :=
+abbrev WellFoundedRankingClaim := WellFoundedRankingStructuralClaim
+
+def DescentImplicationStructuralClaim (cert : DescentImplicationCert) : Prop :=
   cert.certificateType = "descent_implication_certificate" ∧
   cert.replayStatus = true ∧
   cert.strictReplay = true ∧
@@ -424,12 +428,14 @@ def DescentImplicationClaim (cert : DescentImplicationCert) : Prop :=
   cert.transitionSoundnessHash ≠ "" ∧
   cert.wellFoundedRankingHash ≠ ""
 
-def TopLevelCertificatesImplyDescent (bundle : TopLevelCertBundle) : Prop :=
+abbrev DescentImplicationClaim := DescentImplicationStructuralClaim
+
+def TopLevelCertificateStructuralClaim (bundle : TopLevelCertBundle) : Prop :=
   UniversalEntryClaim bundle.universalEntry ∧
   ParentStateCoverageClaim bundle.parentStateCoverage ∧
   TransitionSoundnessClaim bundle.transitionSoundness ∧
-  WellFoundedRankingClaim bundle.wellFoundedRanking ∧
-  DescentImplicationClaim bundle.descentImplication ∧
+  WellFoundedRankingStructuralClaim bundle.wellFoundedRanking ∧
+  DescentImplicationStructuralClaim bundle.descentImplication ∧
   bundle.universalEntryHash = bundle.universalEntry.certificateHash ∧
   bundle.parentStateCoverageHash = bundle.parentStateCoverage.certificateHash ∧
   bundle.transitionSoundnessHash = bundle.transitionSoundness.certificateHash ∧
@@ -437,6 +443,10 @@ def TopLevelCertificatesImplyDescent (bundle : TopLevelCertBundle) : Prop :=
   bundle.descentImplicationHash = bundle.descentImplication.certificateHash ∧
   bundle.theoremStatement = bundle.descentImplication.descentTheoremStatement ∧
   bundle.descentImplicationStatement = bundle.descentImplication.collatzConjectureStatement
+
+/- Compatibility alias for earlier RUN-047 wrappers.  This is a structural
+claim over certificate fields; it is not a Lean proof of `DescentTheorem`. -/
+abbrev TopLevelCertificatesImplyDescent := TopLevelCertificateStructuralClaim
 
 instance (cert : UniversalEntryCert) : Decidable (UniversalEntryClaim cert) := by
   unfold UniversalEntryClaim
@@ -454,16 +464,16 @@ instance (cert : TransitionSoundnessCert) : Decidable (TransitionSoundnessClaim 
   unfold TransitionSoundnessClaim
   infer_instance
 
-instance (cert : WellFoundedRankingCert) : Decidable (WellFoundedRankingClaim cert) := by
-  unfold WellFoundedRankingClaim
+instance (cert : WellFoundedRankingCert) : Decidable (WellFoundedRankingStructuralClaim cert) := by
+  unfold WellFoundedRankingStructuralClaim
   infer_instance
 
-instance (cert : DescentImplicationCert) : Decidable (DescentImplicationClaim cert) := by
-  unfold DescentImplicationClaim
+instance (cert : DescentImplicationCert) : Decidable (DescentImplicationStructuralClaim cert) := by
+  unfold DescentImplicationStructuralClaim
   infer_instance
 
-instance (bundle : TopLevelCertBundle) : Decidable (TopLevelCertificatesImplyDescent bundle) := by
-  unfold TopLevelCertificatesImplyDescent
+instance (bundle : TopLevelCertBundle) : Decidable (TopLevelCertificateStructuralClaim bundle) := by
+  unfold TopLevelCertificateStructuralClaim
   infer_instance
 
 def checkUniversalEntryCert (cert : UniversalEntryCert) : Bool :=
@@ -476,13 +486,13 @@ def checkTransitionSoundnessCert (cert : TransitionSoundnessCert) : Bool :=
   decide (TransitionSoundnessClaim cert)
 
 def checkWellFoundedRankingCert (cert : WellFoundedRankingCert) : Bool :=
-  decide (WellFoundedRankingClaim cert)
+  decide (WellFoundedRankingStructuralClaim cert)
 
 def checkDescentImplicationCert (cert : DescentImplicationCert) : Bool :=
-  decide (DescentImplicationClaim cert)
+  decide (DescentImplicationStructuralClaim cert)
 
 def checkTopLevelCertBundle (bundle : TopLevelCertBundle) : Bool :=
-  decide (TopLevelCertificatesImplyDescent bundle)
+  decide (TopLevelCertificateStructuralClaim bundle)
 
 theorem checkUniversalEntryCert_sound
     (cert : UniversalEntryCert) :
@@ -511,7 +521,7 @@ theorem checkTransitionSoundnessCert_sound
 theorem checkWellFoundedRankingCert_sound
     (cert : WellFoundedRankingCert) :
     checkWellFoundedRankingCert cert = true →
-    WellFoundedRankingClaim cert := by
+    WellFoundedRankingStructuralClaim cert := by
   intro h
   unfold checkWellFoundedRankingCert at h
   exact of_decide_eq_true h
@@ -519,7 +529,7 @@ theorem checkWellFoundedRankingCert_sound
 theorem checkDescentImplicationCert_sound
     (cert : DescentImplicationCert) :
     checkDescentImplicationCert cert = true →
-    DescentImplicationClaim cert := by
+    DescentImplicationStructuralClaim cert := by
   intro h
   unfold checkDescentImplicationCert at h
   exact of_decide_eq_true h
@@ -527,7 +537,7 @@ theorem checkDescentImplicationCert_sound
 theorem checkTopLevelCertBundle_sound
     (bundle : TopLevelCertBundle) :
     checkTopLevelCertBundle bundle = true →
-    TopLevelCertificatesImplyDescent bundle := by
+    TopLevelCertificateStructuralClaim bundle := by
   intro h
   unfold checkTopLevelCertBundle at h
   exact of_decide_eq_true h

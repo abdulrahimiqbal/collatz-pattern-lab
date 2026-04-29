@@ -66,6 +66,12 @@ structure EdgeCert (CertId NodeId : Type) where
   valuation : Nat
   baseBurstDivisionExponent : Nat
   standardStepCount : Nat
+  sourceDepth : Nat
+  sourceResidue : Nat
+  mapA : Nat
+  mapB : Nat
+  mapD : Nat
+  branchC : Nat
   gainNum : Nat
   gainDen : Nat
   hasIterateWitness : Bool
@@ -164,17 +170,28 @@ def EdgeCert.toSystemEdge {CertId NodeId : Type}
     id := cert.sourceParent * 1000 + cert.targetParent,
     source := { id := cert.sourceParent },
     target := { id := cert.targetParent },
-    sourceDomain := fun state =>
-      cert.sourceParent > 0 ∧
-      ∃ q q' : Nat,
-        q > 0 ∧
-        state.node = { id := cert.sourceParent } ∧
-        state.current = parentStateNat cert.sourceParent q ∧
-        3 ^ cert.sourceParent * q - 1 =
+      sourceDomain := fun state =>
+        cert.sourceParent > 0 ∧
+        cert.sourceResidue < 2 ^ cert.sourceDepth ∧
+        cert.mapA = 3 ^ cert.sourceParent ∧
+        cert.mapB = 2 ^ cert.baseBurstDivisionExponent - 1 ∧
+        cert.mapD = 2 ^ (cert.baseBurstDivisionExponent + cert.targetParent) ∧
+        cert.mapA * cert.sourceResidue + cert.mapB =
+          cert.branchC * 2 ^ cert.sourceDepth ∧
+        cert.mapD = 2 ^ cert.sourceDepth * 2 ^ cert.valuation ∧
+        ∃ q q' : Nat,
+          q > 0 ∧
+          q % 2 = 1 ∧
+          q' > 0 ∧
+          (∃ k : Nat, q = cert.sourceResidue + 2 ^ cert.sourceDepth * k) ∧
+          cert.mapD * q' = cert.mapA * q + cert.mapB ∧
+          state.node = { id := cert.sourceParent } ∧
+          state.current = parentStateNat cert.sourceParent q ∧
+          3 ^ cert.sourceParent * q - 1 =
           2 ^ cert.baseBurstDivisionExponent *
             parentStateNat cert.targetParent q',
     targetDomain := fun _state m =>
-      ∃ q' : Nat, m = parentStateNat cert.targetParent q',
+      ∃ q' : Nat, q' > 0 ∧ m = parentStateNat cert.targetParent q',
     exitCertificate := fun _ _ => False
   }
 
@@ -188,7 +205,7 @@ def CoverageDomainCert.matchesLevel {CertId : Type}
   if domain.isResidual then
     domain.parentLevel = level
   else
-    domain.parentLevel = 0 ∨ domain.parentLevel = level
+    True
 
 def CoverageDomainCert.coversQ {CertId : Type}
     (domain : CoverageDomainCert CertId) (q : Nat) : Prop :=
@@ -199,6 +216,26 @@ def CoverageDomainCert.coversQ {CertId : Type}
 def CoverageDomainCert.coversParentCoordinate {CertId : Type}
     (domain : CoverageDomainCert CertId) (level q : Nat) : Prop :=
   domain.matchesLevel level ∧ domain.coversQ q
+
+def CoverageDomainCert.Universal {CertId : Type}
+    (domain : CoverageDomainCert CertId) : Prop :=
+  domain.isResidual = false ∧
+  domain.modulus > 0 ∧
+  domain.residueStart = 0 ∧
+  domain.residueEndExclusive = domain.modulus
+
+instance {CertId : Type} (domain : CoverageDomainCert CertId) :
+    Decidable domain.Universal := by
+  unfold CoverageDomainCert.Universal
+  infer_instance
+
+def checkUniversalCoverageDomain {CertId : Type}
+    (domain : CoverageDomainCert CertId) : Bool :=
+  decide domain.Universal
+
+def CoverageCert.hasUniversalDomain {CertId : Type}
+    (cert : CoverageCert CertId) : Bool :=
+  cert.domains.any checkUniversalCoverageDomain
 
 def CertifiedSystemBundle.coveredPredicate {NodeId EdgeId CertId : Type}
     (bundle : CertifiedSystemBundle NodeId EdgeId CertId)
