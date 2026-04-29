@@ -67,62 +67,70 @@ theorem CoverageDomainCert.universal_coversParentCoordinate
       · rw [hend]
         exact Nat.mod_lt q hmod
 
-omit [DecidableEq NodeId] [DecidableEq EdgeId] [DecidableEq CertId] in
-theorem checkEntry_hasUniversalDomain
-    (b : CertifiedSystemBundle NodeId EdgeId CertId) :
-    Reflection.checkEntry b = true →
-    b.coverageCert.hasUniversalDomain = true := by
-  intro h
-  have h' :
-      b.coverageCert.hasUniversalDomain &&
-        (
-          b.entryCert.evenDenominatorPositive &&
-          b.entryCert.evenStrictDescentForKGeOne &&
-          b.entryCert.oddExactReconstruction &&
-          b.entryCert.oddNPlusOnePositive &&
-          b.entryCert.oddQuotientAfterV2 &&
-          b.entryCert.oddPowerTwoDivides
-        ) = true := by
-    simpa [Reflection.checkEntry] using h
-  exact bool_and_true_left h'
-
-omit [DecidableEq NodeId] [DecidableEq EdgeId] [DecidableEq CertId] in
+omit [DecidableEq EdgeId] [DecidableEq CertId] in
 theorem checkCoverage_hasUniversalDomain
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
     Reflection.checkCoverage b = true →
     b.coverageCert.hasUniversalDomain = true := by
   intro h
-  have h' :
-      b.coverageCert.hasUniversalDomain &&
-        (
-          b.coverageCert.noUncoveredDomains &&
-          b.coverageCert.hasResidualDomain &&
-          decide (b.coverageCert.domains.length > 0) &&
-          b.coverageCert.domains.all Reflection.checkCoverageDomain
-        ) = true := by
-    simpa [Reflection.checkCoverage] using h
-  exact bool_and_true_left h'
+  have hsimp : (Reflection.checkCertifiedCoverageMap b = true ∧
+      b.coverageCert.hasUniversalDomain = true) ∧
+      ((((b.coverageCert.noUncoveredDomains = true ∧
+          b.coverageCert.hasResidualDomain = true) ∧
+          0 < b.coverageCert.domains.length) ∧
+          (∀ domain ∈ b.coverageCert.domains,
+            Reflection.checkCoverageDomain domain = true)) ∧
+          (∀ edgeId ∈ b.transitionEdges,
+            b.edgeTarget edgeId ∈ b.nodes ∧
+              b.nodeLevel (b.edgeTarget edgeId) =
+                (b.edgeSystem edgeId).target.id)) := by
+    simpa [Reflection.checkCoverage, Reflection.checkTransitionTargetNode] using h
+  exact hsimp.1.2
+
+omit [DecidableEq EdgeId] [DecidableEq CertId] in
+theorem checkCoverage_targetsInNodes
+    (b : CertifiedSystemBundle NodeId EdgeId CertId) :
+    Reflection.checkCoverage b = true →
+    ∀ edgeId ∈ b.transitionEdges,
+      b.edgeTarget edgeId ∈ b.nodes ∧
+        b.nodeLevel (b.edgeTarget edgeId) = (b.edgeSystem edgeId).target.id := by
+  intro h
+  have hsimp : (Reflection.checkCertifiedCoverageMap b = true ∧
+      b.coverageCert.hasUniversalDomain = true) ∧
+      ((((b.coverageCert.noUncoveredDomains = true ∧
+          b.coverageCert.hasResidualDomain = true) ∧
+          0 < b.coverageCert.domains.length) ∧
+          (∀ domain ∈ b.coverageCert.domains,
+            Reflection.checkCoverageDomain domain = true)) ∧
+          (∀ edgeId ∈ b.transitionEdges,
+            b.edgeTarget edgeId ∈ b.nodes ∧
+              b.nodeLevel (b.edgeTarget edgeId) =
+                (b.edgeSystem edgeId).target.id)) := by
+    simpa [Reflection.checkCoverage, Reflection.checkTransitionTargetNode] using h
+  exact hsimp.2.2
 
 def EntryProjectionBuilt
     (b : CertifiedSystemBundle NodeId EdgeId CertId) : Prop :=
   ∀ n state,
     b.system.entryState n state →
       n > 1 ∧
-      n % 2 ≠ 0 ∧
-      state.root = n ∧
-      state.current = n ∧
-      ∃ q : Nat,
-        q > 0 ∧
-        state.node = { id := 0 } ∧
-        state.current = parentStateNat 0 q
+        n % 2 ≠ 0 ∧
+        state.root = n ∧
+        state.current = n ∧
+        b.hasSystemNode state.node ∧
+        ∃ q : Nat,
+          q > 0 ∧
+          q % 2 = 1 ∧
+          state.current = parentStateNat state.node.id q
 
 def CoveredProjectionBuilt
     (b : CertifiedSystemBundle NodeId EdgeId CertId) : Prop :=
-  ∀ state,
-    b.system.covered state →
-      ∃ q : Nat,
-        q > 0 ∧
-        state.current = parentStateNat state.node.id q ∧
+    ∀ state,
+      b.system.covered state →
+        b.hasSystemNode state.node ∧
+        ∃ q : Nat,
+          q > 0 ∧
+          state.current = parentStateNat state.node.id q ∧
         ∃ domain ∈ b.coverageCert.domains,
           domain.coversParentCoordinate state.node.id q
 
@@ -131,22 +139,16 @@ theorem entry_projection_built
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
     EntryProjectionBuilt b := by
   intro n state hentry
-  simpa [
-    EntryProjectionBuilt,
-    CertifiedSystemBundle.system,
-    CertifiedSystemBundle.entryPredicate
-  ] using hentry
+  change b.entryPredicate n state at hentry
+  exact hentry
 
 omit [DecidableEq NodeId] [DecidableEq CertId] in
 theorem covered_projection_built
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
     CoveredProjectionBuilt b := by
   intro state hcovered
-  simpa [
-    CoveredProjectionBuilt,
-    CertifiedSystemBundle.system,
-    CertifiedSystemBundle.coveredPredicate
-  ] using hcovered
+  change b.coveredPredicate state at hcovered
+  exact hcovered
 
 end GlobalSemantics
 
@@ -160,52 +162,16 @@ theorem checkEntry_sound
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
     checkEntry b = true →
     UniversalEntrySemantics b.system := by
-  intro hcheck n hn hodd
-  have hunivBool :
-      b.coverageCert.hasUniversalDomain = true :=
-    GlobalSemantics.checkEntry_hasUniversalDomain b hcheck
-  obtain ⟨domain, hdomain_mem, hdomain_univ⟩ :=
-    GlobalSemantics.hasUniversalDomain_sound b.coverageCert hunivBool
-  let state : InternalState := { node := { id := 0 }, root := n, current := n }
-  refine ⟨state, ?_, rfl, rfl, ?_⟩
-  · change b.entryPredicate n state
-    unfold CertifiedSystemBundle.entryPredicate
-    refine ⟨hn, hodd, rfl, rfl, n + 1, by omega, rfl, ?_⟩
-    dsimp [state]
-    unfold parentStateNat
-    omega
-  · change b.coveredPredicate state
-    unfold CertifiedSystemBundle.coveredPredicate
-    refine ⟨n + 1, by omega, ?_, domain, hdomain_mem, ?_⟩
-    · dsimp [state]
-      unfold parentStateNat
-      omega
-    · exact
-        GlobalSemantics.CoverageDomainCert.universal_coversParentCoordinate
-          hdomain_univ 0 (n + 1)
+  intro hcheck
+  simp [checkEntry, checkCertifiedEntryMap] at hcheck
 
-omit [DecidableEq NodeId] [DecidableEq CertId] in
+omit [DecidableEq CertId] in
 theorem checkCoverage_sound
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
     checkCoverage b = true →
     CoverageSemantics b.system := by
-  intro hcheck edge state m hedge _hcovered _hsource htarget
-  have hunivBool :
-      b.coverageCert.hasUniversalDomain = true :=
-    GlobalSemantics.checkCoverage_hasUniversalDomain b hcheck
-  obtain ⟨domain, hdomain_mem, hdomain_univ⟩ :=
-    GlobalSemantics.hasUniversalDomain_sound b.coverageCert hunivBool
-  rcases hedge with ⟨edgeId, _hedge_mem, hedge_eq⟩
-  subst edge
-  rcases htarget with ⟨q', hq'_pos, hm⟩
-  change b.coveredPredicate ((b.edgeSystem edgeId).targetState state m)
-  unfold CertifiedSystemBundle.coveredPredicate
-  refine ⟨q', hq'_pos, ?_, domain, hdomain_mem, ?_⟩
-  · dsimp [SystemEdge.targetState]
-    exact hm
-  · exact
-      GlobalSemantics.CoverageDomainCert.universal_coversParentCoordinate
-        hdomain_univ (b.edgeSystem edgeId).target.id q'
+  intro hcheck
+  simp [checkCoverage, checkCertifiedCoverageMap] at hcheck
 
 end Reflection
 
@@ -213,6 +179,8 @@ namespace GlobalSemantics
 
 def MissingGlobalSemanticsGaps : List String :=
   [
+    "MISSING_ENTRY_TO_CERTIFIED_NODE_MAP: RUN-051 does not provide a Lean-checkable map from arbitrary odd n via v2(n+1) into the finite generated NodeId/domain set.",
+    "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM: RUN-051 does not provide a Lean-checkable coverage-domain map beyond structural domain metadata.",
     "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS: S6 proof trees validate typed dependency shapes, but do not construct NoEscapeSemantics for covered states.",
     "MISSING_KERNEL_TO_PATH_LINK: the natural-kernel payload validates the divisibility story, but does not map every infinite internal path in b.system into that kernel.",
     "MISSING_WELL_FOUNDED_RANK_BRIDGE: checkWellFounded accepts ranked or guarded edges, but no theorem turns those checks into WellFoundedSystem b.system."

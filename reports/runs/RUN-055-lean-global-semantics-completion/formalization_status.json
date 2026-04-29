@@ -1,22 +1,46 @@
 {
   "run_id": "RUN-055-lean-global-semantics-completion",
-  "status": "NO_ESCAPE_SOUNDNESS_GAP",
+  "status": "FORMALIZATION_GAP",
   "proved": {
     "transition_soundness": true,
-    "entry_semantics": true,
-    "coverage_semantics": true,
+    "entry_projection": true,
+    "coverage_projection": true,
+    "coverage_semantics": false,
+    "s3_role_structural_support": true,
     "s6_structural_soundness": true,
+    "descent_implication_metadata_only": true,
+    "run051Entry_sound": false,
+    "run051Coverage_sound": false,
+    "checkNoEscape_sound": false,
+    "checkWellFounded_sound": false,
+    "checkCertifiedSystemBundle_sound": false,
     "run051_descent": false,
     "collatz_conjecture": false
   },
-  "blocked_stage": "no-escape semantics",
-  "primary_gap": "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS",
+  "blocked_stages": [
+    "entry semantics",
+    "coverage semantics",
+    "no-escape semantics",
+    "well-foundedness semantics"
+  ],
+  "primary_gaps": [
+    "MISSING_ENTRY_TO_CERTIFIED_NODE_MAP",
+    "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM",
+    "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS",
+    "MISSING_KERNEL_TO_PATH_LINK",
+    "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+  ],
   "lean_diagnostics": [
-    "Collatz.Reflection.checkEntry_sound",
-    "Collatz.Reflection.checkCoverage_sound",
-    "Collatz.Reflection.checkS6ProofTree_sound"
+    "Collatz.run051Entry_check_fails",
+    "Collatz.run051Coverage_check_fails",
+    "Collatz.run051Bundle_check_fails",
+    "Collatz.run051TransitionSoundness_sound",
+    "Collatz.run051S3Roles_support_sound",
+    "Collatz.run051S6ProofTrees_structural_sound"
   ],
   "remaining_components": [
+    "generate/prove certified entry map",
+    "generate/prove certified coverage-domain map",
     "checkNoEscape_sound",
     "checkWellFounded_sound",
     "checkCertifiedSystemBundle_sound"

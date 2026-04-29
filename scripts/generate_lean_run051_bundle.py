@@ -245,18 +245,18 @@ def generate(
                 f"    role := {meta['role']},",
                 f"    sourceNode := {node_ref(meta['source'])},",
                 f"    targetNode := {node_ref(meta['target'])},",
-                    f"    sourceParent := {meta['source_parent']},",
-                    f"    targetParent := {meta['target_parent']},",
-                    f"    valuation := {meta['valuation']},",
-                    f"    baseBurstDivisionExponent := {meta['base_burst_division_exponent']},",
-                    f"    standardStepCount := {meta['standard_step_count']},",
-                    f"    sourceDepth := {meta['source_depth']},",
-                    f"    sourceResidue := {meta['source_residue']},",
-                    f"    mapA := {meta['map_a']},",
-                    f"    mapB := {meta['map_b']},",
-                    f"    mapD := {meta['map_d']},",
-                    f"    branchC := {meta['branch_c']},",
-                    f"    gainNum := {meta['gain_num']},",
+                f"    sourceParent := {meta['source_parent']},",
+                f"    targetParent := {meta['target_parent']},",
+                f"    valuation := {meta['valuation']},",
+                f"    baseBurstDivisionExponent := {meta['base_burst_division_exponent']},",
+                f"    standardStepCount := {meta['standard_step_count']},",
+                f"    sourceDepth := {meta['source_depth']},",
+                f"    sourceResidue := {meta['source_residue']},",
+                f"    mapA := {meta['map_a']},",
+                f"    mapB := {meta['map_b']},",
+                f"    mapD := {meta['map_d']},",
+                f"    branchC := {meta['branch_c']},",
+                f"    gainNum := {meta['gain_num']},",
                 f"    gainDen := {meta['gain_den']},",
                 f"    hasIterateWitness := {bool_lit(meta['has_iterate'])},",
                 f"    rankingDecrease := {bool_lit(meta['ranking_decrease'])},",
@@ -265,6 +265,7 @@ def generate(
             ]
         )
         edge_cert_rows.append((edge_ref(edge), body))
+    node_level_rows = [(node_ref(node), str(int(node.removeprefix("P")))) for node in sorted(node_raw, key=lambda value: int(value.removeprefix("P")))]
     rank_rows = [(node_ref(node), str(ranks.get(node, 0))) for node in sorted(node_raw, key=lambda value: int(value.removeprefix("P")))]
 
     s3_role_terms: list[str] = []
@@ -429,6 +430,8 @@ def generate(
             "",
             match_def("run051EdgeCert", "EdgeId → EdgeCert CertId NodeId", edge_cert_rows),
             "",
+            match_def("run051NodeLevel", "NodeId → Nat", node_level_rows),
+            "",
             match_def("run051NodeRank", "NodeId → Nat", rank_rows),
             "",
             "def run051S3RoleCerts : List (S3RoleCert CertId NodeId) :=",
@@ -478,6 +481,7 @@ def generate(
             "  edgeSource := run051EdgeSource,",
             "  edgeTarget := run051EdgeTarget,",
             "  edgeCert := run051EdgeCert,",
+            "  nodeLevel := run051NodeLevel,",
             "  nodeRank := run051NodeRank,",
             "  entryCert := run051TopLevelCerts.universalEntry,",
             "  coverageCert := run051CoverageCert,",

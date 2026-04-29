@@ -1,1 +1,9 @@
+lake build Collatz.Run051ReflectionProof
 Build completed successfully (16 jobs).
+
+Notes:
+- `run051Entry_check_fails` builds.
+- `run051Coverage_check_fails` builds.
+- `run051Bundle_check_fails` builds.
+- `run051TransitionSoundness_sound` builds.
+- No `run051_descent` or `collatz_conjecture` theorem is stated.

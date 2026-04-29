@@ -1,24 +1,41 @@
 {
   "run_id": "RUN-056-real-entry-coverage-projection",
-  "status": "ENTRY_PROJECTION_BUILT",
+  "status": "ENTRY_PROJECTION_BUILT_WITH_CERTIFIED_NODE_GAP",
   "proved": {
     "entry_projection_built": true,
     "coverage_projection_built": true,
+    "coverage_target_node_membership_checked": true,
     "transition_soundness_still_builds": true,
-    "checkEntry_sound": false,
-    "checkCoverage_sound": false,
+    "checkEntry_run051Bundle_true": false,
+    "checkEntry_run051Bundle_false": true,
+    "checkCoverage_run051Bundle_true": false,
+    "checkCoverage_run051Bundle_false": true,
+    "checkEntry_sound": "vacuous until certified entry map exists",
+    "checkCoverage_sound": "vacuous until certified coverage map exists",
+    "run051Entry_sound": false,
+    "run051Coverage_sound": false,
     "run051_descent": false,
     "collatz_conjecture": false
   },
   "projection": {
     "entryState": "CertifiedSystemBundle.entryPredicate",
     "covered": "CertifiedSystemBundle.coveredPredicate",
-    "entry_theorem": "Collatz.run051EntryProjection_built",
-    "coverage_theorem": "Collatz.run051CoveredProjection_built"
+    "entry_projection_theorem": "Collatz.run051EntryProjection_built",
+    "coverage_projection_theorem": "Collatz.run051CoveredProjection_built",
+    "coverage_theorem": "Collatz.run051Coverage_sound"
   },
+  "hardening": {
+    "removed_level_zero_entry_shortcut": true,
+    "covered_requires_generated_node_membership": true,
+    "coverage_checker_requires_transition_target_node_membership": true,
+    "coverage_checker_requires_transition_target_level_match": true,
+    "entry_checker_accepts_descriptive_payload_only": false,
+    "coverage_checker_accepts_universal_domain_shortcut_only": false
+  },
+  "primary_gap": "MISSING_ENTRY_TO_CERTIFIED_NODE_MAP",
   "remaining_components": [
-    "checkEntry_sound",
-    "checkCoverage_sound",
+    "generate/prove arbitrary odd n v2(n+1) entry into certified NodeId",
+    "generate/prove real coverage-domain membership map",
     "checkNoEscape_sound",
     "checkWellFounded_sound",
     "checkCertifiedSystemBundle_sound"

@@ -86,8 +86,19 @@ def checkEdgeCert
       decide (cert.targetParent > 0)
   | EdgeKind.s3Debt =>
       decide (cert.gainDen > 0) &&
-      decide (cert.gainNum < cert.gainDen) &&
-      cert.rankingDecrease
+        decide (cert.gainNum < cert.gainDen) &&
+        cert.rankingDecrease
+
+def checkCertifiedEntryMap (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  false
+
+def checkCertifiedCoverageMap (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  false
+
+def checkTransitionTargetNode
+    (b : CertifiedSystemBundle NodeId EdgeId CertId) (edge : EdgeId) : Bool :=
+  decide (b.edgeTarget edge ∈ b.nodes) &&
+  decide (b.nodeLevel (b.edgeTarget edge) = (b.edgeSystem edge).target.id)
 
 def checkTransitionEdgeCert
     (b : CertifiedSystemBundle NodeId EdgeId CertId) (edge : EdgeId) : Bool :=
@@ -113,7 +124,7 @@ def checkTransitionEdgeCert
       false
 
 def checkEntry (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
-  b.coverageCert.hasUniversalDomain &&
+  checkCertifiedEntryMap b &&
   (
     b.entryCert.evenDenominatorPositive &&
     b.entryCert.evenStrictDescentForKGeOne &&
@@ -124,13 +135,15 @@ def checkEntry (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
   )
 
 def checkCoverage (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  checkCertifiedCoverageMap b &&
   b.coverageCert.hasUniversalDomain &&
   (
-    b.coverageCert.noUncoveredDomains &&
-    b.coverageCert.hasResidualDomain &&
-    decide (b.coverageCert.domains.length > 0) &&
-    b.coverageCert.domains.all checkCoverageDomain
-  )
+      b.coverageCert.noUncoveredDomains &&
+      b.coverageCert.hasResidualDomain &&
+      decide (b.coverageCert.domains.length > 0) &&
+      b.coverageCert.domains.all checkCoverageDomain &&
+      b.transitionEdges.all (checkTransitionTargetNode b)
+    )
 
 def checkTransitionSoundness
     (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=

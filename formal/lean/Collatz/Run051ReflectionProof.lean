@@ -14,12 +14,12 @@ open.
 
 namespace Collatz
 
-theorem run051Entry_check :
-    Reflection.checkEntry run051Bundle = true := by
+theorem run051Entry_check_fails :
+    Reflection.checkEntry run051Bundle = false := by
   native_decide
 
-theorem run051Coverage_check :
-    Reflection.checkCoverage run051Bundle = true := by
+theorem run051Coverage_check_fails :
+    Reflection.checkCoverage run051Bundle = false := by
   native_decide
 
 theorem run051TransitionSoundness_check :
@@ -38,8 +38,8 @@ theorem run051DescentImplication_check :
     Reflection.checkDescentImplication run051Bundle = true := by
   native_decide
 
-theorem run051Bundle_check :
-    Reflection.checkCertifiedSystemBundle run051Bundle = true := by
+theorem run051Bundle_check_fails :
+    Reflection.checkCertifiedSystemBundle run051Bundle = false := by
   native_decide
 
 theorem run051TransitionSoundness_sound :
@@ -55,18 +55,6 @@ theorem run051EntryProjection_built :
 theorem run051CoveredProjection_built :
     GlobalSemantics.CoveredProjectionBuilt run051Bundle :=
   GlobalSemantics.covered_projection_built run051Bundle
-
-theorem run051Entry_sound :
-    UniversalEntrySemantics run051Bundle.system :=
-  Reflection.checkEntry_sound
-    run051Bundle
-    run051Entry_check
-
-theorem run051Coverage_sound :
-    CoverageSemantics run051Bundle.system :=
-  Reflection.checkCoverage_sound
-    run051Bundle
-    run051Coverage_check
 
 private theorem allS3RoleCerts_sound
     {roles : List (S3RoleCert CertId NodeId)}
@@ -137,7 +125,9 @@ def Run053MissingReflectionGaps : List String :=
   Reflection.MissingReflectionSoundnessTheorems ++
     [
       "there is no theorem converting S3 SUPPORTING_DEBT_EDGE records into the ranking/no-escape assumptions consumed by WellFoundedSystem",
-      "typed S6 proof trees now have structural rule/conclusion checks, but no theorem yet closes NoEscapeSemantics and CoverageSemantics"
+      "checkEntry run051Bundle is now false because the payload has no real v2(n+1)-to-certified-node entry map",
+      "checkCoverage run051Bundle is now false because the payload has no real certified coverage-domain map",
+      "typed S6 proof trees now have structural rule/conclusion checks, but no theorem yet closes NoEscapeSemantics"
     ]
 
 def Run054RemainingReflectionGaps : List String :=
@@ -151,16 +141,19 @@ def Run055MissingGlobalSemanticsGaps : List String :=
 
 def Run056ProjectionStatus : List String :=
   [
-    "ENTRY_PROJECTION_BUILT: run051Bundle.system.entryState is a typed parent-coordinate entry predicate",
-    "COVERAGE_PROJECTION_BUILT: run051Bundle.system.covered is a typed coverage-domain membership predicate",
-    "RUN057_COMPLETE: checkEntry_sound and checkCoverage_sound are proved from universal coverage-domain membership"
-  ]
+      "ENTRY_PROJECTION_BUILT: run051Bundle.system.entryState is a typed parent-coordinate entry predicate",
+      "COVERAGE_PROJECTION_BUILT: run051Bundle.system.covered now requires typed generated-node membership",
+      "RUN056A_ENTRY_GAP: checkEntry run051Bundle is false until an entry map from arbitrary odd n to certified nodes is generated",
+      "RUN056A_COVERAGE_GAP: checkCoverage run051Bundle is false until a real coverage-domain membership theorem is generated"
+    ]
 
 def Run057RemainingReflectionGaps : List String :=
     [
+      "checkEntry_sound: blocked for run051Bundle by MISSING_ENTRY_TO_CERTIFIED_NODE_MAP",
+      "checkCoverage_sound: blocked for run051Bundle by MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM",
       "checkNoEscape_sound: S6 dependency/proof-step checks are structural and do not construct NoEscapeSemantics",
       "checkWellFounded_sound: guarded-kernel/ranking support still does not construct WellFoundedSystem",
-      "checkCertifiedSystemBundle_sound: blocked on no-escape and well-foundedness soundness"
+      "checkCertifiedSystemBundle_sound: blocked on entry, coverage, no-escape, and well-foundedness soundness"
     ]
 
 def Run058StructuralSemanticsStatus : List String :=

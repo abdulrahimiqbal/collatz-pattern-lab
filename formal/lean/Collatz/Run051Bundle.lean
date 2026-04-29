@@ -9912,6 +9912,39 @@ def run051EdgeCert : EdgeId → EdgeCert CertId NodeId
     guardedKernel := false
   }
 
+def run051NodeLevel : NodeId → Nat
+  | NodeId.p_2 => 2
+  | NodeId.p_3 => 3
+  | NodeId.p_4 => 4
+  | NodeId.p_5 => 5
+  | NodeId.p_6 => 6
+  | NodeId.p_7 => 7
+  | NodeId.p_8 => 8
+  | NodeId.p_9 => 9
+  | NodeId.p_10 => 10
+  | NodeId.p_11 => 11
+  | NodeId.p_12 => 12
+  | NodeId.p_13 => 13
+  | NodeId.p_14 => 14
+  | NodeId.p_15 => 15
+  | NodeId.p_16 => 16
+  | NodeId.p_17 => 17
+  | NodeId.p_18 => 18
+  | NodeId.p_19 => 19
+  | NodeId.p_20 => 20
+  | NodeId.p_21 => 21
+  | NodeId.p_22 => 22
+  | NodeId.p_23 => 23
+  | NodeId.p_24 => 24
+  | NodeId.p_25 => 25
+  | NodeId.p_26 => 26
+  | NodeId.p_27 => 27
+  | NodeId.p_28 => 28
+  | NodeId.p_29 => 29
+  | NodeId.p_30 => 30
+  | NodeId.p_31 => 31
+  | NodeId.p_32 => 32
+
 def run051NodeRank : NodeId → Nat
   | NodeId.p_2 => 0
   | NodeId.p_3 => 0
@@ -14290,6 +14323,7 @@ def run051Bundle : CertifiedSystemBundle NodeId EdgeId CertId :=
   edgeSource := run051EdgeSource,
   edgeTarget := run051EdgeTarget,
   edgeCert := run051EdgeCert,
+  nodeLevel := run051NodeLevel,
   nodeRank := run051NodeRank,
   entryCert := run051TopLevelCerts.universalEntry,
   coverageCert := run051CoverageCert,

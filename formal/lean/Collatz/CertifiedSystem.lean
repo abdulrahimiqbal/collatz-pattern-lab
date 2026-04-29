@@ -150,6 +150,7 @@ structure CertifiedSystemBundle (NodeId EdgeId CertId : Type) where
   edgeSource : EdgeId → NodeId
   edgeTarget : EdgeId → NodeId
   edgeCert : EdgeId → EdgeCert CertId NodeId
+  nodeLevel : NodeId → Nat
   nodeRank : NodeId → Nat
   entryCert : UniversalEntryCert
   coverageCert : CoverageCert CertId
@@ -237,26 +238,33 @@ def CoverageCert.hasUniversalDomain {CertId : Type}
     (cert : CoverageCert CertId) : Bool :=
   cert.domains.any checkUniversalCoverageDomain
 
+def CertifiedSystemBundle.hasSystemNode {NodeId EdgeId CertId : Type}
+    (bundle : CertifiedSystemBundle NodeId EdgeId CertId)
+    (node : SystemNode) : Prop :=
+  ∃ nodeId ∈ bundle.nodes, bundle.nodeLevel nodeId = node.id
+
 def CertifiedSystemBundle.coveredPredicate {NodeId EdgeId CertId : Type}
     (bundle : CertifiedSystemBundle NodeId EdgeId CertId)
     (state : InternalState) : Prop :=
-  ∃ q : Nat,
-    q > 0 ∧
-    state.current = parentStateNat state.node.id q ∧
-    ∃ domain ∈ bundle.coverageCert.domains,
-      domain.coversParentCoordinate state.node.id q
+  bundle.hasSystemNode state.node ∧
+    ∃ q : Nat,
+      q > 0 ∧
+      state.current = parentStateNat state.node.id q ∧
+      ∃ domain ∈ bundle.coverageCert.domains,
+        domain.coversParentCoordinate state.node.id q
 
 def CertifiedSystemBundle.entryPredicate {NodeId EdgeId CertId : Type}
-    (_bundle : CertifiedSystemBundle NodeId EdgeId CertId)
+    (bundle : CertifiedSystemBundle NodeId EdgeId CertId)
     (n : Nat) (state : InternalState) : Prop :=
   n > 1 ∧
   n % 2 ≠ 0 ∧
   state.root = n ∧
   state.current = n ∧
+  bundle.hasSystemNode state.node ∧
   ∃ q : Nat,
     q > 0 ∧
-    state.node = { id := 0 } ∧
-    state.current = parentStateNat 0 q
+    q % 2 = 1 ∧
+    state.current = parentStateNat state.node.id q
 
 def CertifiedSystemBundle.system {NodeId EdgeId CertId : Type}
     [DecidableEq EdgeId]
