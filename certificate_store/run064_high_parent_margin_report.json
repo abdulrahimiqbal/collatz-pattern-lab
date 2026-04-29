@@ -1,0 +1,36 @@
+{
+  "audit_hash": "ff48cb5632916830aebe26bc7407cc16bed501ec4083ecb89df2f85f4035d22f",
+  "available_certificate_inventory": {
+    "candidate_root_relative_margin_count": 0,
+    "p32_outgoing_s4_path_count": 0,
+    "passing_root_relative_margin_count": 0,
+    "s3_p32_inventory": {
+      "semantic_role_note": "S3 records are ranking/support facts, not actual Collatz iterate paths from P32.",
+      "source_p32_certificate_ids": [],
+      "source_p32_count": 0,
+      "target_p32_certificate_ids": [
+        "s3_debt_cert_s3_s3_frontier_29d2a6e898a575a6",
+        "s3_debt_cert_s3_s3_frontier_4f946cb203fa8420"
+      ],
+      "target_p32_count": 2
+    },
+    "s4_semantic_witness_count": 135
+  },
+  "conclusion": "Existing certificates expose a high-parent transition into P32 but do not expose a root-relative P32 margin certificate.",
+  "failure_reason": "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+  "formalization_status": "HIGH_PARENT_CERTIFICATE_INSUFFICIENT",
+  "high_parent_obligation": {
+    "d_definition": "d = a - 32 >= 1",
+    "family_id": "odd_entry_parent_levels_ge_33",
+    "growth_factor": "(3/2)^d",
+    "needed_subsystem_margin": "certified P32 path must output y < 2^(32+d)*q - 1, equivalently recover a factor stronger than (2/3)^d relative to m0",
+    "original_root": "n0 = 2^(32+d)*q - 1",
+    "p32_entry_current": "m0 = 2^32*3^d*q - 1"
+  },
+  "run_id": "RUN-064-high-parent-root-relative-margin",
+  "schema": "collatz_lab.run064_high_parent_root_relative_margin",
+  "search_launched": false,
+  "status": "HIGH_PARENT_CERTIFICATE_INSUFFICIENT",
+  "training_launched": false,
+  "version": 1
+}
