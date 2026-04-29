@@ -1,0 +1,39 @@
+{
+  "certificate_hash": "439799f10128906bfa229c22ba3f789cdd99845707e60859ff400408d14e6392",
+  "covered_family_id": "odd_entry_parent_levels_ge_33",
+  "kind": "HIGH_PARENT_ENTRY_COVERAGE_CERTIFICATE",
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no root-relative P32 margin/debt invariant certificate",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "root_relative_descent_proved": false,
+  "run_id": "RUN-065-high-parent-root-debt-system",
+  "schema": "collatz_lab.run065_high_parent_root_debt_system",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "no exact invariant/path family proves root-relative descent for all d >= 1",
+        "reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "statement": "For all a >= 33 and q odd positive, P_a(q) eventually descends below 2^a*q - 1 or enters a certified lower-debt state.",
+  "status": "FAIL",
+  "uses_transition_theorem": "Collatz.high_parent_to_p32",
+  "version": 1
+}

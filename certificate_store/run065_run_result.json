@@ -1,0 +1,55 @@
+{
+  "artifacts": {
+    "certificate_store_high_parent_entry_coverage_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_high_parent_entry_coverage_certificate.json",
+    "certificate_store_high_parent_root_debt_ranking_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_high_parent_root_debt_ranking_certificate.json",
+    "certificate_store_high_parent_root_debt_states": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_high_parent_root_debt_states.jsonl",
+    "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_remaining_uncovered_parent_families.jsonl",
+    "certificate_store_root_relative_transition_certificates": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_root_relative_transition_certificates.jsonl",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run065_run_result.json",
+    "formalization_status": "reports/runs/RUN-065-high-parent-root-debt-system/formalization_status.json",
+    "high_parent_entry_coverage_certificate": "reports/runs/RUN-065-high-parent-root-debt-system/high_parent_entry_coverage_certificate.json",
+    "high_parent_root_debt_ranking_certificate": "reports/runs/RUN-065-high-parent-root-debt-system/high_parent_root_debt_ranking_certificate.json",
+    "high_parent_root_debt_states": "reports/runs/RUN-065-high-parent-root-debt-system/high_parent_root_debt_states.jsonl",
+    "missing_high_parent_root_debt_gaps": "reports/runs/RUN-065-high-parent-root-debt-system/missing_high_parent_root_debt_gaps.md",
+    "remaining_uncovered_parent_families": "reports/runs/RUN-065-high-parent-root-debt-system/remaining_uncovered_parent_families.jsonl",
+    "root_relative_transition_certificates": "reports/runs/RUN-065-high-parent-root-debt-system/root_relative_transition_certificates.jsonl",
+    "run_result": "reports/runs/RUN-065-high-parent-root-debt-system/run_result.json"
+  },
+  "failure_reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+  "formalization_status": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+  "missing_reasons": [
+    "HIGH_PARENT_DIRECT_CURRENT_BELOW_ROOT_FALSE",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "P32_OUTGOING_ITERATE_FAMILY_MISSING",
+    "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+    "ROOT_RELATIVE_DEBT_DECREASE_MISSING"
+  ],
+  "ml_launched": false,
+  "p32_outgoing_s4_transition_count": 0,
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no root-relative P32 margin/debt invariant certificate",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "root_relative_descent_proved": false,
+  "root_relative_transition_certificate_count": 0,
+  "run_id": "RUN-065-high-parent-root-debt-system",
+  "schema": "collatz_lab.run065_high_parent_root_debt_system",
+  "status": "FAIL",
+  "symbolic_search_launched": true,
+  "training_launched": false,
+  "version": 1
+}

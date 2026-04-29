@@ -1,0 +1,6 @@
+high_parent_root_debt_run065:
+  out_dir: reports/runs/RUN-065-high-parent-root-debt-system
+  semantic_witnesses: certificate_store/run048_semantic_witnesses.jsonl
+  s3_roles: certificate_store/run051_s3_semantic_roles.jsonl
+  margin_report: certificate_store/run064_high_parent_margin_report.json
+  candidate_margin_certificates: certificate_store/run064_candidate_margin_certificates.jsonl

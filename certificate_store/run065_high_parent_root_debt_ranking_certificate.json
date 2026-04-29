@@ -1,0 +1,35 @@
+{
+  "accepted_closure_modes": [
+    "direct current < root",
+    "root-relative debt decreases",
+    "transition enters already certified lower-debt state"
+  ],
+  "certificate_hash": "bf375aad57898e13ec8bdcd86e6590ade29b0db3ee43a2f98fb9ace284a7fd29",
+  "direct_states_closed": false,
+  "kind": "HIGH_PARENT_ROOT_DEBT_RANKING_CERTIFICATE",
+  "lower_debt_entry": false,
+  "missing_reasons": [
+    "HIGH_PARENT_DIRECT_CURRENT_BELOW_ROOT_FALSE",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "P32_OUTGOING_ITERATE_FAMILY_MISSING",
+    "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+    "ROOT_RELATIVE_DEBT_DECREASE_MISSING"
+  ],
+  "p32_outgoing_transition_count": 0,
+  "passing_margin_candidate_count": 0,
+  "ranking_measure": "debt d = a - 32 plus root-relative current/root margin",
+  "run_id": "RUN-065-high-parent-root-debt-system",
+  "schema": "collatz_lab.run065_high_parent_root_debt_system",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "no exact invariant/path family proves root-relative descent for all d >= 1",
+        "reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "status": "FAIL",
+  "transition_debt_decreases": false,
+  "version": 1
+}
