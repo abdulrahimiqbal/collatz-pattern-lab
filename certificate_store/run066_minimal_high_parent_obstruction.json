@@ -1,0 +1,88 @@
+{
+  "candidate_rule_types_attempted": [
+    "CERTIFIED_MARGIN_DESCENT",
+    "DIRECT_ROOT_DESCENT",
+    "LOWER_DEBT_ENTRY",
+    "RESIDUE_SPLIT_FAMILY",
+    "ROOT_DEBT_DECREASE"
+  ],
+  "exact_uncovered_domain": {
+    "d_range": {
+      "lower_bound": 1,
+      "type": "tail"
+    },
+    "domain_id": "high_parent_all_d_ge_1_q_odd_positive",
+    "example": {
+      "a": 33,
+      "d": 1,
+      "n_expr": "2^33 - 1",
+      "q": 1
+    },
+    "failed_rule_classes": [
+      {
+        "candidate_id": "direct_p32_entry_below_root",
+        "detail": "At d=1, the required inequality 3^d < 2^d becomes 3 < 2.",
+        "reason": "DIRECT_ROOT_DESCENT_INEQUALITY_FALSE",
+        "rule_type": "DIRECT_ROOT_DESCENT"
+      },
+      {
+        "candidate_id": "p32_transition_decreases_high_parent_debt",
+        "detail": "No exact P32 outgoing transition family is available to prove a debt decrease.",
+        "reason": "P32_OUTGOING_ITERATE_FAMILY_MISSING",
+        "rule_type": "ROOT_DEBT_DECREASE"
+      },
+      {
+        "candidate_id": "enter_previously_certified_lower_debt_family",
+        "detail": "No exact transition into a previously certified lower-debt high-parent family is present.",
+        "reason": "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+        "rule_type": "LOWER_DEBT_ENTRY"
+      },
+      {
+        "candidate_id": "reuse_existing_p32_root_relative_margin",
+        "detail": "No accepted P32 margin certificate proves shrink factor < (2/3)^d.",
+        "reason": "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+        "rule_type": "CERTIFIED_MARGIN_DESCENT"
+      },
+      {
+        "candidate_id": "sample_observed_residue_family",
+        "detail": "Sample trajectories do not prove symbolic residue-family coverage or inequality.",
+        "reason": "SAMPLE_ONLY_RULE_REJECTED",
+        "rule_type": "RESIDUE_SPLIT_FAMILY"
+      }
+    ],
+    "failure_reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+    "family_id": "odd_entry_parent_levels_ge_33",
+    "kind": "UNCOVERED_HIGH_PARENT_DOMAIN",
+    "parent_level_range": {
+      "lower_bound": 33,
+      "type": "tail"
+    },
+    "q_domain": "q > 0 and q % 2 = 1"
+  },
+  "failed_reasons": [
+    "DIRECT_ROOT_DESCENT_INEQUALITY_FALSE",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "P32_OUTGOING_ITERATE_FAMILY_MISSING",
+    "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+    "SAMPLE_ONLY_RULE_REJECTED"
+  ],
+  "minimal_example": {
+    "a": 33,
+    "d": 1,
+    "n": 8589934591,
+    "q": 1
+  },
+  "new_invariant_needed": true,
+  "obstruction_hash": "96e25e711da92bbdeaf6931d4bcaf25c00cafdb95309b04925857a719bb133ff",
+  "obstruction_id": "minimal_d1_q1_root_debt_obligation",
+  "run_id": "RUN-066-high-parent-self-improving-proof-search",
+  "schema": "collatz_lab.run066_high_parent_self_improving",
+  "status": "HIGH_PARENT_OBSTRUCTION",
+  "suggested_features_for_next_search": [
+    "P32 root-relative shrink certificate parameterized by d",
+    "mixed 2-adic/3-adic debt state tracking Q = 3^d*q",
+    "exact P32 outgoing transition family or direct root-relative residue theorem",
+    "well-founded debt rank whose decrease is proved by integer inequalities"
+  ],
+  "version": 1
+}

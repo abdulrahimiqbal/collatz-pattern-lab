@@ -1,0 +1,65 @@
+{
+  "accepted_certificate_count": 0,
+  "artifacts": {
+    "accepted_high_parent_certificates": "reports/runs/RUN-066-high-parent-self-improving-proof-search/accepted_high_parent_certificates.jsonl",
+    "candidate_rules": "reports/runs/RUN-066-high-parent-self-improving-proof-search/candidate_rules.jsonl",
+    "certificate_store_accepted_high_parent_certificates": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_accepted_high_parent_certificates.jsonl",
+    "certificate_store_candidate_rules": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_candidate_rules.jsonl",
+    "certificate_store_high_parent_feature_table": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_high_parent_feature_table.jsonl",
+    "certificate_store_minimal_high_parent_obstruction": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_minimal_high_parent_obstruction.json",
+    "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_remaining_uncovered_parent_families.jsonl",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_run_result.json",
+    "certificate_store_uncovered_high_parent_domains": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_uncovered_high_parent_domains.jsonl",
+    "high_parent_feature_table": "reports/runs/RUN-066-high-parent-self-improving-proof-search/high_parent_feature_table.jsonl",
+    "high_parent_missing_invariant": "reports/runs/RUN-066-high-parent-self-improving-proof-search/high_parent_missing_invariant.md",
+    "minimal_high_parent_obstruction": "reports/runs/RUN-066-high-parent-self-improving-proof-search/minimal_high_parent_obstruction.json",
+    "remaining_uncovered_parent_families": "reports/runs/RUN-066-high-parent-self-improving-proof-search/remaining_uncovered_parent_families.jsonl",
+    "run_result": "reports/runs/RUN-066-high-parent-self-improving-proof-search/run_result.json",
+    "uncovered_high_parent_domains": "reports/runs/RUN-066-high-parent-self-improving-proof-search/uncovered_high_parent_domains.jsonl"
+  },
+  "candidate_rule_count": 5,
+  "candidate_rule_types_attempted": [
+    "CERTIFIED_MARGIN_DESCENT",
+    "DIRECT_ROOT_DESCENT",
+    "LOWER_DEBT_ENTRY",
+    "RESIDUE_SPLIT_FAMILY",
+    "ROOT_DEBT_DECREASE"
+  ],
+  "failed_reasons": [
+    "DIRECT_ROOT_DESCENT_INEQUALITY_FALSE",
+    "LOWER_DEBT_ENTRY_CERTIFICATE_MISSING",
+    "P32_OUTGOING_ITERATE_FAMILY_MISSING",
+    "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",
+    "SAMPLE_ONLY_RULE_REJECTED"
+  ],
+  "feature_row_count": 28,
+  "formalization_status": "HIGH_PARENT_OBSTRUCTION",
+  "ml_hypothesis_generation_launched": false,
+  "p32_outgoing_s4_transition_count": 0,
+  "remaining_uncovered_families": [
+    {
+      "example": {
+        "a": 33,
+        "n_expr": "2^33 - 1",
+        "q": 1
+      },
+      "failure_reason": "HIGH_PARENT_ROOT_DEBT_INVARIANT_MISSING",
+      "family_id": "odd_entry_parent_levels_ge_33",
+      "kind": "UNCOVERED_PARENT_FAMILY",
+      "missing_transition_or_coverage_certificate": "no self-improving high-parent root-debt invariant certificate",
+      "parent_level_range": {
+        "lower_bound": 33,
+        "type": "tail"
+      },
+      "q_domain": "q > 0 and q % 2 = 1"
+    }
+  ],
+  "run_id": "RUN-066-high-parent-self-improving-proof-search",
+  "run_result_hash": "627e29c517deabb0e85d2750316e63c20541b57a792e4edb81ada047b8f59df4",
+  "schema": "collatz_lab.run066_high_parent_self_improving",
+  "status": "FAIL",
+  "symbolic_search_launched": true,
+  "training_launched": false,
+  "uncovered_domain_count": 1,
+  "version": 1
+}
