@@ -424,7 +424,7 @@ def propose_actions(
             actions,
             "TRY_SCC_POTENTIAL",
             0.60,
-            "test whether the current periodic classes admit a ranking",
+            "test whether the current periodic classes support a ranking",
         )
 
     elif kind == "parent_transition_bucket":

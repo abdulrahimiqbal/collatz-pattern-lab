@@ -1,7 +1,7 @@
 """Verifier-guided search for compact lifted Collatz families.
 
 Run 1 found exact lifted leaves.  This module asks a harder question: can a
-leaf be widened into a lower-modulus mask family while still admitting an exact
+leaf be widened into a lower-modulus mask family while still retaining an exact
 proof after enumerating all parity-stable completions?
 """
 

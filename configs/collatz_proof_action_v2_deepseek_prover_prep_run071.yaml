@@ -1,0 +1,18 @@
+deepseek_prover_prep_run071:
+  out_dir: reports/runs/RUN-071-deepseek-prover-prep
+  deepseek_enabled: false
+  deepseek_command:
+  auto_prove_enabled: false
+  deepseek_endpoint: http://127.0.0.1:18000
+  task_ids: []
+  task_limit:
+  max_attempts_per_goal: 1
+  max_new_tokens: 1024
+  temperature: 0.6
+  top_p: 0.95
+  do_sample: true
+  seed: 30
+  service_timeout_seconds: 240
+  timeout_seconds: 120
+  candidate_files: []
+  harvest_apply: false
