@@ -1,0 +1,30 @@
+{
+  "run_id": "RUN-056-real-entry-coverage-projection",
+  "status": "ENTRY_PROJECTION_BUILT",
+  "proved": {
+    "entry_projection_built": true,
+    "coverage_projection_built": true,
+    "transition_soundness_still_builds": true,
+    "checkEntry_sound": false,
+    "checkCoverage_sound": false,
+    "run051_descent": false,
+    "collatz_conjecture": false
+  },
+  "projection": {
+    "entryState": "CertifiedSystemBundle.entryPredicate",
+    "covered": "CertifiedSystemBundle.coveredPredicate",
+    "entry_theorem": "Collatz.run051EntryProjection_built",
+    "coverage_theorem": "Collatz.run051CoveredProjection_built"
+  },
+  "remaining_components": [
+    "checkEntry_sound",
+    "checkCoverage_sound",
+    "checkNoEscape_sound",
+    "checkWellFounded_sound",
+    "checkCertifiedSystemBundle_sound"
+  ],
+  "hard_rule_audit": {
+    "axiom_sorry_admit": "PASS",
+    "python_strict_replay": "PASS"
+  }
+}

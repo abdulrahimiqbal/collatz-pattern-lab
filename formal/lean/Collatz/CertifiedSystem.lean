@@ -6,7 +6,9 @@ Typed finite certificate-system vocabulary for RUN-053.
 The structures in this file replace string-oriented semantic payloads with
 finite typed IDs and numeric/checkable fields.  RUN-054 classifies reflected
 edges by role and projects actual transition edges to concrete semantic
-`SystemEdge` values.
+`SystemEdge` values.  RUN-056 adds the first non-empty global projection:
+entry and coverage are now typed predicates over parent coordinates and the
+coverage-domain map rather than `False`.
 -/
 
 namespace Collatz
@@ -181,6 +183,44 @@ def CertifiedSystemBundle.edgeSystem {NodeId EdgeId CertId : Type}
     SystemEdge :=
   (bundle.edgeCert edge).toSystemEdge
 
+def CoverageDomainCert.matchesLevel {CertId : Type}
+    (domain : CoverageDomainCert CertId) (level : Nat) : Prop :=
+  if domain.isResidual then
+    domain.parentLevel = level
+  else
+    domain.parentLevel = 0 ∨ domain.parentLevel = level
+
+def CoverageDomainCert.coversQ {CertId : Type}
+    (domain : CoverageDomainCert CertId) (q : Nat) : Prop :=
+  domain.modulus > 0 ∧
+  domain.residueStart ≤ q % domain.modulus ∧
+  q % domain.modulus < domain.residueEndExclusive
+
+def CoverageDomainCert.coversParentCoordinate {CertId : Type}
+    (domain : CoverageDomainCert CertId) (level q : Nat) : Prop :=
+  domain.matchesLevel level ∧ domain.coversQ q
+
+def CertifiedSystemBundle.coveredPredicate {NodeId EdgeId CertId : Type}
+    (bundle : CertifiedSystemBundle NodeId EdgeId CertId)
+    (state : InternalState) : Prop :=
+  ∃ q : Nat,
+    q > 0 ∧
+    state.current = parentStateNat state.node.id q ∧
+    ∃ domain ∈ bundle.coverageCert.domains,
+      domain.coversParentCoordinate state.node.id q
+
+def CertifiedSystemBundle.entryPredicate {NodeId EdgeId CertId : Type}
+    (_bundle : CertifiedSystemBundle NodeId EdgeId CertId)
+    (n : Nat) (state : InternalState) : Prop :=
+  n > 1 ∧
+  n % 2 ≠ 0 ∧
+  state.root = n ∧
+  state.current = n ∧
+  ∃ q : Nat,
+    q > 0 ∧
+    state.node = { id := 0 } ∧
+    state.current = parentStateNat 0 q
+
 def CertifiedSystemBundle.system {NodeId EdgeId CertId : Type}
     [DecidableEq EdgeId]
     (bundle : CertifiedSystemBundle NodeId EdgeId CertId) :
@@ -190,8 +230,8 @@ def CertifiedSystemBundle.system {NodeId EdgeId CertId : Type}
       ∃ edgeId : EdgeId,
         edgeId ∈ bundle.transitionEdges ∧
         edge = bundle.edgeSystem edgeId,
-    entryState := fun _ _ => False,
-    covered := fun _ => False,
+    entryState := bundle.entryPredicate,
+    covered := bundle.coveredPredicate,
     rank := fun node => node.id
   }
 

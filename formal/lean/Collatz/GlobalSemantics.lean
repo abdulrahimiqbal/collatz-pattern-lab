@@ -1,13 +1,11 @@
 import Collatz.ReflectionCheckers
 
 /-!
-Global semantic obligations for the reflected RUN-051 transition system.
+Global semantic projection facts for the reflected RUN-051 transition system.
 
-RUN-054 completed the transition-soundness bridge for reflected S4 edges.  This
-module records the first remaining RUN-055 obstruction: the current reflected
-`CertifiedSystemBundle.system` projection has no entry states and no covered
-states.  Therefore the requested `checkEntry_sound` theorem cannot be proved
-from the present typed bundle without adding a real entry/coverage projection.
+RUN-056 replaces the empty `entryState`/`covered` projection with typed
+predicates.  This module records what the new projection actually means.  It
+does not claim the remaining RUN-057/RUN-058/RUN-059 soundness theorems.
 -/
 
 namespace Collatz
@@ -17,42 +15,53 @@ namespace GlobalSemantics
 variable {NodeId EdgeId CertId : Type}
 variable [DecidableEq EdgeId]
 
-theorem reflected_system_entry_state_false
-    (b : CertifiedSystemBundle NodeId EdgeId CertId)
-    (n : Nat) (state : InternalState) :
-    ¬ b.system.entryState n state := by
-  intro h
-  exact h
+def EntryProjectionBuilt
+    (b : CertifiedSystemBundle NodeId EdgeId CertId) : Prop :=
+  ∀ n state,
+    b.system.entryState n state →
+      n > 1 ∧
+      n % 2 ≠ 0 ∧
+      state.root = n ∧
+      state.current = n ∧
+      ∃ q : Nat,
+        q > 0 ∧
+        state.node = { id := 0 } ∧
+        state.current = parentStateNat 0 q
 
-theorem reflected_system_covered_false
-    (b : CertifiedSystemBundle NodeId EdgeId CertId)
-    (state : InternalState) :
-    ¬ b.system.covered state := by
-  intro h
-  exact h
+def CoveredProjectionBuilt
+    (b : CertifiedSystemBundle NodeId EdgeId CertId) : Prop :=
+  ∀ state,
+    b.system.covered state →
+      ∃ q : Nat,
+        q > 0 ∧
+        state.current = parentStateNat state.node.id q ∧
+        ∃ domain ∈ b.coverageCert.domains,
+          domain.coversParentCoordinate state.node.id q
 
-theorem reflected_system_not_universal_entry
+theorem entry_projection_built
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
-    ¬ UniversalEntrySemantics b.system := by
-  intro hentry
-  have hgt : (3 : Nat) > 1 := by decide
-  have hodd : (3 : Nat) % 2 ≠ 0 := by decide
-  obtain ⟨state, hstate_entry, _hroot, _hcurrent, _hcovered⟩ :=
-    hentry 3 hgt hodd
-  exact reflected_system_entry_state_false b 3 state hstate_entry
+    EntryProjectionBuilt b := by
+  intro n state hentry
+  simpa [
+    EntryProjectionBuilt,
+    CertifiedSystemBundle.system,
+    CertifiedSystemBundle.entryPredicate
+  ] using hentry
 
-theorem checkEntry_soundness_obstructed
-    [DecidableEq NodeId] [DecidableEq CertId]
+theorem covered_projection_built
     (b : CertifiedSystemBundle NodeId EdgeId CertId) :
-    Reflection.checkEntry b = true →
-    ¬ UniversalEntrySemantics b.system := by
-  intro _hcheck
-  exact reflected_system_not_universal_entry b
+    CoveredProjectionBuilt b := by
+  intro state hcovered
+  simpa [
+    CoveredProjectionBuilt,
+    CertifiedSystemBundle.system,
+    CertifiedSystemBundle.coveredPredicate
+  ] using hcovered
 
 def MissingGlobalSemanticsGaps : List String :=
   [
-    "MISSING_ENTRY_TO_COVERAGE_LINK: CertifiedSystemBundle.system currently has entryState := False, so reflected universal-entry booleans do not construct an InternalState.",
-    "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM: RUN-051 coverage domains validate finite residue metadata, but do not define system.covered or prove arbitrary entry membership.",
+    "MISSING_ENTRY_TO_COVERAGE_LINK: entryState is now typed, but Lean still needs a theorem that every odd n > 1 has a covered parent-coordinate domain from the generated coverage map.",
+    "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM: covered is now coverage-domain membership, but Lean still needs closure of those domains under reflected S4 target states.",
     "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS: S6 proof trees validate typed dependency shapes, but do not construct NoEscapeSemantics for covered states.",
     "MISSING_KERNEL_TO_PATH_LINK: the natural-kernel payload validates the divisibility story, but does not map every infinite internal path in b.system into that kernel.",
     "MISSING_WELL_FOUNDED_RANK_BRIDGE: checkWellFounded accepts ranked or guarded edges, but no theorem turns those checks into WellFoundedSystem b.system."
