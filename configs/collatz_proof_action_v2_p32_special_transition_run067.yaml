@@ -1,0 +1,5 @@
+p32_special_transition_run067:
+  out_dir: reports/runs/RUN-067-p32-special-family-transition-derivation
+  h_max: 8
+  b_max: 8
+  max_families: 512
