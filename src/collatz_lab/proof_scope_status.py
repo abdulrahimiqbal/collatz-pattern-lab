@@ -11,6 +11,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUN057_UNCOVERED = REPO_ROOT / "certificate_store/run057_uncovered_parent_families.jsonl"
 DEFAULT_UNCOVERED_CANDIDATES = [
+    REPO_ROOT / "certificate_store/run069_remaining_uncovered_parent_families.jsonl",
     REPO_ROOT / "certificate_store/run068_remaining_uncovered_parent_families.jsonl",
     REPO_ROOT / "certificate_store/run066_remaining_uncovered_parent_families.jsonl",
     REPO_ROOT / "certificate_store/run065_remaining_uncovered_parent_families.jsonl",

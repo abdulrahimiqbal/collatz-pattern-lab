@@ -1,0 +1,9 @@
+high_parent_accelerated_recursion_run069:
+  out_dir: reports/runs/RUN-069-high-parent-accelerated-recursion
+  p32_special_transition_families: certificate_store/run067_p32_special_transition_families.jsonl
+  p32_special_transition_schema: certificate_store/run067_p32_special_transition_schema.json
+  run068_obstruction: certificate_store/run068_minimal_high_parent_invariant_obstruction.json
+  run068_remaining_uncovered: certificate_store/run068_remaining_uncovered_high_parent_domains.jsonl
+  max_depth: 3
+  max_representative_branches: 8
+  ml_hypothesis_generation: false

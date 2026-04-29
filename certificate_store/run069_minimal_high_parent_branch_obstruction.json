@@ -1,0 +1,266 @@
+{
+  "composed_formula": {
+    "after_one_p32_special_block": "(3^(32+d)*q - 1) / 2^h",
+    "root": "2^(32+d)*q - 1",
+    "source": "P32(3^d*q)"
+  },
+  "exact_inequality_obligation": "3^(32+d)*q - 1 < 2^h*(2^(32+d)*q - 1)",
+  "exact_uncovered_domain": {
+    "d_range": {
+      "lower_bound": 1,
+      "type": "tail"
+    },
+    "domain_id": "high_parent_all_d_ge_1_q_odd_positive",
+    "kind": "HIGH_PARENT_DOMAIN",
+    "parent_level_range": {
+      "lower_bound": 33,
+      "type": "tail"
+    },
+    "q_domain": "q > 0 and q % 2 = 1"
+  },
+  "obstruction_hash": "634ec5a3f0a136e66daa9d88e9d129e169fa97cafb398114b1f11c44c81c0b87",
+  "obstruction_id": "p32_special_branches_enter_finite_system_without_root_margin",
+  "representative_unresolved_branches": [
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d0_mod2:h1:b1:q3_mod8",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 2,
+          "modulus": 2,
+          "residue": 0
+        },
+        "d_range": {
+          "lower_bound": 2,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 8,
+          "modulus_power": 3,
+          "residue": 3
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 1
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d1_mod2:h1:b1:q1_mod8",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 2,
+          "residue": 1
+        },
+        "d_range": {
+          "lower_bound": 1,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 8,
+          "modulus_power": 3,
+          "residue": 1
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 1
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d0_mod4:h1:b2:q7_mod16",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 4,
+          "modulus": 4,
+          "residue": 0
+        },
+        "d_range": {
+          "lower_bound": 4,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 7
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 2
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d1_mod4:h1:b2:q13_mod16",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 4,
+          "residue": 1
+        },
+        "d_range": {
+          "lower_bound": 1,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 13
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 2
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d2_mod4:h1:b2:q15_mod16",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 2,
+          "modulus": 4,
+          "residue": 2
+        },
+        "d_range": {
+          "lower_bound": 2,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 15
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 2
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d3_mod4:h1:b2:q5_mod16",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 3,
+          "modulus": 4,
+          "residue": 3
+        },
+        "d_range": {
+          "lower_bound": 3,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 16,
+          "modulus_power": 4,
+          "residue": 5
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 2
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d0_mod8:h1:b3:q15_mod32",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 8,
+          "modulus": 8,
+          "residue": 0
+        },
+        "d_range": {
+          "lower_bound": 8,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 32,
+          "modulus_power": 5,
+          "residue": 15
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 3
+    },
+    {
+      "blocked_reason": "FINITE_SUBSYSTEM_ROOT_RELATIVE_MARGIN_MISSING",
+      "branch_depth": 1,
+      "branch_id": "d1_mod8:h1:b3:q5_mod32",
+      "current_final_expr": "(3^(32+d)*q - 1) / 2^h",
+      "debt_reduction_status": "FAIL",
+      "domain": {
+        "d_congruence": {
+          "minimum_d": 1,
+          "modulus": 8,
+          "residue": 1
+        },
+        "d_range": {
+          "lower_bound": 1,
+          "type": "tail"
+        },
+        "kind": "HIGH_PARENT_DOMAIN",
+        "q_congruence": {
+          "modulus": 32,
+          "modulus_power": 5,
+          "residue": 5
+        },
+        "q_domain": "q > 0 and q % 2 = 1"
+      },
+      "root_inequality_reason": "ROOT_RELATIVE_INEQUALITY_FALSE_AT_MIN_DOMAIN_POINT",
+      "root_inequality_status": "FAIL",
+      "target_parent": 3
+    }
+  ],
+  "run068_obstruction_hash": "aa6fe0e6740fc4e193b27c3b3137dd86b7acab70c43a7ee0da5d3c39c66fd3a4",
+  "run_id": "RUN-069-high-parent-accelerated-recursion",
+  "schema": "collatz_lab.run069_high_parent_accelerated_recursion",
+  "shortest_unresolved_branch_depth": 1,
+  "status": "HIGH_PARENT_ACCELERATED_RECURSION_INCOMPLETE",
+  "suggested_split_or_invariant": [
+    "add exact non-P32 continuation schemas for target parents P1..P8",
+    "add finite-subsystem root-relative margin certificates for P_b targets reached from P32(3^d*q)",
+    "derive composed gain inequalities over target parent paths instead of only P32-special first steps"
+  ],
+  "version": 1,
+  "why_undecided_or_failed": [
+    "No emitted branch proves the root-relative inequality below the original root.",
+    "No emitted branch proves target high-parent debt d' < d.",
+    "Every emitted RUN-067 branch lands in P1..P8, so the P32-special schema cannot be composed further.",
+    "A finite-subsystem root-relative margin certificate is still absent."
+  ]
+}
