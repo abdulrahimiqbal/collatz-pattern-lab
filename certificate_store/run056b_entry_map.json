@@ -1,0 +1,75 @@
+{
+  "certified_node_model": {
+    "coverage_parent_states": [
+      "P_26",
+      "P_covered"
+    ],
+    "finite_node_count": 31,
+    "maximum_node_level": 32,
+    "minimum_node_level": 2,
+    "node_levels": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ]
+  },
+  "even_case": "n even and n > 1 gives Collatz.C n = n / 2 < n",
+  "global_semantic_map_hash": "9bd861ca980a5d6941ef158c35069ea97048d816d38113c400d207b7bdfd59d9",
+  "kind": "ENTRY_TO_CERTIFIED_NODE_MAP",
+  "odd_case": {
+    "parent_coordinate": "q = (n + 1) / 2^a",
+    "parent_level": "a = v2(n + 1)",
+    "reconstruction": "n = 2^a * q - 1",
+    "unbounded_parent_level": true
+  },
+  "required_missing_payload": {
+    "cases": [
+      "finite parent levels",
+      "parametric lift for parent levels above bound",
+      "residual or exception domains"
+    ],
+    "kind": "ENTRY_TO_CERTIFIED_NODE_MAP"
+  },
+  "run_id": "RUN-056B-global-semantic-maps",
+  "schema": "collatz_lab.run056b_global_semantic_map",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "odd entry uses a = v2(n+1), which is unbounded, but the payload does not give a finite reduction or parametric certified-node map",
+        "reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "statement": "Every n > 1 either descends immediately or enters a certified parent-state domain.",
+  "theorem_target": "checkCertifiedEntryMap_sound",
+  "version": 1
+}

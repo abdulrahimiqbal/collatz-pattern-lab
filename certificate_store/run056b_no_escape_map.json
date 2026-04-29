@@ -1,0 +1,141 @@
+{
+  "edge_applicability_summary": {
+    "certified_node_levels": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "node_levels_without_s4_source_edge": [
+      2,
+      3,
+      5,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32
+    ],
+    "s4_source_levels": [
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "s4_target_levels": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26
+    ],
+    "s4_transition_count": 135,
+    "s6_claim_counts": {
+      "coverage": 4,
+      "induction": 4,
+      "no_escape": 4,
+      "ranking": 4,
+      "transition_composition": 12
+    }
+  },
+  "global_semantic_map_hash": "f49a0b0c5db2e0c97f520584e2e65a4579dc010e248fd308ed040008a9bdeeef",
+  "kind": "NO_ESCAPE_APPLICABLE_EDGE_MAP",
+  "required_missing_payload": {
+    "fields": [
+      "covered-state case split",
+      "selected edge for each case",
+      "branch/domain congruence proof",
+      "map integrality proof",
+      "valuation exactness proof",
+      "SourceDomain proof"
+    ],
+    "kind": "APPLICABLE_EDGE_PARTITION"
+  },
+  "run_id": "RUN-056B-global-semantic-maps",
+  "schema": "collatz_lab.run056b_global_semantic_map",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "some certified node levels have no reflected S4 outgoing transition source",
+        "missing_source_levels": [
+          2,
+          3,
+          5,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      },
+      {
+        "detail": "S6 proof trees do not contain branch partition/sourceDomain witnesses for every covered state",
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "statement": "Every covered nonterminal state has an applicable certified outgoing edge whose SourceDomain holds.",
+  "theorem_target": "checkCertifiedNoEscapeMap_sound",
+  "version": 1
+}

@@ -90,9 +90,19 @@ def checkEdgeCert
         cert.rankingDecrease
 
 def checkCertifiedEntryMap (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  -- RUN-056B keeps this gate closed until a theorem-grade entry map exists.
   false
 
 def checkCertifiedCoverageMap (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  -- RUN-056B keeps this gate closed until coverage membership is constructive.
+  false
+
+def checkCertifiedNoEscapeMap (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  -- RUN-056B keeps this gate closed until every covered state has an applicable edge.
+  false
+
+def checkCertifiedWellFoundedBridge (_b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  -- RUN-056B keeps this gate closed until the kernel/path bridge is formal.
   false
 
 def checkTransitionTargetNode
@@ -152,6 +162,7 @@ def checkTransitionSoundness
   checkAllS6LemmaCerts b.s6Certs
 
 def checkNoEscape (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  checkCertifiedNoEscapeMap b &&
   decide (b.noEscapeCert.noEscapeTreeCount > 0) &&
   b.noEscapeCert.proofTrees.all (checkS6ProofTree b) &&
   b.s6ProofTrees.all (checkS6ProofTree b)
@@ -168,6 +179,7 @@ def edgeRankOrGuarded
         b.kernelCert.thereforeNoPositiveIntegerQInKernel)
 
 def checkWellFounded (b : CertifiedSystemBundle NodeId EdgeId CertId) : Bool :=
+  checkCertifiedWellFoundedBridge b &&
   b.wellFoundedCert.unresolvedSccCount == 0 &&
   decide (b.wellFoundedCert.rankedEdges.length > 0) &&
   b.wellFoundedCert.rankedEdges.all (edgeRankOrGuarded b) &&

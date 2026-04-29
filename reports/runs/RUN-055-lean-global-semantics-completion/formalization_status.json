@@ -11,6 +11,8 @@
     "descent_implication_metadata_only": true,
     "run051Entry_sound": false,
     "run051Coverage_sound": false,
+    "run051NoEscape_check_false": true,
+    "run051WellFounded_check_false": true,
     "checkNoEscape_sound": false,
     "checkWellFounded_sound": false,
     "checkCertifiedSystemBundle_sound": false,
@@ -33,6 +35,8 @@
   "lean_diagnostics": [
     "Collatz.run051Entry_check_fails",
     "Collatz.run051Coverage_check_fails",
+    "Collatz.run051NoEscape_check_fails",
+    "Collatz.run051WellFounded_check_fails",
     "Collatz.run051Bundle_check_fails",
     "Collatz.run051TransitionSoundness_sound",
     "Collatz.run051S3Roles_support_sound",
@@ -41,8 +45,8 @@
   "remaining_components": [
     "generate/prove certified entry map",
     "generate/prove certified coverage-domain map",
-    "checkNoEscape_sound",
-    "checkWellFounded_sound",
+    "generate/prove S6 no-escape/applicable-edge semantics",
+    "generate/prove kernel-to-path/well-foundedness bridge",
     "checkCertifiedSystemBundle_sound"
   ],
   "hard_rule_audit": {

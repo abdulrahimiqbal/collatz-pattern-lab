@@ -1,5 +1,5 @@
-lake build Collatz.Run051ReflectionProof
-Build completed successfully (16 jobs).
+lake build Collatz.Run046Proof Collatz.Run051ReflectionProof
+Build completed successfully (17 jobs).
 
 RUN-056 projection hardening status:
 - `CertifiedSystemBundle.system.entryState` projects to `entryPredicate`.
@@ -8,3 +8,5 @@ RUN-056 projection hardening status:
 - `coveredPredicate` requires generated-node membership.
 - `checkEntry run051Bundle = false` until a certified entry map exists.
 - `checkCoverage run051Bundle = false` until a certified coverage-domain map exists.
+- `checkNoEscape run051Bundle = false` until S6 proof trees prove applicable-edge semantics.
+- `checkWellFounded run051Bundle = false` until kernel/ranking metadata proves well-foundedness.

@@ -411,8 +411,6 @@ def WellFoundedRankingStructuralClaim (cert : WellFoundedRankingCert) : Prop :=
   AllRankedEdgeCheckClaims cert.edgeChecks ∧
   AllGuardedSccCheckClaims cert.sccChecks
 
-abbrev WellFoundedRankingClaim := WellFoundedRankingStructuralClaim
-
 def DescentImplicationStructuralClaim (cert : DescentImplicationCert) : Prop :=
   cert.certificateType = "descent_implication_certificate" ∧
   cert.replayStatus = true ∧
@@ -428,8 +426,6 @@ def DescentImplicationStructuralClaim (cert : DescentImplicationCert) : Prop :=
   cert.transitionSoundnessHash ≠ "" ∧
   cert.wellFoundedRankingHash ≠ ""
 
-abbrev DescentImplicationClaim := DescentImplicationStructuralClaim
-
 def TopLevelCertificateStructuralClaim (bundle : TopLevelCertBundle) : Prop :=
   UniversalEntryClaim bundle.universalEntry ∧
   ParentStateCoverageClaim bundle.parentStateCoverage ∧
@@ -443,10 +439,6 @@ def TopLevelCertificateStructuralClaim (bundle : TopLevelCertBundle) : Prop :=
   bundle.descentImplicationHash = bundle.descentImplication.certificateHash ∧
   bundle.theoremStatement = bundle.descentImplication.descentTheoremStatement ∧
   bundle.descentImplicationStatement = bundle.descentImplication.collatzConjectureStatement
-
-/- Compatibility alias for earlier RUN-047 wrappers.  This is a structural
-claim over certificate fields; it is not a Lean proof of `DescentTheorem`. -/
-abbrev TopLevelCertificatesImplyDescent := TopLevelCertificateStructuralClaim
 
 instance (cert : UniversalEntryCert) : Decidable (UniversalEntryClaim cert) := by
   unfold UniversalEntryClaim

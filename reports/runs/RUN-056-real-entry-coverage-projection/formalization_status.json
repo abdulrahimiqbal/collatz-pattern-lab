@@ -10,6 +10,8 @@
     "checkEntry_run051Bundle_false": true,
     "checkCoverage_run051Bundle_true": false,
     "checkCoverage_run051Bundle_false": true,
+    "checkNoEscape_run051Bundle_false": true,
+    "checkWellFounded_run051Bundle_false": true,
     "checkEntry_sound": "vacuous until certified entry map exists",
     "checkCoverage_sound": "vacuous until certified coverage map exists",
     "run051Entry_sound": false,
@@ -22,7 +24,7 @@
     "covered": "CertifiedSystemBundle.coveredPredicate",
     "entry_projection_theorem": "Collatz.run051EntryProjection_built",
     "coverage_projection_theorem": "Collatz.run051CoveredProjection_built",
-    "coverage_theorem": "Collatz.run051Coverage_sound"
+    "coverage_theorem": "not stated for run051Bundle; checkCoverage run051Bundle is false"
   },
   "hardening": {
     "removed_level_zero_entry_shortcut": true,
@@ -30,14 +32,22 @@
     "coverage_checker_requires_transition_target_node_membership": true,
     "coverage_checker_requires_transition_target_level_match": true,
     "entry_checker_accepts_descriptive_payload_only": false,
-    "coverage_checker_accepts_universal_domain_shortcut_only": false
+    "coverage_checker_accepts_universal_domain_shortcut_only": false,
+    "no_escape_checker_accepts_structural_s6_only": false,
+    "well_founded_checker_accepts_kernel_metadata_only": false
   },
-  "primary_gap": "MISSING_ENTRY_TO_CERTIFIED_NODE_MAP",
+  "primary_gaps": [
+    "MISSING_ENTRY_TO_CERTIFIED_NODE_MAP",
+    "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM",
+    "MISSING_NO_ESCAPE_PROOF_TREE_SEMANTICS",
+    "MISSING_KERNEL_TO_PATH_LINK",
+    "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+  ],
   "remaining_components": [
     "generate/prove arbitrary odd n v2(n+1) entry into certified NodeId",
     "generate/prove real coverage-domain membership map",
-    "checkNoEscape_sound",
-    "checkWellFounded_sound",
+    "generate/prove S6 no-escape/applicable-edge semantics",
+    "generate/prove kernel-to-path/well-foundedness bridge",
     "checkCertifiedSystemBundle_sound"
   ],
   "hard_rule_audit": {

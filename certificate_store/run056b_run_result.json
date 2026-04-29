@@ -1,0 +1,194 @@
+{
+  "artifacts": {
+    "certificate_store_coverage_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_coverage_map.json",
+    "certificate_store_entry_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_entry_map.json",
+    "certificate_store_no_escape_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_no_escape_map.json",
+    "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_run_result.json",
+    "certificate_store_well_founded_bridge": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run056b_well_founded_bridge.json",
+    "coverage_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/coverage_map.json",
+    "entry_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/entry_map.json",
+    "formalization_status": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/formalization_status.json",
+    "missing_global_semantic_map_gaps": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/missing_global_semantic_map_gaps.md",
+    "no_escape_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/no_escape_map.json",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/run_result.json",
+    "well_founded_bridge": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-236/test_run056b_global_semantic_m0/run056b/well_founded_bridge.json"
+  },
+  "build_failure_count": 6,
+  "build_failures": [
+    {
+      "detail": "odd entry uses a = v2(n+1), which is unbounded, but the payload does not give a finite reduction or parametric certified-node map",
+      "map": "entry_map",
+      "reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE"
+    },
+    {
+      "detail": "payload lists domains but does not prove arbitrary entry/transition target membership in them",
+      "map": "coverage_map",
+      "reason": "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM"
+    },
+    {
+      "detail": "some certified node levels have no reflected S4 outgoing transition source",
+      "map": "no_escape_map",
+      "missing_source_levels": [
+        2,
+        3,
+        5,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+    },
+    {
+      "detail": "S6 proof trees do not contain branch partition/sourceDomain witnesses for every covered state",
+      "map": "no_escape_map",
+      "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+    },
+    {
+      "detail": "payload states the guarded-kernel link but does not give a formal infinite-path-to-kernel theorem",
+      "map": "well_founded_bridge",
+      "reason": "MISSING_KERNEL_TO_PATH_LINK"
+    },
+    {
+      "detail": "current Lean WellFoundedSystem is rank-based, while the payload supplies a guarded-kernel story",
+      "map": "well_founded_bridge",
+      "reason": "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+    }
+  ],
+  "failure_reason": "ENTRY_MAP_GAP",
+  "formalization_status": "ENTRY_MAP_GAP",
+  "run_id": "RUN-056B-global-semantic-maps",
+  "schema": "collatz_lab.run056b_global_semantic_maps",
+  "search_launched": false,
+  "semantic_replay": {
+    "accepted": false,
+    "failures": [
+      {
+        "detail": "odd entry uses a = v2(n+1), which is unbounded, but the payload does not give a finite reduction or parametric certified-node map",
+        "map": "entry_map",
+        "reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE"
+      },
+      {
+        "detail": "payload lists domains but does not prove arbitrary entry/transition target membership in them",
+        "map": "coverage_map",
+        "reason": "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM"
+      },
+      {
+        "detail": "some certified node levels have no reflected S4 outgoing transition source",
+        "map": "no_escape_map",
+        "missing_source_levels": [
+          2,
+          3,
+          5,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      },
+      {
+        "detail": "S6 proof trees do not contain branch partition/sourceDomain witnesses for every covered state",
+        "map": "no_escape_map",
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      },
+      {
+        "detail": "payload states the guarded-kernel link but does not give a formal infinite-path-to-kernel theorem",
+        "map": "well_founded_bridge",
+        "reason": "MISSING_KERNEL_TO_PATH_LINK"
+      },
+      {
+        "detail": "current Lean WellFoundedSystem is rank-based, while the payload supplies a guarded-kernel story",
+        "map": "well_founded_bridge",
+        "reason": "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+      }
+    ],
+    "semantic_failure_count": 6,
+    "semantic_failures": [
+      {
+        "detail": "odd entry uses a = v2(n+1), which is unbounded, but the payload does not give a finite reduction or parametric certified-node map",
+        "map": "entry_map",
+        "reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE"
+      },
+      {
+        "detail": "payload lists domains but does not prove arbitrary entry/transition target membership in them",
+        "map": "coverage_map",
+        "reason": "MISSING_COVERAGE_DOMAIN_MEMBERSHIP_THEOREM"
+      },
+      {
+        "detail": "some certified node levels have no reflected S4 outgoing transition source",
+        "map": "no_escape_map",
+        "missing_source_levels": [
+          2,
+          3,
+          5,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      },
+      {
+        "detail": "S6 proof trees do not contain branch partition/sourceDomain witnesses for every covered state",
+        "map": "no_escape_map",
+        "reason": "MISSING_APPLICABLE_EDGE_PARTITION"
+      },
+      {
+        "detail": "payload states the guarded-kernel link but does not give a formal infinite-path-to-kernel theorem",
+        "map": "well_founded_bridge",
+        "reason": "MISSING_KERNEL_TO_PATH_LINK"
+      },
+      {
+        "detail": "current Lean WellFoundedSystem is rank-based, while the payload supplies a guarded-kernel story",
+        "map": "well_founded_bridge",
+        "reason": "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+      }
+    ],
+    "status": "FAIL",
+    "structural_failure_count": 0,
+    "structural_failures": [],
+    "well_formed": true
+  },
+  "source_artifacts": {
+    "manifest": {
+      "path": "proof_manifest.json",
+      "sha256": "52784ab6f09062faa899ee5686fe93ac4f942a7e1821bdb55c99df6698736edc"
+    },
+    "run048_semantic_witnesses": {
+      "path": "certificate_store/run048_semantic_witnesses.jsonl",
+      "sha256": "764d3cce5c4768306097cef0950e047581937f652a74029e36c6eacbc5535264"
+    },
+    "run051_kernel_to_path_link": {
+      "path": "certificate_store/run051_kernel_to_path_link.json",
+      "sha256": "adc7843a1377ba73e2c6a47506fc99b2011364a6428897c86ae489193c0b4222"
+    },
+    "run051_s3_semantic_roles": {
+      "path": "certificate_store/run051_s3_semantic_roles.jsonl",
+      "sha256": "44183d69f504ebd998cd57eb94d7accfba063801eee4370edb44683d53270faf"
+    },
+    "run051_s6_proof_trees": {
+      "path": "certificate_store/run051_s6_proof_trees.jsonl",
+      "sha256": "9a0c4abdb723933e0478547f94eca07920399cebcdf6383af38ffd7f188ca9c9"
+    },
+    "run051_top_level_coverage_domain_map": {
+      "path": "certificate_store/run051_top_level_coverage_domain_map.json",
+      "sha256": "5967cd1f750967d206063701da84f95ac30eb99b79c02fe4d1eb42d16e653ad3"
+    }
+  },
+  "status": "FAIL",
+  "training_launched": false,
+  "version": 1
+}

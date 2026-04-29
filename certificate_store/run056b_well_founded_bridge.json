@@ -1,0 +1,50 @@
+{
+  "global_semantic_map_hash": "2297c5546d37f529f53b094080f422d41363173b8bb1e2c9a5ccdceceea8816b",
+  "kernel_link_summary": {
+    "conclusion": "NoInfiniteInternalParentPathOverNat",
+    "divisibility_family": {
+      "distance_form": "denominator*q - numerator",
+      "kernel_congruence_depth_unbounded": true,
+      "repeat_forces_divisibility_by": "2^(53*n)",
+      "source": "guarded viability kernel refinement",
+      "statement": "for every N, 2^N divides denominator*q - numerator"
+    },
+    "fixed_point": {
+      "denominator": 141087436042258129,
+      "numerator": -580126354671
+    },
+    "kernel_certificate_id": "51669b9eb61f83edd0af54022241cc88895a04a460af0bf2a6499af2cec4e8d7",
+    "scc_id": "P12_P24_internal_s4"
+  },
+  "kind": "WELL_FOUNDED_KERNEL_TO_PATH_MAP",
+  "required_missing_payload": {
+    "fields": [
+      "infinite internal path predicate",
+      "map from every infinite path to surviving kernel membership",
+      "divisibility-by-all-powers conclusion",
+      "connection to WellFoundedSystem"
+    ],
+    "kind": "KERNEL_TO_PATH_FORMAL_BRIDGE"
+  },
+  "run_id": "RUN-056B-global-semantic-maps",
+  "s3_role_counts": {
+    "SUPPORTING_DEBT_EDGE": 182
+  },
+  "schema": "collatz_lab.run056b_global_semantic_map",
+  "semantic_validation": {
+    "failures": [
+      {
+        "detail": "payload states the guarded-kernel link but does not give a formal infinite-path-to-kernel theorem",
+        "reason": "MISSING_KERNEL_TO_PATH_LINK"
+      },
+      {
+        "detail": "current Lean WellFoundedSystem is rank-based, while the payload supplies a guarded-kernel story",
+        "reason": "MISSING_WELL_FOUNDED_RANK_BRIDGE"
+      }
+    ],
+    "status": "FAIL"
+  },
+  "statement": "No infinite internal natural path remains after guarded natural-kernel elimination.",
+  "theorem_target": "checkCertifiedWellFoundedBridge_sound",
+  "version": 1
+}

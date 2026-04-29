@@ -10,6 +10,8 @@ The reflected projection has been hardened:
 - `coveredPredicate` now requires generated-node membership.
 - `checkCoverage` now verifies transition target node membership and target parent-level agreement.
 - `checkCoverage` no longer accepts the universal-domain shortcut as sufficient coverage semantics.
+- `checkNoEscape` no longer accepts structural S6 proof trees as sufficient no-escape semantics.
+- `checkWellFounded` no longer accepts rank/kernel metadata as sufficient well-foundedness semantics.
 
 Lean currently proves:
 
@@ -23,6 +25,8 @@ Lean also proves the hardened bundle does not fully check:
 
 - `Collatz.run051Entry_check_fails`
 - `Collatz.run051Coverage_check_fails`
+- `Collatz.run051NoEscape_check_fails`
+- `Collatz.run051WellFounded_check_fails`
 - `Collatz.run051Bundle_check_fails`
 
 Exact current blocking gaps:

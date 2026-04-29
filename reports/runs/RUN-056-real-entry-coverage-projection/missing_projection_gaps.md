@@ -7,9 +7,10 @@ Lean now proves:
 
 - `Collatz.run051EntryProjection_built`
 - `Collatz.run051CoveredProjection_built`
-- `Collatz.run051Coverage_sound`
 - `Collatz.run051Entry_check_fails`
 - `Collatz.run051Coverage_check_fails`
+- `Collatz.run051NoEscape_check_fails`
+- `Collatz.run051WellFounded_check_fails`
 - `Collatz.run051Bundle_check_fails`
 
 Important changes:
@@ -19,6 +20,8 @@ Important changes:
 - `checkCoverage` now checks that every transition target is a generated node and that the generated node level matches the semantic target parent level.
 - `checkEntry run051Bundle` is now deliberately false because the RUN-051 payload does not yet provide a real map from arbitrary odd `n` via `v2(n+1)` into the finite certified node set.
 - `checkCoverage run051Bundle` is now deliberately false because the RUN-051 payload does not yet provide a real coverage-domain membership theorem beyond structural domain metadata.
+- `checkNoEscape run051Bundle` is now deliberately false because the S6 proof trees are structural and do not construct applicable-edge semantics.
+- `checkWellFounded run051Bundle` is now deliberately false because rank/kernel metadata has not been connected to `WellFoundedSystem`.
 
 Exact remaining projection gap:
 
