@@ -6,12 +6,12 @@
     "certificate_store_s3_semantic_roles": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run051_s3_semantic_roles.jsonl",
     "certificate_store_s6_proof_trees": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run051_s6_proof_trees.jsonl",
     "certificate_store_top_level_coverage_domain_map": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run051_top_level_coverage_domain_map.json",
-    "enriched_semantic_payloads": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/enriched_semantic_payloads.jsonl",
-    "kernel_to_path_link": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/kernel_to_path_link.json",
-    "run_result": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/run_result.json",
-    "s3_semantic_roles": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/s3_semantic_roles.jsonl",
-    "s6_proof_trees": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/s6_proof_trees.jsonl",
-    "top_level_coverage_domain_map": "reports/runs/RUN-051-semantic-payload-enrichment-for-lean-bridge/top_level_coverage_domain_map.json"
+    "enriched_semantic_payloads": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/enriched_semantic_payloads.jsonl",
+    "kernel_to_path_link": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/kernel_to_path_link.json",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/run_result.json",
+    "s3_semantic_roles": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/s3_semantic_roles.jsonl",
+    "s6_proof_trees": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/s6_proof_trees.jsonl",
+    "top_level_coverage_domain_map": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run051_semantic_payload_e0/run051/top_level_coverage_domain_map.json"
   },
   "build_failure_count": 0,
   "build_failures": [],
@@ -37,7 +37,7 @@
   "source_artifacts": {
     "manifest": {
       "path": "proof_manifest.json",
-      "sha256": "52784ab6f09062faa899ee5686fe93ac4f942a7e1821bdb55c99df6698736edc"
+      "sha256": "50c6149c505d946091370bd9aeb652d2fbc74a8c891825fcc1618daa39840029"
     },
     "natural_viability_kernel_certificate": {
       "path": "certificate_store/run045_natural_viability_kernel_certificate.json",

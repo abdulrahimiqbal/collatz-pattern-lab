@@ -1,8 +1,8 @@
 {
   "accepted_certificate_count": 0,
   "artifacts": {
-    "accepted_high_parent_certificates": "reports/runs/RUN-066-high-parent-self-improving-proof-search/accepted_high_parent_certificates.jsonl",
-    "candidate_rules": "reports/runs/RUN-066-high-parent-self-improving-proof-search/candidate_rules.jsonl",
+    "accepted_high_parent_certificates": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/accepted_high_parent_certificates.jsonl",
+    "candidate_rules": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/candidate_rules.jsonl",
     "certificate_store_accepted_high_parent_certificates": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_accepted_high_parent_certificates.jsonl",
     "certificate_store_candidate_rules": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_candidate_rules.jsonl",
     "certificate_store_high_parent_feature_table": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_high_parent_feature_table.jsonl",
@@ -10,12 +10,12 @@
     "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_remaining_uncovered_parent_families.jsonl",
     "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_run_result.json",
     "certificate_store_uncovered_high_parent_domains": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run066_uncovered_high_parent_domains.jsonl",
-    "high_parent_feature_table": "reports/runs/RUN-066-high-parent-self-improving-proof-search/high_parent_feature_table.jsonl",
-    "high_parent_missing_invariant": "reports/runs/RUN-066-high-parent-self-improving-proof-search/high_parent_missing_invariant.md",
-    "minimal_high_parent_obstruction": "reports/runs/RUN-066-high-parent-self-improving-proof-search/minimal_high_parent_obstruction.json",
-    "remaining_uncovered_parent_families": "reports/runs/RUN-066-high-parent-self-improving-proof-search/remaining_uncovered_parent_families.jsonl",
-    "run_result": "reports/runs/RUN-066-high-parent-self-improving-proof-search/run_result.json",
-    "uncovered_high_parent_domains": "reports/runs/RUN-066-high-parent-self-improving-proof-search/uncovered_high_parent_domains.jsonl"
+    "high_parent_feature_table": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/high_parent_feature_table.jsonl",
+    "high_parent_missing_invariant": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/high_parent_missing_invariant.md",
+    "minimal_high_parent_obstruction": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/minimal_high_parent_obstruction.json",
+    "remaining_uncovered_parent_families": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/remaining_uncovered_parent_families.jsonl",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/run_result.json",
+    "uncovered_high_parent_domains": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r0/run066/uncovered_high_parent_domains.jsonl"
   },
   "candidate_rule_count": 5,
   "candidate_rule_types_attempted": [

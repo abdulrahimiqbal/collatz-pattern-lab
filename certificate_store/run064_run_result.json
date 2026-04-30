@@ -1,17 +1,17 @@
 {
   "artifacts": {
-    "candidate_margin_certificates": "reports/runs/RUN-064-high-parent-root-relative-margin/candidate_margin_certificates.jsonl",
+    "candidate_margin_certificates": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/candidate_margin_certificates.jsonl",
     "certificate_store_candidate_margin_certificates": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run064_candidate_margin_certificates.jsonl",
     "certificate_store_failing_d_values": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run064_failing_d_values.jsonl",
     "certificate_store_high_parent_margin_report": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run064_high_parent_margin_report.json",
     "certificate_store_p32_paths_for_3_power_inputs": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run064_p32_paths_for_3_power_inputs.jsonl",
     "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run064_run_result.json",
-    "failing_d_values": "reports/runs/RUN-064-high-parent-root-relative-margin/failing_d_values.jsonl",
-    "formalization_status": "reports/runs/RUN-064-high-parent-root-relative-margin/formalization_status.json",
-    "high_parent_margin_report": "reports/runs/RUN-064-high-parent-root-relative-margin/high_parent_margin_report.json",
-    "missing_high_parent_margin_gaps": "reports/runs/RUN-064-high-parent-root-relative-margin/missing_high_parent_margin_gaps.md",
-    "p32_paths_for_3_power_inputs": "reports/runs/RUN-064-high-parent-root-relative-margin/p32_paths_for_3_power_inputs.jsonl",
-    "run_result": "reports/runs/RUN-064-high-parent-root-relative-margin/run_result.json"
+    "failing_d_values": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/failing_d_values.jsonl",
+    "formalization_status": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/formalization_status.json",
+    "high_parent_margin_report": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/high_parent_margin_report.json",
+    "missing_high_parent_margin_gaps": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/missing_high_parent_margin_gaps.md",
+    "p32_paths_for_3_power_inputs": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/p32_paths_for_3_power_inputs.jsonl",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run064_current_repo_stays0/run064/run_result.json"
   },
   "candidate_root_relative_margin_count": 0,
   "failure_reason": "P32_ROOT_RELATIVE_MARGIN_CERTIFICATE_MISSING",

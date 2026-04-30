@@ -1,9 +1,9 @@
 {
   "accepted_certificate_count": 0,
   "artifacts": {
-    "accepted_high_parent_invariant_certificate": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/accepted_high_parent_invariant_certificate.json",
-    "candidate_invariant_verifications": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/candidate_invariant_verifications.jsonl",
-    "candidate_invariants": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/candidate_invariants.jsonl",
+    "accepted_high_parent_invariant_certificate": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/accepted_high_parent_invariant_certificate.json",
+    "candidate_invariant_verifications": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/candidate_invariant_verifications.jsonl",
+    "candidate_invariants": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/candidate_invariants.jsonl",
     "certificate_store_accepted_high_parent_invariant_certificate": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_accepted_high_parent_invariant_certificate.json",
     "certificate_store_candidate_invariant_verifications": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_candidate_invariant_verifications.jsonl",
     "certificate_store_candidate_invariants": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_candidate_invariants.jsonl",
@@ -12,12 +12,12 @@
     "certificate_store_remaining_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_remaining_uncovered_parent_families.jsonl",
     "certificate_store_root_relative_transition_graph": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_root_relative_transition_graph.json",
     "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run068_run_result.json",
-    "high_parent_missing_invariant": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/high_parent_missing_invariant.md",
-    "minimal_high_parent_invariant_obstruction": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/minimal_high_parent_invariant_obstruction.json",
-    "remaining_uncovered_high_parent_domains": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/remaining_uncovered_high_parent_domains.jsonl",
-    "remaining_uncovered_parent_families": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/remaining_uncovered_parent_families.jsonl",
-    "root_relative_transition_graph": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/root_relative_transition_graph.json",
-    "run_result": "reports/runs/RUN-068-high-parent-root-relative-invariant-search/run_result.json"
+    "high_parent_missing_invariant": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/high_parent_missing_invariant.md",
+    "minimal_high_parent_invariant_obstruction": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/minimal_high_parent_invariant_obstruction.json",
+    "remaining_uncovered_high_parent_domains": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/remaining_uncovered_high_parent_domains.jsonl",
+    "remaining_uncovered_parent_families": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/remaining_uncovered_parent_families.jsonl",
+    "root_relative_transition_graph": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/root_relative_transition_graph.json",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_scope_guard_can_consume_r1/run068/run_result.json"
   },
   "candidate_invariant_count": 9,
   "candidate_invariant_types_attempted": [
@@ -66,11 +66,11 @@
   ],
   "root_relative_graph_status": "NO_ROOT_RELATIVE_PROGRESS_CERTIFIED",
   "run_id": "RUN-068-high-parent-root-relative-invariant-search",
-  "run_result_hash": "7f498f0945973eb44f4c953810c974f024d794cdac69150fa1094c8162ce80cc",
+  "run_result_hash": "2849a6dd744c5d2f1ead46c52a6bd4c2dafb2ecac1d6a51ab4db5e1167b4173e",
   "schema": "collatz_lab.run068_high_parent_invariant_search",
   "status": "FAIL",
   "symbolic_search_launched": true,
   "training_launched": false,
-  "transition_count": 512,
+  "transition_count": 20,
   "version": 1
 }

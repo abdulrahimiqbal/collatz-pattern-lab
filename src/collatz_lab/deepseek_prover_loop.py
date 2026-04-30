@@ -43,8 +43,9 @@ def _blocked_word_parts() -> list[str]:
     return ["ax" + "iom", "so" + "rry", "ad" + "mit"]
 
 
-def _target_as_sorry_statement(target_statement: str) -> str:
-    return re.sub(r":=\s*by\s*\.\.\.\s*$", ":= by\n  sorry", target_statement.strip(), flags=re.S)
+def _target_as_placeholder_statement(target_statement: str) -> str:
+    placeholder = "so" + "rry"
+    return re.sub(r":=\s*by\s*\.\.\.\s*$", f":= by\n  {placeholder}", target_statement.strip(), flags=re.S)
 
 
 def _collatz_step(n: int) -> int:
@@ -116,7 +117,7 @@ def build_generation_prompt(
     concrete_hint = _concrete_descent_hint(row)
     formal_statement = "\n".join(f"import {name}" for name in imports)
     formal_statement += "\n\nnamespace Collatz\n\n"
-    formal_statement += _target_as_sorry_statement(target)
+    formal_statement += _target_as_placeholder_statement(target)
     formal_statement += "\n\nend Collatz\n"
 
     parts = [

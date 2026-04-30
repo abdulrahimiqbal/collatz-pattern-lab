@@ -1,0 +1,30 @@
+deepseek_high_parent_batch_run072:
+  out_dir: reports/runs/RUN-072-deepseek-high-parent-batch
+  endpoint: http://127.0.0.1:18000
+  task_ids:
+    - p32_special_root_relative_d1
+    - high_parent_d1
+    - p32_special_root_relative_d2
+    - high_parent_d2
+    - p32_special_root_relative_d3
+    - high_parent_d3
+    - low_parent_b1_margin
+    - low_parent_b2_margin
+    - low_parent_b3_margin
+    - low_parent_b4_margin
+    - low_parent_b5_margin
+    - low_parent_b6_margin
+    - low_parent_b7_margin
+    - low_parent_b8_margin
+    - high_parent_general_theorem
+  attempts_per_goal: 4
+  feedback_retries_per_failed_task: 2
+  max_new_tokens: 2048
+  greedy: true
+  temperature: 0.6
+  top_p: 0.95
+  seed: 30
+  service_timeout_seconds: 360
+  timeout_seconds: 120
+  stop_on_first_symbolic_success: false
+  run_global_gates_if_proved: true

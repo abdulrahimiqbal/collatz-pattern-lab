@@ -1,0 +1,7 @@
+{
+  "accepted_symbolic_count": 0,
+  "general_high_parent_theorem_proved": false,
+  "global_proof_claimed": false,
+  "next_missing_theorem": "p32_special_root_relative_d1",
+  "schema": "collatz_lab.run072_high_parent_batch_certificate"
+}

@@ -3,11 +3,11 @@
     "certificate_store_parent_level_coverage_taxonomy": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_parent_level_coverage_taxonomy.json",
     "certificate_store_run_result": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_run_result.json",
     "certificate_store_uncovered_parent_families": "/Users/rahim/Documents/collatz_energy_lab/collatz-pattern-lab/certificate_store/run057_uncovered_parent_families.jsonl",
-    "formalization_status": "reports/runs/RUN-057-parametric-entry-coverage-theorem/formalization_status.json",
-    "missing_parametric_entry_coverage": "reports/runs/RUN-057-parametric-entry-coverage-theorem/missing_parametric_entry_coverage.md",
-    "parent_level_coverage_taxonomy": "reports/runs/RUN-057-parametric-entry-coverage-theorem/parent_level_coverage_taxonomy.json",
-    "run_result": "reports/runs/RUN-057-parametric-entry-coverage-theorem/run_result.json",
-    "uncovered_parent_families": "reports/runs/RUN-057-parametric-entry-coverage-theorem/uncovered_parent_families.jsonl"
+    "formalization_status": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run057_runner_writes_fail0/run057/formalization_status.json",
+    "missing_parametric_entry_coverage": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run057_runner_writes_fail0/run057/missing_parametric_entry_coverage.md",
+    "parent_level_coverage_taxonomy": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run057_runner_writes_fail0/run057/parent_level_coverage_taxonomy.json",
+    "run_result": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run057_runner_writes_fail0/run057/run_result.json",
+    "uncovered_parent_families": "/private/var/folders/hy/___9bvmj72l427ynw4z9zm9h0000gn/T/pytest-of-rahim/pytest-275/test_run057_runner_writes_fail0/run057/uncovered_parent_families.jsonl"
   },
   "failure_reason": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
   "formalization_status": "MISSING_PARAMETRIC_ENTRY_COVERAGE",
